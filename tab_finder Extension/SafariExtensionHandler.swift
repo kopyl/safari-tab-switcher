@@ -11,6 +11,7 @@ struct HelloWorldView: View {
                 .font(.largeTitle)
                 .padding()
             Button("Close") {
+                SafariExtensionViewController.shared.dismissPopover()
             }
             .padding()
         }
