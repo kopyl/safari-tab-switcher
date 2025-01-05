@@ -50,7 +50,6 @@ func navigateToUrl(window: SFSafariWindow, url: String) {
     })
 }
 
-
 @available(macOSApplicationExtension 10.15, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
