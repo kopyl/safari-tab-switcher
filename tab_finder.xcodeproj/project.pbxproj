@@ -44,6 +44,7 @@
 		4813F8322D2A8D5C0085D120 /* app.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
 		48B48FC52D2A59620054B680 /* tab_finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab_finder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48B48FD92D2A59630054B680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		48B48FDB2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
 		48B48FDC2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
 		48B48FE12D2A59630054B680 /* tab_finder Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "tab_finder Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionHandler.swift; sourceTree = "<group>"; };
@@ -95,6 +96,7 @@
 			children = (
 				4813F8322D2A8D5C0085D120 /* app.swift */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
+				48B48FDB2D2A59630054B680 /* tab_finder.entitlements */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
 			);
 			path = tab_finder;
