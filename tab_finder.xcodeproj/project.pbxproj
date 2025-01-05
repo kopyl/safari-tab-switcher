@@ -13,7 +13,6 @@
 		48B48FD12D2A59620054B680 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD02D2A59620054B680 /* Style.css */; };
 		48B48FD32D2A59620054B680 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD22D2A59620054B680 /* Script.js */; };
 		48B48FD52D2A59620054B680 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FD42D2A59620054B680 /* ViewController.swift */; };
-		48B48FD82D2A59620054B680 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD62D2A59620054B680 /* Main.storyboard */; };
 		48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD92D2A59630054B680 /* Assets.xcassets */; };
 		48B48FE22D2A59630054B680 /* tab_finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* tab_finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
@@ -54,7 +53,6 @@
 		48B48FD02D2A59620054B680 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
 		48B48FD22D2A59620054B680 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
 		48B48FD42D2A59620054B680 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		48B48FD72D2A59620054B680 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		48B48FD92D2A59630054B680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		48B48FDB2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
 		48B48FDC2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			children = (
 				48B48FC82D2A59620054B680 /* AppDelegate.swift */,
 				48B48FD42D2A59620054B680 /* ViewController.swift */,
-				48B48FD62D2A59620054B680 /* Main.storyboard */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDB2D2A59630054B680 /* tab_finder.entitlements */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
@@ -231,7 +228,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				48B48FCF2D2A59620054B680 /* Icon.png in Resources */,
-				48B48FD82D2A59620054B680 /* Main.storyboard in Resources */,
 				48B48FD32D2A59620054B680 /* Script.js in Resources */,
 				48B48FCD2D2A59620054B680 /* Main.html in Resources */,
 				48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */,
@@ -286,14 +282,6 @@
 				48B48FCC2D2A59620054B680 /* Base */,
 			);
 			name = Main.html;
-			sourceTree = "<group>";
-		};
-		48B48FD62D2A59620054B680 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				48B48FD72D2A59620054B680 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -494,7 +482,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = tab_finder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,7 +517,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = tab_finder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
