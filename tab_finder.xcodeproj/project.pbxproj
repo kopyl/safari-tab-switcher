@@ -20,7 +20,6 @@
 		48B48FE92D2A59630054B680 /* SafariExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */; };
 		48B48FEC2D2A59630054B680 /* script.js in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FEB2D2A59630054B680 /* script.js */; };
 		48B48FEE2D2A59630054B680 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */; };
-		48B48FF12D2A59630054B680 /* SafariExtensionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FEF2D2A59630054B680 /* SafariExtensionViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +63,6 @@
 		48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionViewController.swift; sourceTree = "<group>"; };
 		48B48FEB2D2A59630054B680 /* script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = script.js; sourceTree = "<group>"; };
 		48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarItemIcon.pdf; sourceTree = "<group>"; };
-		48B48FF02D2A59630054B680 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SafariExtensionViewController.xib; sourceTree = "<group>"; };
 		48B48FF22D2A59630054B680 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder_Extension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,7 +133,6 @@
 			children = (
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
 				48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */,
-				48B48FEF2D2A59630054B680 /* SafariExtensionViewController.xib */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
 				48B48FEA2D2A59630054B680 /* Resources */,
@@ -246,7 +243,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				48B48FF12D2A59630054B680 /* SafariExtensionViewController.xib in Resources */,
 				48B48FEE2D2A59630054B680 /* ToolbarItemIcon.pdf in Resources */,
 				48B48FEC2D2A59630054B680 /* script.js in Resources */,
 			);
@@ -298,14 +294,6 @@
 				48B48FD72D2A59620054B680 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		48B48FEF2D2A59630054B680 /* SafariExtensionViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				48B48FF02D2A59630054B680 /* Base */,
-			);
-			name = SafariExtensionViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
