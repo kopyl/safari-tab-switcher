@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4813F8332D2A8D5C0085D120 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4813F8322D2A8D5C0085D120 /* app.swift */; };
-		48B48FCD2D2A59620054B680 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FCB2D2A59620054B680 /* Main.html */; };
-		48B48FCF2D2A59620054B680 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FCE2D2A59620054B680 /* Icon.png */; };
-		48B48FD12D2A59620054B680 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD02D2A59620054B680 /* Style.css */; };
-		48B48FD32D2A59620054B680 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD22D2A59620054B680 /* Script.js */; };
 		48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD92D2A59630054B680 /* Assets.xcassets */; };
 		48B48FE22D2A59630054B680 /* tab_finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* tab_finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
@@ -47,10 +43,6 @@
 /* Begin PBXFileReference section */
 		4813F8322D2A8D5C0085D120 /* app.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
 		48B48FC52D2A59620054B680 /* tab_finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab_finder.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		48B48FCC2D2A59620054B680 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
-		48B48FCE2D2A59620054B680 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		48B48FD02D2A59620054B680 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
-		48B48FD22D2A59620054B680 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
 		48B48FD92D2A59630054B680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		48B48FDB2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
 		48B48FDC2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
@@ -106,20 +98,8 @@
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDB2D2A59630054B680 /* tab_finder.entitlements */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
-				48B48FCA2D2A59620054B680 /* Resources */,
 			);
 			path = tab_finder;
-			sourceTree = "<group>";
-		};
-		48B48FCA2D2A59620054B680 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				48B48FCB2D2A59620054B680 /* Main.html */,
-				48B48FCE2D2A59620054B680 /* Icon.png */,
-				48B48FD02D2A59620054B680 /* Style.css */,
-				48B48FD22D2A59620054B680 /* Script.js */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		48B48FE52D2A59630054B680 /* tab_finder Extension */ = {
@@ -225,11 +205,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				48B48FCF2D2A59620054B680 /* Icon.png in Resources */,
-				48B48FD32D2A59620054B680 /* Script.js in Resources */,
-				48B48FCD2D2A59620054B680 /* Main.html in Resources */,
 				48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */,
-				48B48FD12D2A59620054B680 /* Style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,17 +247,6 @@
 			targetProxy = 48B48FE32D2A59630054B680 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		48B48FCB2D2A59620054B680 /* Main.html */ = {
-			isa = PBXVariantGroup;
-			children = (
-				48B48FCC2D2A59620054B680 /* Base */,
-			);
-			name = Main.html;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		48B48FF42D2A59630054B680 /* Debug */ = {
