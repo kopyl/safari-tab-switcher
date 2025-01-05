@@ -5,15 +5,61 @@ import UserNotifications
 
 @available(macOSApplicationExtension 10.15, *)
 struct HelloWorldView: View {
+    @State private var tabCount: Int = 0
+    
     var body: some View {
         VStack {
-            Text("Hello, World!")
+            Text("You have \(tabCount) open tabs")
                 .font(.largeTitle)
                 .padding()
             Button("Close") {
                 SafariExtensionViewController.shared.dismissPopover()
             }
             .padding()
+            .onAppear{
+                fetchTabsCount { count in
+                    tabCount = count
+                }
+            }
+        }
+    }
+    
+    func fetchTabsCount(completion: @escaping (Int) -> Void) {
+            SafariExtensionHandler.getOpenTabsCount(completion: completion)
+        }
+}
+
+@available(macOSApplicationExtension 10.15, *)
+class SafariExtensionHandler: SFSafariExtensionHandler {
+
+    override func toolbarItemClicked(in window: SFSafariWindow) {
+        // Example: Action when toolbar item clicked
+    }
+
+    override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
+        validationHandler(true, "")
+    }
+
+    override func popoverViewController() -> SFSafariExtensionViewController {
+        return SafariExtensionViewController.shared
+    }
+
+    static func getOpenTabsCount(completion: @escaping (Int) -> Void) {
+        SFSafariApplication.getAllWindows { windows in
+            var totalTabs = 0
+            let group = DispatchGroup()
+
+            for window in windows {
+                group.enter()
+                window.getAllTabs { tabs in
+                    totalTabs += tabs.count
+                    group.leave()
+                }
+            }
+
+            group.notify(queue: .main) {
+                completion(totalTabs)
+            }
         }
     }
 }
@@ -48,21 +94,4 @@ func navigateToUrl(window: SFSafariWindow, url: String) {
             tab?.navigate(to: myUrl)
         }
     })
-}
-
-@available(macOSApplicationExtension 10.15, *)
-class SafariExtensionHandler: SFSafariExtensionHandler {
-
-    override func toolbarItemClicked(in window: SFSafariWindow) {
-        os_log(.default, "Toolbar item clicked")
-    }
-
-    override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-        validationHandler(true, "") // Enable toolbar item
-    }
-
-    override func popoverViewController() -> SFSafariExtensionViewController {
-        // Return the shared instance of the popover
-        return SafariExtensionViewController.shared
-    }
 }
