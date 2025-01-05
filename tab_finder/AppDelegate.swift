@@ -2,20 +2,6 @@ import Cocoa
 import SwiftUI
 
 @available(macOS 10.15, *)
-struct HelloWorldView: View {
-    var body: some View {
-        VStack {
-            Text("Hello, World!")
-                .font(.largeTitle)
-                .padding()
-            Button("Close") {
-            }
-            .padding()
-        }
-    }
-}
-
-@available(macOS 10.15, *)
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 

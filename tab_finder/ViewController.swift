@@ -1,49 +1,53 @@
 import Cocoa
 import SafariServices
+import SwiftUI
 import WebKit
 
 let extensionBundleIdentifier = "kopyl.tab-finder.Extension"
 
-class ViewController: NSViewController, WKNavigationDelegate, WKScriptMessageHandler {
+@available(macOS 10.15, *)
+struct WebView: NSViewRepresentable {
+    let url: URL
 
-    @IBOutlet var webView: WKWebView!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.webView.navigationDelegate = self
-
-        self.webView.configuration.userContentController.add(self, name: "controller")
-
-        self.webView.loadFileURL(Bundle.main.url(forResource: "Main", withExtension: "html")!, allowingReadAccessTo: Bundle.main.resourceURL!)
+    func makeNSView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.navigationDelegate = context.coordinator
+        let request = URLRequest(url: url)
+        webView.load(request)
+        return webView
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
-            guard let state = state, error == nil else {
-                return
-            }
+    func updateNSView(_ nsView: WKWebView, context: Context) {
+        // Update the view if needed
+    }
 
-            DispatchQueue.main.async {
-                if #available(macOS 13, *) {
-                    webView.evaluateJavaScript("show(\(state.isEnabled), true)")
-                } else {
-                    webView.evaluateJavaScript("show(\(state.isEnabled), false)")
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator: NSObject, WKNavigationDelegate {}
+}
+
+@available(macOS 10.15, *)
+struct HelloWorldView: View {
+    var body: some View {
+        VStack {
+            Text("Hello, World!")
+                .font(.largeTitle)
+                .padding()
+
+            Button("Open Preferences") {
+                SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
+                    DispatchQueue.main.async {
+                        NSApplication.shared.terminate(nil)
+                    }
                 }
             }
+            .padding()
+
+            WebView(url: Bundle.main.url(forResource: "Main", withExtension: "html")!)
+                .frame(height: 300)
         }
+        .padding()
     }
-
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if (message.body as! String != "open-preferences") {
-            return;
-        }
-
-        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            DispatchQueue.main.async {
-                NSApplication.shared.terminate(nil)
-            }
-        }
-    }
-
 }
