@@ -33,9 +33,7 @@ struct HelloWorldView: View {
 class SafariExtensionHandler: SFSafariExtensionHandler {
     var currentTabId = 0
 
-    override func toolbarItemClicked(in window: SFSafariWindow) {
-        // Example: Action when toolbar item clicked
-    }
+    override func toolbarItemClicked(in window: SFSafariWindow) {}
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         window.getAllTabs { tabs in
