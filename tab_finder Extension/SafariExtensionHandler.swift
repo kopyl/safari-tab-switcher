@@ -31,12 +31,26 @@ struct HelloWorldView: View {
 
 @available(macOSApplicationExtension 10.15, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
+    var currentTabId = 0
 
     override func toolbarItemClicked(in window: SFSafariWindow) {
         // Example: Action when toolbar item clicked
     }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
+        window.getAllTabs { tabs in
+            window.getActiveTab { tab in
+                if let tab {
+                    let changedToTabIndex = tabs.firstIndex(of: tab) ?? self.currentTabId
+                    if changedToTabIndex == self.currentTabId {
+                        return
+                    }
+                    self.currentTabId = changedToTabIndex
+                    sendNotification(String(self.currentTabId))
+                }
+            }
+        }
+        
         validationHandler(true, "")
     }
 
