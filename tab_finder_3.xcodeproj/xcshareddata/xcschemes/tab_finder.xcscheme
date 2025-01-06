@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "48B48FC42D2A59620054B680"
-               BuildableName = "tab_finder.app"
-               BlueprintName = "tab_finder"
-               ReferencedContainer = "container:tab_finder.xcodeproj">
+               BuildableName = "tab_finder_3.app"
+               BlueprintName = "tab_finder_3"
+               ReferencedContainer = "container:tab_finder_3.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48B48FC42D2A59620054B680"
-            BuildableName = "tab_finder.app"
-            BlueprintName = "tab_finder"
-            ReferencedContainer = "container:tab_finder.xcodeproj">
+            BuildableName = "tab_finder_3.app"
+            BlueprintName = "tab_finder_3"
+            ReferencedContainer = "container:tab_finder_3.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48B48FC42D2A59620054B680"
-            BuildableName = "tab_finder.app"
-            BlueprintName = "tab_finder"
-            ReferencedContainer = "container:tab_finder.xcodeproj">
+            BuildableName = "tab_finder_3.app"
+            BlueprintName = "tab_finder_3"
+            ReferencedContainer = "container:tab_finder_3.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

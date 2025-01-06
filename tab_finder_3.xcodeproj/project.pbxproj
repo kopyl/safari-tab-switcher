@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		4813F8332D2A8D5C0085D120 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4813F8322D2A8D5C0085D120 /* app.swift */; };
 		48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD92D2A59630054B680 /* Assets.xcassets */; };
-		48B48FE22D2A59630054B680 /* tab_finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* tab_finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		48B48FE22D2A59630054B680 /* tab_finder_3 Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* tab_finder_3 Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
 		48B48FE92D2A59630054B680 /* SafariExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */; };
 		48B48FEC2D2A59630054B680 /* script.js in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FEB2D2A59630054B680 /* script.js */; };
@@ -33,7 +33,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				48B48FE22D2A59630054B680 /* tab_finder Extension.appex in Embed Foundation Extensions */,
+				48B48FE22D2A59630054B680 /* tab_finder_3 Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -42,10 +42,10 @@
 
 /* Begin PBXFileReference section */
 		4813F8322D2A8D5C0085D120 /* app.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
-		48B48FC52D2A59620054B680 /* tab_finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab_finder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		48B48FC52D2A59620054B680 /* tab_finder_3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab_finder_3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48B48FD92D2A59630054B680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		48B48FDC2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
-		48B48FE12D2A59630054B680 /* tab_finder Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "tab_finder Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		48B48FE12D2A59630054B680 /* tab_finder_3 Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "tab_finder_3 Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionHandler.swift; sourceTree = "<group>"; };
 		48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionViewController.swift; sourceTree = "<group>"; };
 		48B48FEB2D2A59630054B680 /* script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = script.js; sourceTree = "<group>"; };
@@ -84,8 +84,8 @@
 		48B48FC62D2A59620054B680 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				48B48FC52D2A59620054B680 /* tab_finder.app */,
-				48B48FE12D2A59630054B680 /* tab_finder Extension.appex */,
+				48B48FC52D2A59620054B680 /* tab_finder_3.app */,
+				48B48FE12D2A59630054B680 /* tab_finder_3 Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,9 +124,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		48B48FC42D2A59620054B680 /* tab_finder */ = {
+		48B48FC42D2A59620054B680 /* tab_finder_3 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder" */;
+			buildConfigurationList = 48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder_3" */;
 			buildPhases = (
 				48B48FC12D2A59620054B680 /* Sources */,
 				48B48FC22D2A59620054B680 /* Frameworks */,
@@ -138,14 +138,14 @@
 			dependencies = (
 				48B48FE42D2A59630054B680 /* PBXTargetDependency */,
 			);
-			name = tab_finder;
+			name = tab_finder_3;
 			productName = tab_finder;
-			productReference = 48B48FC52D2A59620054B680 /* tab_finder.app */;
+			productReference = 48B48FC52D2A59620054B680 /* tab_finder_3.app */;
 			productType = "com.apple.product-type.application";
 		};
-		48B48FE02D2A59630054B680 /* tab_finder Extension */ = {
+		48B48FE02D2A59630054B680 /* tab_finder_3 Extension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 48B48FF62D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder Extension" */;
+			buildConfigurationList = 48B48FF62D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder_3 Extension" */;
 			buildPhases = (
 				48B48FDD2D2A59630054B680 /* Sources */,
 				48B48FDE2D2A59630054B680 /* Frameworks */,
@@ -155,9 +155,9 @@
 			);
 			dependencies = (
 			);
-			name = "tab_finder Extension";
+			name = "tab_finder_3 Extension";
 			productName = "tab_finder Extension";
-			productReference = 48B48FE12D2A59630054B680 /* tab_finder Extension.appex */;
+			productReference = 48B48FE12D2A59630054B680 /* tab_finder_3 Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -179,7 +179,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 48B48FC02D2A59620054B680 /* Build configuration list for PBXProject "tab_finder" */;
+			buildConfigurationList = 48B48FC02D2A59620054B680 /* Build configuration list for PBXProject "tab_finder_3" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -192,8 +192,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				48B48FC42D2A59620054B680 /* tab_finder */,
-				48B48FE02D2A59630054B680 /* tab_finder Extension */,
+				48B48FC42D2A59620054B680 /* tab_finder_3 */,
+				48B48FE02D2A59630054B680 /* tab_finder_3 Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -241,7 +241,7 @@
 /* Begin PBXTargetDependency section */
 		48B48FE42D2A59630054B680 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 48B48FE02D2A59630054B680 /* tab_finder Extension */;
+			target = 48B48FE02D2A59630054B680 /* tab_finder_3 Extension */;
 			targetProxy = 48B48FE32D2A59630054B680 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -388,7 +388,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder-2.Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -419,7 +419,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder-2.Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -456,7 +456,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder";
+				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -493,7 +493,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder";
+				PRODUCT_BUNDLE_IDENTIFIER = "kopyl.tab-finder-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -503,7 +503,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		48B48FC02D2A59620054B680 /* Build configuration list for PBXProject "tab_finder" */ = {
+		48B48FC02D2A59620054B680 /* Build configuration list for PBXProject "tab_finder_3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				48B48FF42D2A59630054B680 /* Debug */,
@@ -512,7 +512,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		48B48FF62D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder Extension" */ = {
+		48B48FF62D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder_3 Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				48B48FF72D2A59630054B680 /* Debug */,
@@ -521,7 +521,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder" */ = {
+		48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder_3" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				48B48FFB2D2A59630054B680 /* Debug */,
