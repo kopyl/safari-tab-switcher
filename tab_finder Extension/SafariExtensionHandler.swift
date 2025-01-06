@@ -64,7 +64,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
 }
 
-func sendNotification(subtitle: String) {
+func sendNotification(_ subtitle: String) {
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
         if success {
             print("Permission approved!")
