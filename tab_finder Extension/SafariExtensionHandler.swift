@@ -46,7 +46,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                         return
                     }
                     UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
-                    os_log("Tab changed to id \(changedToTabIndex)")
+                    FileLogger.shared.log("Tab changed to id \(changedToTabIndex)")
 
                 }
             }

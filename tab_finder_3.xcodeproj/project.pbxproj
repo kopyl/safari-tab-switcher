@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4813F8332D2A8D5C0085D120 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4813F8322D2A8D5C0085D120 /* app.swift */; };
+		48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
+		48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FD92D2A59630054B680 /* Assets.xcassets */; };
 		48B48FE22D2A59630054B680 /* tab_finder_3 Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* tab_finder_3 Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
@@ -42,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		4813F8322D2A8D5C0085D120 /* app.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
+		48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		48B48FC52D2A59620054B680 /* tab_finder_3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab_finder_3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48B48FD92D2A59630054B680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		48B48FDC2D2A59630054B680 /* tab_finder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder.entitlements; sourceTree = "<group>"; };
@@ -103,6 +106,7 @@
 		48B48FE52D2A59630054B680 /* tab_finder Extension */ = {
 			isa = PBXGroup;
 			children = (
+				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
 				48B48FE82D2A59630054B680 /* SafariExtensionViewController.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
@@ -224,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4813F8332D2A8D5C0085D120 /* app.swift in Sources */,
+				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48B48FE92D2A59630054B680 /* SafariExtensionViewController.swift in Sources */,
 				48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */,
 			);
