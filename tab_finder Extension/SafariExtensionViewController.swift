@@ -2,7 +2,7 @@ import SafariServices
 import SwiftUI
 import os.log
 
-@available(macOSApplicationExtension 11.0, *)
+@available(macOSApplicationExtension 12.0, *)
 class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 

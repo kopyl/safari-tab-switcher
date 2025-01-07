@@ -3,9 +3,10 @@ import os.log
 import SwiftUI
 import UserNotifications
 
-@available(macOS 11.0, *)
+@available(macOS 12.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack {
@@ -25,10 +26,38 @@ struct HelloWorldView: View {
     }
 }
 
-@available(macOSApplicationExtension 11.0, *)
+func showPopover() {
+    SFSafariApplication.getActiveWindow { (window) in
+        window?.getToolbarItem(completionHandler: { (item) in
+            item?.showPopover()
+        })
+    }
+}
+
+@available(macOSApplicationExtension 12.0, *)
+func switchToTab(id: Int) {
+    SFSafariApplication.getActiveWindow { activeWindow in
+        activeWindow?.getAllTabs { tabs in
+            guard tabs.indices.contains(id) else {
+                FileLogger.shared.log("Previous tab ID \(id) is out of range.")
+                return
+            }
+            tabs[id].activate {
+                FileLogger.shared.log("Switching to a tab")
+            }
+        }
+    }
+}
+
+@available(macOSApplicationExtension 12.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
+    
+    
+    
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
-        FileLogger.shared.log(messageName)
+        FileLogger.shared.log("Command received: \(messageName)")
+        
+//        showPopover()
         
         let allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
         
@@ -39,19 +68,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
         let previousTabId = allOpenTabsUnique[-2]
         FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
-
-        SFSafariApplication.getActiveWindow { activeWindow in
-            activeWindow?.getAllTabs { tabs in
-                guard tabs.indices.contains(previousTabId) else {
-                    FileLogger.shared.log("Previous tab ID \(previousTabId) is out of range.")
-                    return
-                }
-
-                tabs[previousTabId].activate {
-                    FileLogger.shared.log("Switching to a tab")
-                }
-            }
-        }
+        
+        switchToTab(id: previousTabId)
     }
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
