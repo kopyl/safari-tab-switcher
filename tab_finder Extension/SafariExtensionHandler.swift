@@ -6,9 +6,7 @@ import UserNotifications
 @available(macOSApplicationExtension 11.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
-    
-    
-    
+
     var body: some View {
         VStack {
             Text("You have \(tabCount) open tabs")
