@@ -36,13 +36,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
 
-        let allOpenTabsUniqueFromStorage = UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? []
-        var allOpenTabsUnique: OrderedSet<Int>
-        if allOpenTabsUniqueFromStorage.isEmpty {
-            allOpenTabsUnique = OrderedSet<Int>()
-        } else {
-            allOpenTabsUnique = OrderedSet(allOpenTabsUniqueFromStorage)
-        }
+        var allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
         
         window.getAllTabs { tabs in
             window.getActiveTab { tab in
