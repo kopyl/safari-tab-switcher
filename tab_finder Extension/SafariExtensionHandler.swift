@@ -3,7 +3,7 @@ import os.log
 import SwiftUI
 import UserNotifications
 
-@available(macOSApplicationExtension 11.0, *)
+@available(macOS 11.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
 
