@@ -82,9 +82,3 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
     }
 }
-
-func getAllTabsFromWindow(window: SFSafariWindow) {
-    window.getAllTabs(completionHandler: { allTabs in
-        print(allTabs)
-    })
-}
