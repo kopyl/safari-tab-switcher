@@ -88,11 +88,3 @@ func getAllTabsFromWindow(window: SFSafariWindow) {
         print(allTabs)
     })
 }
-
-func navigateToUrl(window: SFSafariWindow, url: String) {
-    window.getActiveTab(completionHandler: { (tab) in
-        if let myUrl = URL(string: url){
-            tab?.navigate(to: myUrl)
-        }
-    })
-}
