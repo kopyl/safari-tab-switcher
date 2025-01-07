@@ -83,24 +83,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
 }
 
-func sendNotification(_ subtitle: String) {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-        if success {
-            print("Permission approved!")
-        } else if let error = error {
-            print(error.localizedDescription)
-        }
-    }
-    
-    let content = UNMutableNotificationContent()
-    content.title = "Notification"
-    content.subtitle = subtitle
-    content.sound = UNNotificationSound.default
-
-    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-    UNUserNotificationCenter.current().add(request)
-}
-
 func getAllTabsFromWindow(window: SFSafariWindow) {
     window.getAllTabs(completionHandler: { allTabs in
         print(allTabs)
