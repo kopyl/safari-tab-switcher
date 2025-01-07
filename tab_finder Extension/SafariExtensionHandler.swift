@@ -23,9 +23,6 @@ struct HelloWorldView: View {
                     tabCount = count
                 }
             }
-            .onDisappear{
-                os_log("View disappeared")
-            }
         }
     }
     
