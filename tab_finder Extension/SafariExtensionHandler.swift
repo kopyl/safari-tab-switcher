@@ -17,16 +17,12 @@ struct HelloWorldView: View {
             }
             .padding()
             .onAppear{
-                fetchTabsCount { count in
+                SafariExtensionHandler.getOpenTabsCount { count in
                     tabCount = count
                 }
             }
         }
     }
-    
-    func fetchTabsCount(completion: @escaping (Int) -> Void) {
-            SafariExtensionHandler.getOpenTabsCount(completion: completion)
-        }
 }
 
 @available(macOSApplicationExtension 11.0, *)
