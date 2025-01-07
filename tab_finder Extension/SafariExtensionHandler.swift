@@ -27,7 +27,6 @@ struct HelloWorldView: View {
 
 @available(macOSApplicationExtension 11.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log(messageName)
     }
