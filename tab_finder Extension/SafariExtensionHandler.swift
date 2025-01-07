@@ -3,9 +3,11 @@ import os.log
 import SwiftUI
 import UserNotifications
 
-@available(macOSApplicationExtension 10.15, *)
+@available(macOSApplicationExtension 11.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
+    
+    
     
     var body: some View {
         VStack {
@@ -13,13 +15,17 @@ struct HelloWorldView: View {
                 .font(.largeTitle)
                 .padding()
             Button("Close") {
-                SafariExtensionViewController.shared.dismissPopover()
+//                SafariExtensionViewController.shared.dismissPopover()
+                os_log("Close button pressed")
             }
             .padding()
             .onAppear{
                 fetchTabsCount { count in
                     tabCount = count
                 }
+            }
+            .onDisappear{
+                os_log("View disappeared")
             }
         }
     }
@@ -29,22 +35,25 @@ struct HelloWorldView: View {
         }
 }
 
-@available(macOSApplicationExtension 10.15, *)
+@available(macOSApplicationExtension 11.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    var currentTabId = 0
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
+
+        let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
+        
         window.getAllTabs { tabs in
             window.getActiveTab { tab in
                 if let tab {
-                    let changedToTabIndex = tabs.firstIndex(of: tab) ?? self.currentTabId
-                    if changedToTabIndex == self.currentTabId {
+                    let changedToTabIndex = tabs.firstIndex(of: tab) ?? currentTabId
+                    if changedToTabIndex == currentTabId {
                         return
                     }
-                    self.currentTabId = changedToTabIndex
-                    sendNotification(String(self.currentTabId))
+                    UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
+                    os_log("Tab changed to id \(changedToTabIndex)")
+
                 }
             }
         }

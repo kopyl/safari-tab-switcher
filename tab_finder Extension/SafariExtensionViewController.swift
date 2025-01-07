@@ -1,7 +1,8 @@
 import SafariServices
 import SwiftUI
+import os.log
 
-@available(macOSApplicationExtension 10.15, *)
+@available(macOSApplicationExtension 11.0, *)
 class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 
@@ -13,5 +14,4 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
         // Set the hosted SwiftUI view as the main view
         self.view = hostingController.view
         self.preferredContentSize = NSSize(width: 300, height: 200) // Adjust size as needed
-    }
-}
+    }}
