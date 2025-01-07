@@ -2,8 +2,6 @@ struct OrderedSet<Element: Hashable> {
     public var elements: [Element] = []
     private var seenElements: Set<Element> = []
     
-    init() {}
-    
     init(_ elements: [Element]) {
             for element in elements {
                 append(element)
@@ -14,8 +12,10 @@ struct OrderedSet<Element: Hashable> {
     var isEmpty: Bool { elements.isEmpty }
 
     subscript(index: Int) -> Element {
-        return elements[index]
-    }
+            let adjustedIndex = index < 0 ? elements.count + index : index
+            precondition(adjustedIndex >= 0 && adjustedIndex < elements.count, "Index out of bounds")
+            return elements[adjustedIndex]
+        }
 
     func contains(_ element: Element) -> Bool {
         return seenElements.contains(element)
