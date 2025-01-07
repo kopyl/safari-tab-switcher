@@ -29,6 +29,29 @@ struct HelloWorldView: View {
 class SafariExtensionHandler: SFSafariExtensionHandler {
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log(messageName)
+        
+        let allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
+        
+        guard allOpenTabsUnique.count > 1 else {
+                FileLogger.shared.log("No previous tab to switch to.")
+                return
+            }
+
+        let previousTabId = allOpenTabsUnique[-2]
+        FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
+
+        SFSafariApplication.getActiveWindow { activeWindow in
+            activeWindow?.getAllTabs { tabs in
+                guard tabs.indices.contains(previousTabId) else {
+                    FileLogger.shared.log("Previous tab ID \(previousTabId) is out of range.")
+                    return
+                }
+
+                tabs[previousTabId].activate {
+                    FileLogger.shared.log("Switching to a tab")
+                }
+            }
+        }
     }
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
