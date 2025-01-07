@@ -34,7 +34,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func toolbarItemClicked(in window: SFSafariWindow) {}
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-
         let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
         
         window.getAllTabs { tabs in
