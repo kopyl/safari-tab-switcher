@@ -29,7 +29,6 @@ struct HelloWorldView: View {
                 }
                 
                 let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
-                FileLogger.shared.log("savedTabTitles: \(savedTabTitles)")
                 tabTitles = savedTabTitles ?? [:]
                 
                 allOpenTabsUnique = getOpenTabs().elements
@@ -89,7 +88,6 @@ func getTitlesOfAllTabs(_ tabs: [SFSafariTab]) async -> [String: String] {
         let key = tabs.firstIndex(of: tab) ?? -1
         pageTitles[String(key)] = title
     }
-    FileLogger.shared.log("pageTitles: \(pageTitles)")
     return pageTitles
 }
 
@@ -106,7 +104,6 @@ func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
             }
         }
     }
-    FileLogger.shared.log("pageTitles: \(pageTitles)")
     return pageTitles
 }
 
