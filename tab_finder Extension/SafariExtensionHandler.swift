@@ -12,8 +12,21 @@ struct HelloWorldView: View {
                 .font(.largeTitle)
                 .padding()
             ScrollView(.vertical) {
-                ForEach(allOpenTabsUnique, id: \.self) { tab in
-                    Text(tabTitles[String(tab)] ?? "No title")
+                VStack(spacing: 0) {
+                    let tabsToDisplay = Array(allOpenTabsUnique.reversed())
+                    
+                    ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
+                        Text(tabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
+                            .lineLimit(1)
+                            .padding(.top, 10).padding(.bottom, 10)
+                            .padding(.leading, 10).padding(.trailing, 10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.blue.opacity(tabIdx == 0 ? 1 : 0))
+                        
+                        if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
+                            Divider().background(.gray.opacity(0.01))
+                        }
+                    }
                 }
             }
             .frame(width: 300, height: 200)
