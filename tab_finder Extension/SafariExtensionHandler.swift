@@ -95,6 +95,15 @@ func addNewTabToHistory(window: SFSafariWindow) {
 }
 
 @available(macOSApplicationExtension 12.0, *)
+func removeTabFromHistory() {
+    let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
+    var allOpenTabsUnique = getOpenTabs()
+    allOpenTabsUnique.remove(currentTabId)
+    UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
+    FileLogger.shared.log("Tab \(currentTabId) removed from history")
+}
+
+@available(macOSApplicationExtension 12.0, *)
 func switchToPreviousTab() {
     let allOpenTabsUnique = getOpenTabs()
     
@@ -114,7 +123,12 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log("Command received: \(messageName)")
-        switchToPreviousTab()
+        if messageName == "opttab" {
+            switchToPreviousTab()
+        } else if messageName == "tabclose" {
+            FileLogger.shared.log("Command for closing tab is received")
+            removeTabFromHistory()
+        }
     }
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
