@@ -2,6 +2,20 @@ import SafariServices
 import os.log
 import SwiftUI
 import UserNotifications
+import os.signpost
+
+let logger = OSSignposter(subsystem: Bundle.main.bundleIdentifier!, category: .pointsOfInterest)
+
+@available(macOS 13.0, *)
+func spin(_ name: StaticString) {
+        let state = logger.beginInterval(name, id: logger.makeSignpostID(), "begin")
+
+        let start = ContinuousClock.now
+        while start.duration(to: .now) < .seconds(1) { }   // spin for one second
+
+        logger.endInterval(name, state, "end")
+    }
+
 
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
@@ -92,7 +106,9 @@ func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
     return pageTitles
 }
 
+@available(macOS 13.0, *)
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
+    spin(#function)
     let titleOfAllTabs = await getTitlesOfAllTabs(window: window)
     UserDefaults.standard.set(titleOfAllTabs, forKey: "allOpenTabsUniqueWithTitles")
     FileLogger.shared.log("allOpenTabsUniqueWithTitles saved")
@@ -109,7 +125,9 @@ func getOpenTabs() -> OrderedSet<Int> {
     return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
 }
 
+@available(macOS 13.0, *)
 func addNewTabToHistory(window: SFSafariWindow) async {
+    spin(#function)
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
     
@@ -149,6 +167,7 @@ func switchToPreviousTab() {
     switchToTab(id: previousTabId)
 }
 
+@available(macOS 13.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
