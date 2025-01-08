@@ -128,15 +128,23 @@ func switchToPreviousTab() async {
     await switchToTab(id: previousTabId)
 }
 
+enum JScommands: String {
+    case opttab
+    case tabclose
+}
+
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         log("Command received: \(messageName)")
-        if messageName == "opttab" {
+        
+        guard let command = JScommands(rawValue: messageName) else { return }
+        switch command {
+        case .opttab:
             Task {
                 await switchToPreviousTab()
             }
-        } else if messageName == "tabclose" {
+        case .tabclose:
             log("Command for closing tab is received")
             removeTabFromHistory()
         }
