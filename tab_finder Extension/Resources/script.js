@@ -6,3 +6,6 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
+window.onbeforeunload = function () {
+    safari.extension.dispatchMessage("Tab is closed");
+};
