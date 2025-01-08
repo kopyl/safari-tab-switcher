@@ -30,9 +30,6 @@ struct HelloWorldView: View {
                 }
             }
             .frame(width: 300, height: 200)
-            Button("Close") {
-                SafariExtensionViewController.shared.dismissPopover()
-            }
             .padding()
             .task{
                 tabCount = await getOpenTabsCount()
