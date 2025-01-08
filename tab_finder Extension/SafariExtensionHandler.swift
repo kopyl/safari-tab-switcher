@@ -62,18 +62,6 @@ func switchToTab(id: Int) async {
     log("Switching to a tab")
 }
 
-func getTitlesOfAllTabs(_ tabs: [SFSafariTab]) async -> [String: String] {
-    var pageTitles: [String: String] = [:]
-    for tab in tabs {
-        guard let activePage = await tab.activePage() else { return pageTitles }
-        guard let properties = await activePage.properties() else { return pageTitles }
-        guard let title = properties.title else { return pageTitles }
-        let key = tabs.firstIndex(of: tab) ?? -1
-        pageTitles[String(key)] = title
-    }
-    return pageTitles
-}
-
 func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
     var pageTitles: [String: String] = [:]
     let tabs = await window.allTabs()
