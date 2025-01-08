@@ -77,6 +77,13 @@ func getTitlesOfAllTabs(tabs: [SFSafariTab]) async -> [String] {
     return pageTitles
 }
 
+func getTitlesOfOneTab(tab: SFSafariTab) async -> String {
+    guard let activePage = await tab.activePage() else { return "" }
+    guard let properties = await activePage.properties() else { return "" }
+    guard let title = properties.title else { return "" }
+    return title
+}
+
 func getOpenTabs() -> OrderedSet<Int> {
     return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
 }
