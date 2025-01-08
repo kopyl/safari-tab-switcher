@@ -65,18 +65,16 @@ func showPopover() {
     }
 }
 
-func switchToTab(id: Int) {
-    SFSafariApplication.getActiveWindow { activeWindow in
-        activeWindow?.getAllTabs { tabs in
-            guard tabs.indices.contains(id) else {
-                FileLogger.shared.log("Previous tab ID \(id) is out of range.")
-                return
-            }
-            tabs[id].activate {
-                FileLogger.shared.log("Switching to a tab")
-            }
-        }
+func switchToTab(id: Int) async {
+    guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
+    let allTabs = await activeWindow.allTabs()
+    
+    guard allTabs.indices.contains(id) else {
+        FileLogger.shared.log("Previous tab ID \(id) is out of range.")
+        return
     }
+    await allTabs[id].activate()
+    FileLogger.shared.log("Switching to a tab")
 }
 
 func getTitlesOfAllTabs(_ tabs: [SFSafariTab]) async -> [String: String] {
@@ -150,7 +148,7 @@ func removeTabFromHistory() {
     FileLogger.shared.log("Tab \(currentTabId) removed from history")
 }
 
-func switchToPreviousTab() {
+func switchToPreviousTab() async {
     let allOpenTabsUnique = getOpenTabs()
     
     guard allOpenTabsUnique.count > 1 else {
@@ -161,7 +159,7 @@ func switchToPreviousTab() {
     let previousTabId = allOpenTabsUnique[-2]
     FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
     
-    switchToTab(id: previousTabId)
+    await switchToTab(id: previousTabId)
 }
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
@@ -169,7 +167,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log("Command received: \(messageName)")
         if messageName == "opttab" {
-            switchToPreviousTab()
+            Task {
+                await switchToPreviousTab()
+            }
         } else if messageName == "tabclose" {
             FileLogger.shared.log("Command for closing tab is received")
             removeTabFromHistory()
