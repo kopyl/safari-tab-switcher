@@ -86,37 +86,27 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     }
     FileLogger.shared.log("pageTitles: \(pageTitles)")
     
-//    window.getAllTabs { tabs in
-//        for tab in tabs {
-//
-//            tab.getActivePage { page in
-//                guard let page else {
-//                    return
-//                }
-//                
-//                page.getPropertiesWithCompletionHandler { properties in
-//                    if let properties {
-//                        if let title = properties.title {
-//                            FileLogger.shared.log("Active tab title: \(title)")
-//                            pageTitles.append(title)
-//                        }
-//                        
-//                    }
-//                }
-//            }
-//        }
-//        FileLogger.shared.log("Titles: \(pageTitles)")
-//    }
-    
-//    var pageTitles: [String] = []
-//    for tab in tabs {
-//        tab.getActivePage { page in
-//            page?.getPropertiesWithCompletionHandler { properties in
-//                pageTitles.append(properties?.title ?? "")
-//            }
-//        }
-//    }
-//    FileLogger.shared.log("\(pageTitles)")
+    window.getAllTabs { tabs in
+        for tab in tabs {
+
+            tab.getActivePage { page in
+                guard let page else {
+                    return
+                }
+                
+                page.getPropertiesWithCompletionHandler { properties in
+                    if let properties {
+                        if let title = properties.title {
+                            FileLogger.shared.log("Active tab title: \(title)")
+                            pageTitles.append(title)
+                        }
+                        
+                    }
+                }
+            }
+        }
+        FileLogger.shared.log("Titles: \(pageTitles)")
+    }
     
     window.getAllTabs { tabs in
         window.getActiveTab { tab in
