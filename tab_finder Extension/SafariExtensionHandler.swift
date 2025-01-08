@@ -18,10 +18,29 @@ struct HelloWorldView: View {
             }
             .padding()
             .onAppear{
-                SafariExtensionHandler.getOpenTabsCount { count in
+                getOpenTabsCount { count in
                     tabCount = count
                 }
             }
+        }
+    }
+}
+
+func getOpenTabsCount(completion: @escaping (Int) -> Void) {
+    SFSafariApplication.getAllWindows { windows in
+        var totalTabs = 0
+        let group = DispatchGroup()
+
+        for window in windows {
+            group.enter()
+            window.getAllTabs { tabs in
+                totalTabs += tabs.count
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            completion(totalTabs)
         }
     }
 }
@@ -99,24 +118,5 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func popoverViewController() -> SFSafariExtensionViewController {
         return SafariExtensionViewController.shared
-    }
-
-    static func getOpenTabsCount(completion: @escaping (Int) -> Void) {
-        SFSafariApplication.getAllWindows { windows in
-            var totalTabs = 0
-            let group = DispatchGroup()
-
-            for window in windows {
-                group.enter()
-                window.getAllTabs { tabs in
-                    totalTabs += tabs.count
-                    group.leave()
-                }
-            }
-
-            group.notify(queue: .main) {
-                completion(totalTabs)
-            }
-        }
     }
 }
