@@ -6,7 +6,7 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 
     override func loadView() {
-        let swiftUIView = HelloWorldView()
+        let swiftUIView = TooltipView()
         let hostingController = NSHostingController(rootView: swiftUIView)
 
         self.view = hostingController.view

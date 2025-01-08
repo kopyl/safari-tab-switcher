@@ -1,7 +1,7 @@
 import SafariServices
 import SwiftUI
 
-struct HelloWorldView: View {
+struct TooltipView: View {
     @State private var tabCount: Int = 0
     @State private var tabTitles: [String: String] = [:]
     @State private var allOpenTabsUnique: [Int] = []
