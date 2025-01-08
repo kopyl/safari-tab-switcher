@@ -10,5 +10,5 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
         let hostingController = NSHostingController(rootView: swiftUIView)
 
         self.view = hostingController.view
-        self.preferredContentSize = NSSize(width: 300, height: 200) // Adjust size as needed
+        self.preferredContentSize = NSSize(width: 300, height: 800) // Adjust size as needed
     }}

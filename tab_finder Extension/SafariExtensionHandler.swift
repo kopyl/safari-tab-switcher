@@ -27,7 +27,7 @@ struct HelloWorldView: View {
                     }
                 }
             }
-            .frame(width: 300, height: 200)
+            .frame(width: 300, height: 800)
             .task{
                 let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
                 tabTitles = savedTabTitles ?? [:]
