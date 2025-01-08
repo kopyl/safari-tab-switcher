@@ -46,12 +46,10 @@ func getOpenTabsCount() async -> Int {
     return totalTabs
 }
 
-func showPopover() {
-    SFSafariApplication.getActiveWindow { (window) in
-        window?.getToolbarItem(completionHandler: { (item) in
-            item?.showPopover()
-        })
-    }
+func showPopover() async {
+    guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
+    guard let toolbarItem = await activeWindow.toolbarItem() else { return }
+    toolbarItem.showPopover()
 }
 
 func switchToTab(id: Int) async {
