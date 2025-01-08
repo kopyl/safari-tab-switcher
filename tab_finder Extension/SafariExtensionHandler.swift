@@ -1,7 +1,6 @@
 import SafariServices
 import os.log
 import SwiftUI
-import UserNotifications
 
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
