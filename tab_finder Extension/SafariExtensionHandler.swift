@@ -65,16 +65,37 @@ func switchToTab(id: Int) {
     }
 }
 
-func getTitlesOfAllTabs(tabs: [SFSafariTab]) async -> [String] {
-    var pageTitles: [String] = []
+func getTitlesOfAllTabs(_ tabs: [SFSafariTab]) async -> [String: String] {
+    var pageTitles: [String: String] = [:]
     for tab in tabs {
         guard let activePage = await tab.activePage() else { return pageTitles }
         guard let properties = await activePage.properties() else { return pageTitles }
         guard let title = properties.title else { return pageTitles }
-        pageTitles.append(title)
+        let key = tabs.firstIndex(of: tab) ?? -1
+        pageTitles[String(key)] = title
     }
     FileLogger.shared.log("pageTitles: \(pageTitles)")
     return pageTitles
+}
+
+func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
+    var pageTitles: [String: String] = [:]
+    let tabs = await window.allTabs()
+    for tab in tabs {
+        guard let activePage = await tab.activePage() else { return pageTitles }
+        guard let properties = await activePage.properties() else { return pageTitles }
+        guard let title = properties.title else { return pageTitles }
+        let key = tabs.firstIndex(of: tab) ?? -1
+        pageTitles[String(key)] = title
+    }
+    FileLogger.shared.log("pageTitles: \(pageTitles)")
+    return pageTitles
+}
+
+func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async -> Int {
+    let titleOfAllTabs = await getTitlesOfAllTabs(window: window)
+    UserDefaults.standard.set(titleOfAllTabs, forKey: "allOpenTabsUniqueWithTitles")
+    return 1
 }
 
 func getTitleOfOneTab(tab: SFSafariTab) async -> String {
@@ -88,15 +109,15 @@ func getOpenTabs() -> OrderedSet<Int> {
     return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
 }
 
-func addNewTabToHistory(window: SFSafariWindow) async {
+func addNewTabToHistory(window: SFSafariWindow) async -> Int {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
     
     let tabs = await window.allTabs()
-    guard let activeTab = await window.activeTab() else { return }
+    guard let activeTab = await window.activeTab() else { return 0 }
     let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
     if changedToTabIndex == currentTabId {
-        return
+        return 0
     }
     UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
 
@@ -104,6 +125,8 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
     
     FileLogger.shared.log("\(allOpenTabsUnique.elements)")
+    
+    return 1
 }
 
 func removeTabFromHistory() {
@@ -142,12 +165,14 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
 
-    override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-        Task {
-            await addNewTabToHistory(window: window)
-        }
-        validationHandler(true, "")
+override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
+    Task {
+        async let saveTab = addNewTabToHistory(window: window)
+        async let saveTabs = saveAllTabsTitlesToUserDefaults(window: window)
+        let _ = await (saveTab, saveTabs)
     }
+    validationHandler(true, "")
+}
 
     override func popoverViewController() -> SFSafariExtensionViewController {
         return SafariExtensionViewController.shared
