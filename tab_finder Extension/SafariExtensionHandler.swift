@@ -68,9 +68,13 @@ func switchToTab(id: Int) {
     }
 }
 
+func getOpenTabs() -> OrderedSet<Int> {
+    return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
+}
+
 @available(macOSApplicationExtension 12.0, *)
 func addNewTabToHistory(window: SFSafariWindow) {
-    var allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
+    var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
     window.getAllTabs { tabs in
         window.getActiveTab { tab in
@@ -91,22 +95,26 @@ func addNewTabToHistory(window: SFSafariWindow) {
 }
 
 @available(macOSApplicationExtension 12.0, *)
+func switchToPreviousTab() {
+    let allOpenTabsUnique = getOpenTabs()
+    
+    guard allOpenTabsUnique.count > 1 else {
+            FileLogger.shared.log("No previous tab to switch to.")
+            return
+        }
+
+    let previousTabId = allOpenTabsUnique[-2]
+    FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
+    
+    switchToTab(id: previousTabId)
+}
+
+@available(macOSApplicationExtension 12.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log("Command received: \(messageName)")
-        
-        let allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
-        
-        guard allOpenTabsUnique.count > 1 else {
-                FileLogger.shared.log("No previous tab to switch to.")
-                return
-            }
-
-        let previousTabId = allOpenTabsUnique[-2]
-        FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
-        
-        switchToTab(id: previousTabId)
+        switchToPreviousTab()
     }
 
     override func toolbarItemClicked(in window: SFSafariWindow) {}
