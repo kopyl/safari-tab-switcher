@@ -11,11 +11,12 @@ struct HelloWorldView: View {
             Text("You have \(tabCount) open tabs")
                 .font(.largeTitle)
                 .padding()
-            VStack {
+            ScrollView(.vertical) {
                 ForEach(allOpenTabsUnique, id: \.self) { tab in
                     Text(tabTitles[String(tab)] ?? "No title")
                 }
             }
+            .frame(width: 300, height: 200)
             Button("Close") {
                 SafariExtensionViewController.shared.dismissPopover()
             }
