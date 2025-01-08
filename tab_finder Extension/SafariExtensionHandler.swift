@@ -23,11 +23,9 @@ struct HelloWorldView: View {
                 SafariExtensionViewController.shared.dismissPopover()
             }
             .padding()
-            .onAppear{
-                getOpenTabsCount { count in
-                    tabCount = count
-                }
-                
+            .task{
+                tabCount = await getOpenTabsCount()
+  
                 let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
                 tabTitles = savedTabTitles ?? [:]
                 
@@ -38,23 +36,14 @@ struct HelloWorldView: View {
     }
 }
 
-func getOpenTabsCount(completion: @escaping (Int) -> Void) {
-    SFSafariApplication.getAllWindows { windows in
-        var totalTabs = 0
-        let group = DispatchGroup()
-
-        for window in windows {
-            group.enter()
-            window.getAllTabs { tabs in
-                totalTabs += tabs.count
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) {
-            completion(totalTabs)
-        }
+func getOpenTabsCount() async -> Int {
+    var totalTabs = 0
+    let allWindows = await SFSafariApplication.allWindows()
+    for window in allWindows {
+        let allTabs = await window.allTabs()
+        totalTabs += allTabs.count
     }
+    return totalTabs
 }
 
 func showPopover() {
