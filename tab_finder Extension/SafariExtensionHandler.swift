@@ -3,7 +3,6 @@ import os.log
 import SwiftUI
 import UserNotifications
 
-@available(macOS 12.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
 
@@ -52,7 +51,6 @@ func showPopover() {
     }
 }
 
-@available(macOSApplicationExtension 12.0, *)
 func switchToTab(id: Int) {
     SFSafariApplication.getActiveWindow { activeWindow in
         activeWindow?.getAllTabs { tabs in
@@ -67,7 +65,6 @@ func switchToTab(id: Int) {
     }
 }
 
-@available(macOSApplicationExtension 12.0, *)
 func getTitlesOfAllTabs(tabs: [SFSafariTab]) async -> [String] {
     var pageTitles: [String] = []
     for tab in tabs {
@@ -84,7 +81,6 @@ func getOpenTabs() -> OrderedSet<Int> {
     return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
 }
 
-@available(macOSApplicationExtension 12.0, *)
 func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
@@ -103,7 +99,6 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     FileLogger.shared.log("\(allOpenTabsUnique.elements)")
 }
 
-@available(macOSApplicationExtension 12.0, *)
 func removeTabFromHistory() {
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
     var allOpenTabsUnique = getOpenTabs()
@@ -112,7 +107,6 @@ func removeTabFromHistory() {
     FileLogger.shared.log("Tab \(currentTabId) removed from history")
 }
 
-@available(macOSApplicationExtension 12.0, *)
 func switchToPreviousTab() {
     let allOpenTabsUnique = getOpenTabs()
     
@@ -127,7 +121,6 @@ func switchToPreviousTab() {
     switchToTab(id: previousTabId)
 }
 
-@available(macOSApplicationExtension 12.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {

@@ -1,7 +1,6 @@
 import Foundation
 import os.log
 
-@available(macOSApplicationExtension 12.0, *)
 class FileLogger {
     static let shared = FileLogger()
     private let logFileURL: URL
