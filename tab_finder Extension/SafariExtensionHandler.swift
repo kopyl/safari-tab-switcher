@@ -8,9 +8,6 @@ struct HelloWorldView: View {
 
     var body: some View {
         VStack {
-            Text("You have \(tabCount) open tabs")
-                .font(.largeTitle)
-                .padding()
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
                     let tabsToDisplay = Array(allOpenTabsUnique.reversed())
@@ -32,26 +29,13 @@ struct HelloWorldView: View {
             .frame(width: 300, height: 200)
             .padding()
             .task{
-                tabCount = await getOpenTabsCount()
-  
                 let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
                 tabTitles = savedTabTitles ?? [:]
-                
                 allOpenTabsUnique = getOpenTabs().elements
 
             }
         }
     }
-}
-
-func getOpenTabsCount() async -> Int {
-    var totalTabs = 0
-    let allWindows = await SFSafariApplication.allWindows()
-    for window in allWindows {
-        let allTabs = await window.allTabs()
-        totalTabs += allTabs.count
-    }
-    return totalTabs
 }
 
 func showPopover() async {
