@@ -50,14 +50,32 @@ func switchToTab(id: Int) {
 }
 
 @available(macOSApplicationExtension 12.0, *)
+func addNewTabToHistory(window: SFSafariWindow) {
+    var allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
+    let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
+    window.getAllTabs { tabs in
+        window.getActiveTab { tab in
+            if let tab {
+                let changedToTabIndex = tabs.firstIndex(of: tab) ?? currentTabId
+                if changedToTabIndex == currentTabId {
+                    return
+                }
+                UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
+                
+                allOpenTabsUnique.append(changedToTabIndex)
+                UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
+                
+                FileLogger.shared.log("\(allOpenTabsUnique.elements)")
+            }
+        }
+    }
+}
+
+@available(macOSApplicationExtension 12.0, *)
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    
-    
-    
+
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         FileLogger.shared.log("Command received: \(messageName)")
-        
-//        showPopover()
         
         let allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
         
@@ -75,26 +93,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func toolbarItemClicked(in window: SFSafariWindow) {}
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-        let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
-
-        var allOpenTabsUnique = OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
-        
-        window.getAllTabs { tabs in
-            window.getActiveTab { tab in
-                if let tab {
-                    let changedToTabIndex = tabs.firstIndex(of: tab) ?? currentTabId
-                    if changedToTabIndex == currentTabId {
-                        return
-                    }
-                    UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
-                    
-                    allOpenTabsUnique.append(changedToTabIndex)
-                    UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
-                    
-                    FileLogger.shared.log("\(allOpenTabsUnique.elements)")
-                }
-            }
-        }
+        addNewTabToHistory(window: window)
         validationHandler(true, "")
     }
 
