@@ -67,6 +67,19 @@ func switchToTab(id: Int) {
     }
 }
 
+@available(macOSApplicationExtension 12.0, *)
+func getTitlesOfAllTabs(tabs: [SFSafariTab]) async -> [String] {
+    var pageTitles: [String] = []
+    for tab in tabs {
+        guard let activePage = await tab.activePage() else { return pageTitles }
+        guard let properties = await activePage.properties() else { return pageTitles }
+        guard let title = properties.title else { return pageTitles }
+        pageTitles.append(title)
+    }
+    FileLogger.shared.log("pageTitles: \(pageTitles)")
+    return pageTitles
+}
+
 func getOpenTabs() -> OrderedSet<Int> {
     return OrderedSet(UserDefaults.standard.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
 }
@@ -75,16 +88,6 @@ func getOpenTabs() -> OrderedSet<Int> {
 func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
-         
-//    var pageTitles: [String] = []
-//    let tabs = await window.allTabs()
-//    for tab in tabs {
-//        guard let activePage = await tab.activePage() else { return }
-//        guard let properties = await activePage.properties() else { return }
-//        guard let title = properties.title else { return }
-//        pageTitles.append(title)
-//    }
-//    FileLogger.shared.log("pageTitles: \(pageTitles)")
     
     let tabs = await window.allTabs()
     guard let activeTab = await window.activeTab() else { return }
