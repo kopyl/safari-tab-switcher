@@ -75,6 +75,48 @@ func getOpenTabs() -> OrderedSet<Int> {
 func addNewTabToHistory(window: SFSafariWindow) {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
+         
+    var pageTitles: [String] = []
+    
+    let dispatchGroup = DispatchGroup()
+    
+    window.getAllTabs { tabs in
+        for tab in tabs {
+            dispatchGroup.enter()
+
+            tab.getActivePage { page in
+                guard let page else {
+                    dispatchGroup.leave()
+                    return
+                }
+                
+                page.getPropertiesWithCompletionHandler { properties in
+                    if let properties {
+                        if let title = properties.title {
+                            FileLogger.shared.log("Active tab title: \(title)")
+                            pageTitles.append(title)
+                        }
+                        
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+        }
+        dispatchGroup.notify(queue: .main) {
+            FileLogger.shared.log("Titles: \(pageTitles)")
+        }
+    }
+    
+//    var pageTitles: [String] = []
+//    for tab in tabs {
+//        tab.getActivePage { page in
+//            page?.getPropertiesWithCompletionHandler { properties in
+//                pageTitles.append(properties?.title ?? "")
+//            }
+//        }
+//    }
+//    FileLogger.shared.log("\(pageTitles)")
+    
     window.getAllTabs { tabs in
         window.getActiveTab { tab in
             if let tab {
