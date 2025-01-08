@@ -14,6 +14,7 @@ struct HelloWorldView: View {
                     
                     ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                         Text(tabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
+                            .font(.system(size: 15))
                             .lineLimit(1)
                             .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
                             .padding(.leading, 10).padding(.trailing, 10)
