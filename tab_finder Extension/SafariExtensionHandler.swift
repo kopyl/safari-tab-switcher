@@ -76,54 +76,28 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
          
-    var pageTitles: [String] = []
+//    var pageTitles: [String] = []
+//    let tabs = await window.allTabs()
+//    for tab in tabs {
+//        guard let activePage = await tab.activePage() else { return }
+//        guard let properties = await activePage.properties() else { return }
+//        guard let title = properties.title else { return }
+//        pageTitles.append(title)
+//    }
+//    FileLogger.shared.log("pageTitles: \(pageTitles)")
+    
     let tabs = await window.allTabs()
-    for tab in tabs {
-        guard let activePage = await tab.activePage() else { return }
-        guard let properties = await activePage.properties() else { return }
-        guard let title = properties.title else { return }
-        pageTitles.append(title)
+    guard let activeTab = await window.activeTab() else { return }
+    let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
+    if changedToTabIndex == currentTabId {
+        return
     }
-    FileLogger.shared.log("pageTitles: \(pageTitles)")
-    
-    window.getAllTabs { tabs in
-        for tab in tabs {
+    UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
 
-            tab.getActivePage { page in
-                guard let page else {
-                    return
-                }
-                
-                page.getPropertiesWithCompletionHandler { properties in
-                    if let properties {
-                        if let title = properties.title {
-                            FileLogger.shared.log("Active tab title: \(title)")
-                            pageTitles.append(title)
-                        }
-                        
-                    }
-                }
-            }
-        }
-        FileLogger.shared.log("Titles: \(pageTitles)")
-    }
+    allOpenTabsUnique.append(changedToTabIndex)
+    UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
     
-    window.getAllTabs { tabs in
-        window.getActiveTab { tab in
-            if let tab {
-                let changedToTabIndex = tabs.firstIndex(of: tab) ?? currentTabId
-                if changedToTabIndex == currentTabId {
-                    return
-                }
-                UserDefaults.standard.set(changedToTabIndex, forKey: "currentTabId")
-                
-                allOpenTabsUnique.append(changedToTabIndex)
-                UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
-                
-                FileLogger.shared.log("\(allOpenTabsUnique.elements)")
-            }
-        }
-    }
+    FileLogger.shared.log("\(allOpenTabsUnique.elements)")
 }
 
 @available(macOSApplicationExtension 12.0, *)
