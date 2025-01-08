@@ -1,5 +1,4 @@
 import SafariServices
-import os.log
 import SwiftUI
 
 struct HelloWorldView: View {
