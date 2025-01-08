@@ -77,7 +77,7 @@ func getTitlesOfAllTabs(tabs: [SFSafariTab]) async -> [String] {
     return pageTitles
 }
 
-func getTitlesOfOneTab(tab: SFSafariTab) async -> String {
+func getTitleOfOneTab(tab: SFSafariTab) async -> String {
     guard let activePage = await tab.activePage() else { return "" }
     guard let properties = await activePage.properties() else { return "" }
     guard let title = properties.title else { return "" }
