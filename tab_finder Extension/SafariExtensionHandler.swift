@@ -15,7 +15,7 @@ struct HelloWorldView: View {
                     ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                         Text(tabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
                             .lineLimit(1)
-                            .padding(.top, 10).padding(.bottom, 10)
+                            .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
                             .padding(.leading, 10).padding(.trailing, 10)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(.blue.opacity(tabIdx == 0 ? 1 : 0))
@@ -27,7 +27,6 @@ struct HelloWorldView: View {
                 }
             }
             .frame(width: 300, height: 200)
-            .padding()
             .task{
                 let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
                 tabTitles = savedTabTitles ?? [:]
