@@ -13,7 +13,6 @@ struct HelloWorldView: View {
                 .padding()
             VStack {
                 ForEach(allOpenTabsUnique, id: \.self) { tab in
-                    
                     Text(tabTitles[String(tab)] ?? "No title")
                 }
             }
