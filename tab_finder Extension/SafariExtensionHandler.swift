@@ -55,11 +55,11 @@ func switchToTab(id: Int) async {
     let allTabs = await activeWindow.allTabs()
     
     guard allTabs.indices.contains(id) else {
-        FileLogger.shared.log("Previous tab ID \(id) is out of range.")
+        log("Previous tab ID \(id) is out of range.")
         return
     }
     await allTabs[id].activate()
-    FileLogger.shared.log("Switching to a tab")
+    log("Switching to a tab")
 }
 
 func getTitlesOfAllTabs(_ tabs: [SFSafariTab]) async -> [String: String] {
@@ -93,7 +93,7 @@ func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
     let titleOfAllTabs = await getTitlesOfAllTabs(window: window)
     UserDefaults.standard.set(titleOfAllTabs, forKey: "allOpenTabsUniqueWithTitles")
-    FileLogger.shared.log("allOpenTabsUniqueWithTitles saved")
+    log("allOpenTabsUniqueWithTitles saved")
 }
 
 func getTitleOfOneTab(tab: SFSafariTab) async -> String {
@@ -122,7 +122,7 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     allOpenTabsUnique.append(changedToTabIndex)
     UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
     
-    FileLogger.shared.log("addNewTabToHistory saved \(allOpenTabsUnique.elements)")
+    log("addNewTabToHistory saved \(allOpenTabsUnique.elements)")
 }
 
 func removeTabFromHistory() {
@@ -130,19 +130,19 @@ func removeTabFromHistory() {
     var allOpenTabsUnique = getOpenTabs()
     allOpenTabsUnique.remove(currentTabId)
     UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
-    FileLogger.shared.log("Tab \(currentTabId) removed from history")
+    log("Tab \(currentTabId) removed from history")
 }
 
 func switchToPreviousTab() async {
     let allOpenTabsUnique = getOpenTabs()
     
     guard allOpenTabsUnique.count > 1 else {
-            FileLogger.shared.log("No previous tab to switch to.")
+            log("No previous tab to switch to.")
             return
         }
 
     let previousTabId = allOpenTabsUnique[-2]
-    FileLogger.shared.log("Switching to previous tab ID: \(previousTabId)")
+    log("Switching to previous tab ID: \(previousTabId)")
     
     await switchToTab(id: previousTabId)
 }
@@ -150,13 +150,13 @@ func switchToPreviousTab() async {
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
-        FileLogger.shared.log("Command received: \(messageName)")
+        log("Command received: \(messageName)")
         if messageName == "opttab" {
             Task {
                 await switchToPreviousTab()
             }
         } else if messageName == "tabclose" {
-            FileLogger.shared.log("Command for closing tab is received")
+            log("Command for closing tab is received")
             removeTabFromHistory()
         }
     }

@@ -34,3 +34,5 @@ class FileLogger {
         }
     }
 }
+
+let log = FileLogger.shared.log
