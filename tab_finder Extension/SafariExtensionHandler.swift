@@ -33,8 +33,30 @@ struct TooltipView: View {
                 allOpenTabsUnique = getOpenTabs().elements
 
             }
+            .onAppear {
+                setupKeyListener()
+            }
         }
     }
+    
+    func setupKeyListener() {
+            NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+                handleKeyPress(event: event)
+                return event
+            }
+        }
+
+    func handleKeyPress(event: NSEvent) {
+        guard !allOpenTabsUnique.isEmpty else { return }
+            switch event.keyCode {
+            case 126: // Up arrow key
+                log("126")
+            case 125: // Down arrow key
+                log("125")
+            default:
+                break
+            }
+        }
 }
 
 func showPopover() async {
