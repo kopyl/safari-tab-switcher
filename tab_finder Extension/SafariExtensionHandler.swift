@@ -5,12 +5,20 @@ import UserNotifications
 
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
+    @State private var tabTitles: [String: String] = [:]
+    @State private var allOpenTabsUnique: [Int] = []
 
     var body: some View {
         VStack {
             Text("You have \(tabCount) open tabs")
                 .font(.largeTitle)
                 .padding()
+            VStack {
+                ForEach(allOpenTabsUnique, id: \.self) { tab in
+                    
+                    Text(tabTitles[String(tab)] ?? "No title")
+                }
+            }
             Button("Close") {
                 SafariExtensionViewController.shared.dismissPopover()
             }
@@ -19,6 +27,13 @@ struct HelloWorldView: View {
                 getOpenTabsCount { count in
                     tabCount = count
                 }
+                
+                let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
+                FileLogger.shared.log("savedTabTitles: \(savedTabTitles)")
+                tabTitles = savedTabTitles ?? [:]
+                
+                allOpenTabsUnique = getOpenTabs().elements
+
             }
         }
     }
@@ -82,11 +97,14 @@ func getTitlesOfAllTabs(window: SFSafariWindow) async -> [String: String] {
     var pageTitles: [String: String] = [:]
     let tabs = await window.allTabs()
     for tab in tabs {
-        guard let activePage = await tab.activePage() else { return pageTitles }
-        guard let properties = await activePage.properties() else { return pageTitles }
-        guard let title = properties.title else { return pageTitles }
-        let key = tabs.firstIndex(of: tab) ?? -1
-        pageTitles[String(key)] = title
+        if let activePage = await tab.activePage() {
+            if let properties = await activePage.properties() {
+                if let title = properties.title {
+                    let key = tabs.firstIndex(of: tab) ?? -1
+                    pageTitles[String(key)] = title
+                }
+            }
+        }
     }
     FileLogger.shared.log("pageTitles: \(pageTitles)")
     return pageTitles
