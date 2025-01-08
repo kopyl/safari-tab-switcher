@@ -6,7 +6,6 @@ import UserNotifications
 @available(macOS 12.0, *)
 struct HelloWorldView: View {
     @State private var tabCount: Int = 0
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack {
