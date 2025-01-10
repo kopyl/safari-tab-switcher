@@ -69,7 +69,7 @@ struct TooltipView: View {
     }
 
     func setupKeyListener() {
-        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { event in
             handleKeyPress(event: event)
             return event
         }
@@ -84,11 +84,31 @@ struct TooltipView: View {
 
     func handleKeyPress(event: NSEvent) {
         guard !allOpenTabsUnique.isEmpty else { return }
-        switch event.keyCode {
-        case 126:
-            indexOfTabToSwitchTo -= 1
-        case 125:
-            indexOfTabToSwitchTo += 1
+        
+        if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
+            Task {
+                log("Switching to tab \(calculateTabToSwitchIndex(indexOfTabToSwitchTo))")
+                await switchToPreviousTab(by: calculateTabToSwitchIndex(indexOfTabToSwitchTo))
+                await SafariExtensionViewController.shared.dismissPopover()
+                
+            }
+            return
+        }
+        
+        switch event.type {
+        case .keyDown:
+            switch event.keyCode {
+            case 126:
+                indexOfTabToSwitchTo -= 1
+            case 50:  // `
+                indexOfTabToSwitchTo -= 1
+            case 125:
+                indexOfTabToSwitchTo += 1
+            case 48: // tab
+                indexOfTabToSwitchTo += 1
+            default:
+                break
+            }
         default:
             break
         }
@@ -173,15 +193,16 @@ func removeTabFromHistory() {
     log("Tab \(currentTabId) removed from history")
 }
 
-func switchToPreviousTab() async {
+func switchToPreviousTab(by idx: Int) async {
     let allOpenTabsUnique = getOpenTabs()
+    log("All tab ids: \(allOpenTabsUnique)")
     
     guard allOpenTabsUnique.count > 1 else {
             log("No previous tab to switch to.")
             return
         }
 
-    let previousTabId = allOpenTabsUnique[-2]
+    let previousTabId = allOpenTabsUnique.elements.reversed()[idx]
     log("Switching to previous tab ID: \(previousTabId)")
     
     await switchToTab(id: previousTabId)
@@ -201,6 +222,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         switch command {
         case .opttab:
             Task {
+                log("Command for showing popover received")
                 await showPopover()
             }
         case .tabclose:
