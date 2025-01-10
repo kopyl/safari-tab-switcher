@@ -7,8 +7,5 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
 
     override func loadView() {
         let swiftUIView = TooltipView()
-        let hostingController = NSHostingController(rootView: swiftUIView)
-
-        self.view = hostingController.view
-        self.preferredContentSize = NSSize(width: 300, height: 800) // Adjust size as needed
+        self.view = NSHostingView(rootView: swiftUIView)
     }}
