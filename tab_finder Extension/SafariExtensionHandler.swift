@@ -80,16 +80,20 @@ struct TooltipView: View {
             eventMonitor = nil
         }
     }
+    
+    func switchToTab() {
+        SafariExtensionViewController.shared.dismissPopover()
+        Task {
+            await switchToPreviousTab(by: calculateTabToSwitchIndex(indexOfTabToSwitchTo))
+            
+        }
+    }
 
     func handleKeyPress(event: NSEvent) {
         guard !allOpenTabsUnique.isEmpty else { return }
         
         if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
-            	SafariExtensionViewController.shared.dismissPopover()
-            Task {
-                await switchToPreviousTab(by: calculateTabToSwitchIndex(indexOfTabToSwitchTo))
-                
-            }
+            switchToTab()
             return
         }
         
