@@ -33,6 +33,7 @@ struct TooltipView: View {
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     indexOfTabToSwitchTo = tabIdx
+                                    switchToTab()
                                 }
                             
                             if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
@@ -109,7 +110,7 @@ struct TooltipView: View {
             case 48: // tab
                 indexOfTabToSwitchTo += 1
             case 36: // tab
-                indexOfTabToSwitchTo += 1
+                switchToTab()
             default:
                 break
             }
