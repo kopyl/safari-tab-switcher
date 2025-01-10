@@ -87,7 +87,6 @@ struct TooltipView: View {
         
         if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
             Task {
-                log("Switching to tab \(calculateTabToSwitchIndex(indexOfTabToSwitchTo))")
                 await switchToPreviousTab(by: calculateTabToSwitchIndex(indexOfTabToSwitchTo))
                 await SafariExtensionViewController.shared.dismissPopover()
                 
@@ -160,7 +159,6 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: String
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
     let titleOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
     UserDefaults.standard.set(titleOfAllTabs, forKey: "allOpenTabsUniqueWithTitles")
-    log("allOpenTabsUniqueWithTitles saved")
 }
 
 func getOpenTabs() -> OrderedSet<Int> {
@@ -181,8 +179,6 @@ func addNewTabToHistory(window: SFSafariWindow) async {
 
     allOpenTabsUnique.append(changedToTabIndex)
     UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
-    
-    log("addNewTabToHistory saved \(allOpenTabsUnique.elements)")
 }
 
 func removeTabFromHistory() {
@@ -190,12 +186,10 @@ func removeTabFromHistory() {
     var allOpenTabsUnique = getOpenTabs()
     allOpenTabsUnique.remove(currentTabId)
     UserDefaults.standard.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
-    log("Tab \(currentTabId) removed from history")
 }
 
 func switchToPreviousTab(by idx: Int) async {
     let allOpenTabsUnique = getOpenTabs()
-    log("All tab ids: \(allOpenTabsUnique)")
     
     guard allOpenTabsUnique.count > 1 else {
             log("No previous tab to switch to.")
@@ -215,9 +209,7 @@ enum JScommands: String {
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
-    override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
-        log("Command received: \(messageName)")
-        
+    override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {       
         guard let command = JScommands(rawValue: messageName) else { return }
         switch command {
         case .opttab:
