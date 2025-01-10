@@ -106,8 +106,8 @@
 		48B48FE52D2A59630054B680 /* tab_finder Extension */ = {
 			isa = PBXGroup;
 			children = (
-				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
+				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
 				48A033D72D2DC75600BB6F8C /* DataStructures.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
