@@ -108,6 +108,8 @@ struct TooltipView: View {
                 indexOfTabToSwitchTo += 1
             case 48: // tab
                 indexOfTabToSwitchTo += 1
+            case 36: // tab
+                indexOfTabToSwitchTo += 1
             default:
                 break
             }
