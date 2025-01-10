@@ -14,7 +14,6 @@ struct TooltipView: View {
 
     var body: some View {
         VStack {
-            Text(String(indexOfTabToSwitchTo))
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
