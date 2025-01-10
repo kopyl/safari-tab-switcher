@@ -85,9 +85,9 @@ struct TooltipView: View {
         guard !allOpenTabsUnique.isEmpty else { return }
         
         if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
+            	SafariExtensionViewController.shared.dismissPopover()
             Task {
                 await switchToPreviousTab(by: calculateTabToSwitchIndex(indexOfTabToSwitchTo))
-                await SafariExtensionViewController.shared.dismissPopover()
                 
             }
             return
