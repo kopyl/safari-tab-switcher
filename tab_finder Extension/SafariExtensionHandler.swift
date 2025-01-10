@@ -31,6 +31,10 @@ struct TooltipView: View {
                                     tabIdx == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? 1 : 0))
                                 .id(tabIdx)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    indexOfTabToSwitchTo = tabIdx
+                                }
                             
                             if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
                                 Divider().background(.gray.opacity(0.01))
