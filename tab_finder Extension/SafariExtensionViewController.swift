@@ -1,6 +1,5 @@
 import SafariServices
 import SwiftUI
-import os.log
 
 class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
