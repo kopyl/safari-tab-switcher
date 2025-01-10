@@ -1,63 +1,97 @@
 import SafariServices
 import SwiftUI
 
+func pythonTrueModulo(_ a: Int, _ b: Int) -> Int {
+    let remainder = a % b
+    return remainder >= 0 ? remainder : remainder + b
+}
+
 struct TooltipView: View {
     @State private var tabTitles: [String: String] = [:]
     @State private var allOpenTabsUnique: [Int] = []
+    @State private var eventMonitor: Any?
+    @State private var indexOfTabToSwitchTo: Int = 1
 
     var body: some View {
         VStack {
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    let tabsToDisplay = Array(allOpenTabsUnique.reversed())
-                    
-                    ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
-                        Text(tabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
-                            .font(.system(size: 15))
-                            .lineLimit(1)
-                            .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
-                            .padding(.leading, 10).padding(.trailing, 10)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.blue.opacity(tabIdx == 0 ? 1 : 0))
+            Text(String(indexOfTabToSwitchTo))
+            ScrollViewReader { proxy in
+                ScrollView(.vertical) {
+                    VStack(spacing: 0) {
+                        let tabsToDisplay = Array(allOpenTabsUnique.reversed())
                         
-                        if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
-                            Divider().background(.gray.opacity(0.01))
+                        ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
+                            Text(tabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
+                                .font(.system(size: 15))
+                                .lineLimit(1)
+                                .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
+                                .padding(.leading, 10).padding(.trailing, 10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(.blue.opacity(
+                                    tabIdx == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    ? 1 : 0))
+                                .id(tabIdx)
+                            
+                            if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
+                                Divider().background(.gray.opacity(0.01))
+                            }
                         }
                     }
                 }
-            }
-            .frame(width: 300, height: 800)
-            .task{
-                let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String : String]
-                tabTitles = savedTabTitles ?? [:]
-                allOpenTabsUnique = getOpenTabs().elements
-
-            }
-            .onAppear {
-                setupKeyListener()
+                .frame(width: 300, height: 800)
+                .onChange(of: indexOfTabToSwitchTo) { newIndex in
+                    withAnimation {
+                        proxy.scrollTo(calculateTabToSwitchIndex(newIndex), anchor: .bottom)
+                    }
+                }
+                .task {
+                    let savedTabTitles = UserDefaults.standard.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: String]
+                    tabTitles = savedTabTitles ?? [:]
+                    allOpenTabsUnique = getOpenTabs().elements
+                }
+                .onAppear {
+                    setupKeyListener()
+                    indexOfTabToSwitchTo = 1
+                }
+                .onDisappear {
+                    removeKeyListener()
+                }
             }
         }
     }
-    
+
+    func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
+        return pythonTrueModulo(indexOfTabToSwitchTo, allOpenTabsUnique.count)
+    }
+
     func setupKeyListener() {
-            NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
-                handleKeyPress(event: event)
-                return event
-            }
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+            handleKeyPress(event: event)
+            return event
         }
+    }
+
+    func removeKeyListener() {
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+            eventMonitor = nil
+        }
+    }
 
     func handleKeyPress(event: NSEvent) {
         guard !allOpenTabsUnique.isEmpty else { return }
-            switch event.keyCode {
-            case 126: // Up arrow key
-                log("126")
-            case 125: // Down arrow key
-                log("125")
-            default:
-                break
-            }
+        switch event.keyCode {
+        case 126:
+            indexOfTabToSwitchTo -= 1
+        case 125:
+            indexOfTabToSwitchTo += 1
+        default:
+            break
         }
+    }
 }
+
+//switchToPreviousTab()
 
 func showPopover() async {
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
@@ -163,7 +197,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         switch command {
         case .opttab:
             Task {
-                await switchToPreviousTab()
+                await showPopover()
             }
         case .tabclose:
             log("Command for closing tab is received")
