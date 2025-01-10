@@ -120,8 +120,6 @@ struct TooltipView: View {
     }
 }
 
-//switchToPreviousTab()
-
 func showPopover() async {
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     guard let toolbarItem = await activeWindow.toolbarItem() else { return }
