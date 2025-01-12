@@ -54,7 +54,7 @@ struct HelloWorldView: View {
                             }
                         }
                     }
-                    .frame(minWidth: 1200)
+                    .frame(minWidth: 800)
                 }
                 .onChange(of: indexOfTabToSwitchTo) { newIndex in
                     withAnimation {
@@ -63,13 +63,13 @@ struct HelloWorldView: View {
                 }
             }
         }
-        .task {
+
+        .onAppear {
             savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
             allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
-        }
-        .onAppear {
             if let window = NSApp.windows.first {
-                window.setContentSize(NSSize(width: 1200, height: 1400))
+                window.styleMask = [.borderless]
+                window.setContentSize(NSSize(width: 800, height: 1400))
                 window.center()
             }
             NSApp.setActivationPolicy(.accessory)
