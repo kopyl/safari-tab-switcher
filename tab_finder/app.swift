@@ -1,6 +1,10 @@
 import SwiftUI
 import BackgroundTasks
 
+func formatHost(_ host: String) -> String {
+    return host.replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
+}
+
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 0
     @State private var allOpenTabsUnique: [Int] = []
@@ -18,8 +22,9 @@ struct HelloWorldView: View {
                             let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
                             let pageTitle = pageTitleAndHost?["title"] ?? "No title"
                             let pageHost = pageTitleAndHost?["host"] ?? ""
+                            let pageHostFormatted = formatHost(pageHost)
                             
-                            Text(pageHost)
+                            Text(pageHostFormatted)
                                 .font(.system(size: 15))
                                 .lineLimit(1)
                                 .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
