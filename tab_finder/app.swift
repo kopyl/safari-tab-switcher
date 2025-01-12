@@ -72,6 +72,7 @@ struct HelloWorldView: View {
                 window.setContentSize(NSSize(width: 800, height: 1400))
                 window.center()
             }
+            NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
             setupInAppKeyListener()
