@@ -177,6 +177,7 @@ struct HelloWorldView: View {
     }
     
     private func openSafariAndAskToSwitchTabs() {
+        NSApp.hide(nil)
         openSafari()
         let notificationName = Notification.Name("com.tabfinder-toExtension.example.notification")
         DistributedNotificationCenter.default().postNotificationName(
