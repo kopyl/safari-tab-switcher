@@ -2,7 +2,9 @@ import SwiftUI
 import BackgroundTasks
 
 func formatHost(_ host: String) -> String {
-    return host.replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
+    return host
+        .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
+        .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
 struct HelloWorldView: View {
@@ -21,11 +23,18 @@ struct HelloWorldView: View {
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                             let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
+                            let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHost = pageTitleAndHost?.host ?? ""
                             let pageHostFormatted = formatHost(pageHost)
                             
-                            Text(pageHostFormatted)
+                            VStack(alignment: .leading, spacing: 15) {
+                                Text(pageHostFormatted)
                                 .font(.system(size: 15))
+                                
+                                Text(pageTitleFormatted)
+                                .font(.system(size: 12))
+                                .opacity(0.65)
+                            }
                                 .lineLimit(1)
                                 .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
                                 .padding(.leading, 10).padding(.trailing, 10)
