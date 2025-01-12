@@ -95,7 +95,7 @@ struct HelloWorldView: View {
         
         // released option
         if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
-            openSafariAndAskToSwitcTabs()
+            openSafariAndAskToSwitchTabs()
             return
         }
         
@@ -160,7 +160,7 @@ struct HelloWorldView: View {
         bringWindowToFront()
     }
     
-    private func openSafariAndAskToSwitcTabs() {
+    private func openSafariAndAskToSwitchTabs() {
         openSafari()
         let notificationName = Notification.Name("com.tabfinder-toExtension.example.notification")
         DistributedNotificationCenter.default().postNotificationName(
