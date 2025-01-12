@@ -53,8 +53,8 @@ func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
     Store.allOpenTabsUniqueWithTitlesAndHosts = titlesAndHostsOfAllTabs
 }
 
-func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: [String: String]] {
-    var pageTitlesAndHosts: [String: [String: String]] = [:]
+func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInfo] {
+    var pageTitlesAndHosts: [String: TabInfo] = [:]
     
     let tabs = await window.allTabs()
     for tab in tabs {
@@ -62,16 +62,12 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: [Strin
             if let properties = await activePage.properties() {
                 let key = tabs.firstIndex(of: tab) ?? -1
 
-                var titleAndHost: [String: String] = [:]
+                let tabInfo = TabInfo(
+                    title: properties.title ?? "No title",
+                    host: properties.url?.host ?? ""
+                )
                 
-                if let title = properties.title {
-                    titleAndHost["title"] = title
-                }
-                if let host = properties.url?.host {
-                    titleAndHost["host"] = host
-                }
-                
-                pageTitlesAndHosts[String(key)] = titleAndHost
+                pageTitlesAndHosts[String(key)] = tabInfo
                 
             }
         }

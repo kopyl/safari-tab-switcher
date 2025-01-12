@@ -8,7 +8,7 @@ func formatHost(_ host: String) -> String {
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 0
     @State private var allOpenTabsUnique: [Int] = []
-    @State private var savedTabTitlesAndHosts: [String: [String: String]] = [:]
+    @State private var savedTabTitlesAndHosts: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var eventMonitor: Any?
     
@@ -20,8 +20,8 @@ struct HelloWorldView: View {
                         let tabsToDisplay = Array(allOpenTabsUnique.reversed())
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                             let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
-                            let pageTitle = pageTitleAndHost?["title"] ?? "No title"
-                            let pageHost = pageTitleAndHost?["host"] ?? ""
+                            let pageTitle = pageTitleAndHost?.title ?? ""
+                            let pageHost = pageTitleAndHost?.host ?? ""
                             let pageHostFormatted = formatHost(pageHost)
                             
                             Text(pageHostFormatted)

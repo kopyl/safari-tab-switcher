@@ -1,16 +1,32 @@
 import Foundation
 
+struct TabInfo: Codable {
+    var title: String = "No title"
+    var host: String = ""
+}
+
+typealias TabsStorage = [String: TabInfo]
+
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
 
-    static var allOpenTabsUniqueWithTitlesAndHosts: [String: [String: String]] {
-        get {
-            return userDefaults.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: [String: String]] ?? [:]
+    static var allOpenTabsUniqueWithTitlesAndHosts: TabsStorage {
+            get {
+                guard let data = userDefaults.data(forKey: "allOpenTabsUniqueWithTitlesAndHosts") else {
+                    return [:] // Return an empty dictionary if no data exists
+                }
+                
+                // Decode the data into `TabsStorage`
+                let decoder = JSONDecoder()
+                return (try? decoder.decode(TabsStorage.self, from: data)) ?? [:]
+            }
+            set {
+                let encoder = JSONEncoder()
+                if let data = try? encoder.encode(newValue) {
+                    userDefaults.set(data, forKey: "allOpenTabsUniqueWithTitlesAndHosts")
+                }
+            }
         }
-        set {
-            userDefaults.set(newValue, forKey: "allOpenTabsUniqueWithTitles")
-        }
-    }
     
     static var allOpenTabsUnique: [Int] {
         get {
