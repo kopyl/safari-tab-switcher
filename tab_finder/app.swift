@@ -151,7 +151,6 @@ struct HelloWorldView: View {
     private func removeDistributedNotificationListener() {
             if let observer = notificationObserver {
                 DistributedNotificationCenter.default().removeObserver(observer)
-                log("Distributed Notification Listener Removed")
             }
         }
     
@@ -165,7 +164,6 @@ struct HelloWorldView: View {
             ) { notification in
                 handleNotification(notification)
             }
-            log("Distributed Notification Listener Set Up")
         }
 
     private func handleNotification(_ notification: Notification) {
@@ -183,7 +181,6 @@ struct HelloWorldView: View {
             object: String(calculateTabToSwitchIndex(indexOfTabToSwitchTo)),
             deliverImmediately: true
         )
-        log(calculateTabToSwitchIndex(indexOfTabToSwitchTo))
     }
 }
 
