@@ -71,7 +71,7 @@ struct HelloWorldView: View {
     func setupInAppKeyListener() {
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { event in
             handleKeyPress(event: event)
-            return event
+            return nil
         }
     }
 
@@ -124,6 +124,7 @@ struct HelloWorldView: View {
         default:
             break
         }
+        
     }
     
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
