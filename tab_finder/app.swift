@@ -6,7 +6,7 @@ func formatHost(_ host: String) -> String {
 }
 
 struct HelloWorldView: View {
-    @State private var indexOfTabToSwitchTo: Int = 0
+    @State private var indexOfTabToSwitchTo: Int = 1
     @State private var allOpenTabsUnique: [Int] = []
     @State private var savedTabTitlesAndHosts: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
