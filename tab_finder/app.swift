@@ -1,10 +1,16 @@
 import SwiftUI
+import BackgroundTasks
 
 struct HelloWorldView: View {
+    @State private var notificationObserver: NSObjectProtocol?
+    
     var body: some View {
         EmptyView()
         .onAppear {
-            setupKeyListener()
+            setupDistributedNotificationListener()
+        }
+        .onDisappear {
+            removeDistributedNotificationListener()
         }
     }
     
@@ -14,13 +20,30 @@ struct HelloWorldView: View {
         }
     }
     
-    func setupKeyListener() {
-            NSEvent.addGlobalMonitorForEvents(matching: [.keyDown]) { event in
-                if event.keyCode == 48 && event.modifierFlags.rawValue == 1573160 {
-                    bringWindowToFront()
-                }
+    private func removeDistributedNotificationListener() {
+            if let observer = notificationObserver {
+                DistributedNotificationCenter.default().removeObserver(observer)
+                log("Distributed Notification Listener Removed")
             }
         }
+    
+    private func setupDistributedNotificationListener() {
+            let notificationName = Notification.Name("com.tabfinder.example.notification")
+            
+            notificationObserver = DistributedNotificationCenter.default().addObserver(
+                forName: notificationName,
+                object: nil,
+                queue: .main
+            ) { notification in
+                handleNotification(notification)
+            }
+            log("Distributed Notification Listener Set Up")
+        }
+
+    private func handleNotification(_ notification: Notification) {
+        log("Distributed Notification Received in App")
+        bringWindowToFront()
+    }
 }
 
 @main

@@ -221,14 +221,19 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
-    override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {       
+    private func postDistributedNotification() {
+            let notificationName = Notification.Name("com.tabfinder.example.notification")
+            DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
+            log("Distributed Notification Posted from Safari Extension")
+        }
+    
+    override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         guard let command = JScommands(rawValue: messageName) else { return }
         switch command {
-        case .opttab:
-            Task {
-                log("Command for showing popover received")
-                await showPopover()
-            }
+        case .opttab:	
+            log("Command for showing popover received")
+            print("Distributed Notification Listener Set Up")
+            postDistributedNotification()
         case .tabclose:
             log("Command for closing tab is received")
             removeTabFromHistory()
