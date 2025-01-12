@@ -233,8 +233,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             removeTabFromHistory()
         }
     }
-	
-    override func toolbarItemClicked(in window: SFSafariWindow) {}
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task {
