@@ -171,6 +171,7 @@ struct HelloWorldView: View {
     private func handleNotification(_ notification: Notification) {
         savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
         allOpenTabsUnique = Store.allOpenTabsUnique
+        indexOfTabToSwitchTo = 1
         bringWindowToFront()
     }
     
@@ -183,7 +184,6 @@ struct HelloWorldView: View {
             deliverImmediately: true
         )
         log(calculateTabToSwitchIndex(indexOfTabToSwitchTo))
-        indexOfTabToSwitchTo = 1
     }
 }
 
