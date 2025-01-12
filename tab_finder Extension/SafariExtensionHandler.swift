@@ -100,8 +100,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
 
     private func postDistributedNotification() {
-        let allOpenTabsUnique = getOpenTabs()
-	
         let notificationName = Notification.Name("com.tabfinder.example.notification")
         DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
     }
