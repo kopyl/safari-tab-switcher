@@ -148,8 +148,6 @@ struct HelloWorldView: View {
     private func handleNotification(_ notification: Notification) {
         savedTabTitles = Store.allOpenTabsUniqueWithTitles
         allOpenTabsUnique = Store.allOpenTabsUnique
-        log(savedTabTitles)
-        log(allOpenTabsUnique)
         bringWindowToFront()
     }
     
