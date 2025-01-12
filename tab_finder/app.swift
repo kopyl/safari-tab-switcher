@@ -1,5 +1,6 @@
 import SwiftUI
 import BackgroundTasks
+import AppKit
 
 func formatHost(_ host: String) -> String {
     return host
@@ -63,15 +64,12 @@ struct HelloWorldView: View {
                 }
             }
         }
+        .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
+
 
         .onAppear {
             savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
             allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
-            if let window = NSApp.windows.first {
-                window.styleMask = [.borderless]
-                window.setContentSize(NSSize(width: 800, height: 1400))
-                window.center()
-            }
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
@@ -80,6 +78,20 @@ struct HelloWorldView: View {
         .onDisappear {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
+        }
+    }
+    
+    func hideAppControls() {
+        if let window = NSApp.windows.first {
+            window.standardWindowButton(.closeButton)?.isHidden = true
+            window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+            window.standardWindowButton(.zoomButton)?.isHidden = true
+
+            window.titleVisibility = .hidden
+            window.titlebarAppearsTransparent = true
+            
+            window.setContentSize(NSSize(width: 800, height: 1400))
+            window.center()
         }
     }
     
@@ -150,6 +162,7 @@ struct HelloWorldView: View {
     
     private func bringWindowToFront() {
         NSApp.activate(ignoringOtherApps: true)
+        hideAppControls()
     }
     
     private func removeDistributedNotificationListener() {
@@ -186,6 +199,24 @@ struct HelloWorldView: View {
             object: String(calculateTabToSwitchIndex(indexOfTabToSwitchTo)),
             deliverImmediately: true
         )
+    }
+}
+
+struct VisualEffectBlur: NSViewRepresentable {
+    var material: NSVisualEffectView.Material
+    var blendingMode: NSVisualEffectView.BlendingMode
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let visualEffectView = NSVisualEffectView()
+        visualEffectView.material = material
+        visualEffectView.blendingMode = blendingMode
+        visualEffectView.state = .active
+        return visualEffectView
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = material
+        nsView.blendingMode = blendingMode
     }
 }
 
