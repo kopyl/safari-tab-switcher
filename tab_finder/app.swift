@@ -46,7 +46,7 @@ struct HelloWorldView: View {
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     indexOfTabToSwitchTo = tabIdx
-//                                    switchToTab()
+                                    openSafariAndAskToSwitchTabs()
                                 }
                             
                             if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
