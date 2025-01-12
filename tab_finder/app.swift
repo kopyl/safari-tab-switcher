@@ -4,7 +4,7 @@ import BackgroundTasks
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 0
     @State private var allOpenTabsUnique: [Int] = []
-    @State private var savedTabTitles: [String: String] = [:]
+    @State private var savedTabTitlesAndHosts: [String: [String: String]] = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var eventMonitor: Any?
     
@@ -15,7 +15,11 @@ struct HelloWorldView: View {
                     VStack(spacing: 0) {
                         let tabsToDisplay = Array(allOpenTabsUnique.reversed())
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
-                            Text(savedTabTitles[String(tabsToDisplay[tabIdx])] ?? "No title")
+                            let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
+                            let pageTitle = pageTitleAndHost?["title"] ?? "No title"
+                            let pageHost = pageTitleAndHost?["host"] ?? ""
+                            
+                            Text(pageHost)
                                 .font(.system(size: 15))
                                 .lineLimit(1)
                                 .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
@@ -45,7 +49,7 @@ struct HelloWorldView: View {
             }
         }
         .task {
-            savedTabTitles = Store.allOpenTabsUniqueWithTitles
+            savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
             allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
         }
         .onAppear {
@@ -146,7 +150,7 @@ struct HelloWorldView: View {
         }
 
     private func handleNotification(_ notification: Notification) {
-        savedTabTitles = Store.allOpenTabsUniqueWithTitles
+        savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
         allOpenTabsUnique = Store.allOpenTabsUnique
         bringWindowToFront()
     }

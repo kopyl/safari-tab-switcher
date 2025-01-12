@@ -49,31 +49,35 @@ func addNewTabToHistory(window: SFSafariWindow) async {
 }
 
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
-    let titleOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
-    Store.allOpenTabsUniqueWithTitles = titleOfAllTabs
+    let titlesAndHostsOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
+    Store.allOpenTabsUniqueWithTitlesAndHosts = titlesAndHostsOfAllTabs
 }
 
-func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: String] {
-    var pageTitles: [String: String] = [:]
-    var pageHosts: [String: String] = [:]
+func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: [String: String]] {
+    var pageTitlesAndHosts: [String: [String: String]] = [:]
     
     let tabs = await window.allTabs()
     for tab in tabs {
         if let activePage = await tab.activePage() {
             if let properties = await activePage.properties() {
                 let key = tabs.firstIndex(of: tab) ?? -1
+
+                var titleAndHost: [String: String] = [:]
                 
                 if let title = properties.title {
-                    pageTitles[String(key)] = title
+                    titleAndHost["title"] = title
                 }
                 if let host = properties.url?.host {
-                    pageHosts[String(key)] = host
+                    titleAndHost["host"] = host
                 }
+                
+                pageTitlesAndHosts[String(key)] = titleAndHost
+                
             }
         }
     }
     
-    return pageTitles
+    return pageTitlesAndHosts
 }
 
 enum JScommands: String {

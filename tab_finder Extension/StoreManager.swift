@@ -3,9 +3,9 @@ import Foundation
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
 
-    static var allOpenTabsUniqueWithTitles: [String: String] {
+    static var allOpenTabsUniqueWithTitlesAndHosts: [String: [String: String]] {
         get {
-            return userDefaults.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: String] ?? [:]
+            return userDefaults.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: [String: String]] ?? [:]
         }
         set {
             userDefaults.set(newValue, forKey: "allOpenTabsUniqueWithTitles")
