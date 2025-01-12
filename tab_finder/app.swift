@@ -49,6 +49,7 @@ struct HelloWorldView: View {
             allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
         }
         .onAppear {
+            NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
             setupInAppKeyListener()
         }
@@ -59,8 +60,9 @@ struct HelloWorldView: View {
     }
     
     func setupInAppKeyListener() {
-        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { event in
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { event in
             handleKeyPress(event: event)
+            return event
         }
     }
 
@@ -71,12 +73,20 @@ struct HelloWorldView: View {
         }
     }
     
+    func openSafari() {
+        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
+            NSWorkspace.shared.open(safariURL)
+        } else {
+            print("Safari is not installed or not found.")
+        }
+    }
+    
     func handleKeyPress(event: NSEvent) {
         guard !allOpenTabsUnique.isEmpty else { return }
         
         // released option
         if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
-            bringWindowToBack()
+            openSafari()
             postDistributedNotification()
             return
         }
@@ -112,15 +122,7 @@ struct HelloWorldView: View {
     }
     
     private func bringWindowToFront() {
-        if let window = NSApplication.shared.windows.first {
-            window.orderFrontRegardless()
-        }
-    }
-    
-    private func bringWindowToBack() {
-        if let window = NSApplication.shared.windows.first {
-            window.orderBack(nil)
-        }
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     private func removeDistributedNotificationListener() {
@@ -159,7 +161,7 @@ struct HelloWorldView: View {
             deliverImmediately: true
         )
         log(calculateTabToSwitchIndex(indexOfTabToSwitchTo))
-        indexOfTabToSwitchTo = 0
+        indexOfTabToSwitchTo = 1
     }
 }
 
