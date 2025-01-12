@@ -43,9 +43,9 @@ struct MySafariApp: App {
     var body: some Scene {
         WindowGroup {
             HelloWorldView()
-                .onAppear {
-                    NSApplication.shared.terminate(nil)
-                }
+            .onAppear {
+                NSApplication.shared.terminate(nil)
+            }
         }
     }
 }
