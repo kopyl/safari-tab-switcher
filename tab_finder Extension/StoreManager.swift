@@ -14,7 +14,7 @@ struct Store {
     
     static var allOpenTabsUnique: [Int] {
         get {
-            return userDefaults.array(forKey: "allOpenTabsUnique") as? [Int] ?? []
+            return OrderedSet(userDefaults.array(forKey: "allOpenTabsUnique") as? [Int] ?? []).elements
         }
         set {
             userDefaults.set(newValue, forKey: "allOpenTabsUnique")

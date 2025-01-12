@@ -18,6 +18,7 @@
 		48B48FEE2D2A59630054B680 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */; };
 		48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
 		48E9EE3F2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
+		48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -234,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */,
+				48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */,
 				4813F8332D2A8D5C0085D120 /* app.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 			);

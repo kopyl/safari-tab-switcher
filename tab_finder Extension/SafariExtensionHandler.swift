@@ -50,7 +50,7 @@ struct TooltipView: View {
                 }
                 .task {
                     tabTitles = Store.allOpenTabsUniqueWithTitles
-                    allOpenTabsUnique = getOpenTabs().elements
+                    allOpenTabsUnique = Store.allOpenTabsUnique
                 }
                 .onAppear {
                     setupKeyListener()
@@ -159,12 +159,8 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: String
     return pageTitles
 }
 
-func getOpenTabs() -> OrderedSet<Int> {
-    return OrderedSet(Store.allOpenTabsUnique)
-}
-
 func addNewTabToHistory(window: SFSafariWindow) async {
-    var allOpenTabsUnique = getOpenTabs()
+    var allOpenTabsUnique = Store.allOpenTabsUnique
     let currentTabId = Store.currentTabId
     
     let tabs = await window.allTabs()
@@ -176,25 +172,25 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     Store.currentTabId = changedToTabIndex
 
     allOpenTabsUnique.append(changedToTabIndex)
-    Store.allOpenTabsUnique = allOpenTabsUnique.elements
+    Store.allOpenTabsUnique = allOpenTabsUnique
 }
 
 func removeTabFromHistory() {
     let currentTabId = Store.currentTabId
-    var allOpenTabsUnique = getOpenTabs()
-    allOpenTabsUnique.remove(currentTabId)
-    Store.allOpenTabsUnique = allOpenTabsUnique.elements
+    var allOpenTabsUnique = Store.allOpenTabsUnique
+    allOpenTabsUnique.removeFirst(currentTabId)
+    Store.allOpenTabsUnique = allOpenTabsUnique
 }
 
 func switchToPreviousTab(by idx: Int) async {
-    let allOpenTabsUnique = getOpenTabs()
+    let allOpenTabsUnique = Store.allOpenTabsUnique
     
     guard allOpenTabsUnique.count > 1 else {
             log("No previous tab to switch to.")
             return
         }
 
-    let previousTabId = allOpenTabsUnique.elements.reversed()[idx]
+    let previousTabId = allOpenTabsUnique.reversed()[idx]
     log("Switching to previous tab ID: \(previousTabId)")
     
     await switchToTab(id: previousTabId)

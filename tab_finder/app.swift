@@ -2,10 +2,17 @@ import SwiftUI
 import BackgroundTasks
 
 struct HelloWorldView: View {
+    @State private var indexOfTabToSwitchTo: Int = 1
+    @State private var allOpenTabsUnique: [Int] = []
+    @State private var savedTabTitles: [String: String] = [:]
     @State private var notificationObserver: NSObjectProtocol?
     
     var body: some View {
         EmptyView()
+        .task {
+            savedTabTitles = Store.allOpenTabsUniqueWithTitles
+            allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
+        }
         .onAppear {
             setupDistributedNotificationListener()
         }
