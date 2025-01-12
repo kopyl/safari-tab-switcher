@@ -1,15 +1,11 @@
 import SwiftUI
 
 struct HelloWorldView: View {
-    @State private var eventMonitor: Any?
     
     var body: some View {
         EmptyView()
         .onAppear {
             setupKeyListener()
-        }
-        .onDisappear {
-            removeKeyListener()
         }
     }
     
@@ -20,17 +16,10 @@ struct HelloWorldView: View {
     }
     
     func setupKeyListener() {
-        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.keyDown]) { event in
+        NSEvent.addGlobalMonitorForEvents(matching: [.keyDown]) { event in
             if event.keyCode == 0x00 {
                 bringWindowToFront()
             }
-        }
-    }
-    
-    func removeKeyListener() {
-        if let monitor = eventMonitor {
-            NSEvent.removeMonitor(monitor)
-            eventMonitor = nil
         }
     }
 }
