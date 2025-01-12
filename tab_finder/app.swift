@@ -29,7 +29,7 @@ struct HelloWorldView: View {
                             
                             VStack(alignment: .leading, spacing: 15) {
                                 Text(pageHostFormatted)
-                                .font(.system(size: 15))
+                                .font(.system(size: 18))
                                 
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 12))
