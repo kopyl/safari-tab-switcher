@@ -116,7 +116,7 @@ struct HelloWorldView: View {
             case 48: // tab
                 indexOfTabToSwitchTo += 1
             case 36: // tab
-                "Return"
+                openSafariAndAskToSwitchTabs()
             default:
                 break
             }
