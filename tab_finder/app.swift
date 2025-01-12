@@ -4,10 +4,7 @@ struct HelloWorldView: View {
     @State private var eventMonitor: Any?
     
     var body: some View {
-        VStack {
-            Text("Hello, World!")
-            .padding()
-        }
+        EmptyView()
         .onAppear {
             setupKeyListener()
         }
