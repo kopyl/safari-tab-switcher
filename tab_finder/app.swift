@@ -54,6 +54,7 @@ struct HelloWorldView: View {
                             }
                         }
                     }
+                    .frame(minWidth: 1200)
                 }
                 .onChange(of: indexOfTabToSwitchTo) { newIndex in
                     withAnimation {
@@ -67,6 +68,10 @@ struct HelloWorldView: View {
             allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
         }
         .onAppear {
+            if let window = NSApp.windows.first {
+                window.setContentSize(NSSize(width: 1200, height: 1400))
+                window.center()
+            }
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
             setupInAppKeyListener()
