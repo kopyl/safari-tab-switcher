@@ -16,7 +16,6 @@ struct HelloWorldView: View {
     
     func setupKeyListener() {
             NSEvent.addGlobalMonitorForEvents(matching: [.keyDown]) { event in
-                log("\(event.modifierFlags.rawValue)")
                 if event.keyCode == 48 && event.modifierFlags.rawValue == 1573160 {
                     bringWindowToFront()
                 }
