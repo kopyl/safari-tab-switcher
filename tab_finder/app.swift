@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct HelloWorldView: View {
-    
     var body: some View {
         EmptyView()
         .onAppear {
