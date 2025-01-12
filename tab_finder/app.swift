@@ -42,7 +42,7 @@ struct HelloWorldView: View {
 
     private func handleNotification(_ notification: Notification) {
         log("Distributed Notification Received in App")
-        let savedTabTitles = UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: String]
+        let savedTabTitles = Store.allOpenTabsUniqueWithTitles
         log(savedTabTitles)
         bringWindowToFront()
     }

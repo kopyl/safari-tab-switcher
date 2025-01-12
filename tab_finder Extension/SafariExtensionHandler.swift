@@ -49,8 +49,7 @@ struct TooltipView: View {
                     }
                 }
                 .task {
-                    let savedTabTitles = UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.dictionary(forKey: "allOpenTabsUniqueWithTitles") as? [String: String]
-                    tabTitles = savedTabTitles ?? [:]
+                    tabTitles = Store.allOpenTabsUniqueWithTitles
                     allOpenTabsUnique = getOpenTabs().elements
                 }
                 .onAppear {
@@ -160,18 +159,13 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: String
     return pageTitles
 }
 
-func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
-    let titleOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
-    UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.set(titleOfAllTabs, forKey: "allOpenTabsUniqueWithTitles")
-}
-
 func getOpenTabs() -> OrderedSet<Int> {
-    return OrderedSet(UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.array(forKey: "allOpenTabsUnique") as? [Int] ?? [])
+    return OrderedSet(Store.allOpenTabsUnique)
 }
 
 func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
-    let currentTabId = UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.integer(forKey: "currentTabId") ?? -1
+    let currentTabId = Store.currentTabId
     
     let tabs = await window.allTabs()
     guard let activeTab = await window.activeTab() else { return }
@@ -179,17 +173,17 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     if changedToTabIndex == currentTabId {
         return
     }
-    UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.set(changedToTabIndex, forKey: "currentTabId")
+    Store.currentTabId = changedToTabIndex
 
     allOpenTabsUnique.append(changedToTabIndex)
-    UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
+    Store.allOpenTabsUnique = allOpenTabsUnique.elements
 }
 
 func removeTabFromHistory() {
-    let currentTabId = UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.integer(forKey: "currentTabId") ?? -1
+    let currentTabId = Store.currentTabId
     var allOpenTabsUnique = getOpenTabs()
     allOpenTabsUnique.remove(currentTabId)
-    UserDefaults(suiteName: "com.tabfinder.sharedgroup")?.set(allOpenTabsUnique.elements, forKey: "allOpenTabsUnique")
+    Store.allOpenTabsUnique = allOpenTabsUnique.elements
 }
 
 func switchToPreviousTab(by idx: Int) async {
@@ -245,7 +239,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task {
             async let _ = addNewTabToHistory(window: window)
-            async let _ = saveAllTabsTitlesToUserDefaults(window: window)
+            async let _ = getTitlesAndHostsOfAllTabs(window: window)
         }
         validationHandler(true, "")
     }

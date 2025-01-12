@@ -16,6 +16,8 @@
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
 		48B48FEC2D2A59630054B680 /* script.js in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FEB2D2A59630054B680 /* script.js */; };
 		48B48FEE2D2A59630054B680 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */; };
+		48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
+		48E9EE3F2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,7 @@
 		48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarItemIcon.pdf; sourceTree = "<group>"; };
 		48B48FF22D2A59630054B680 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder_Extension.entitlements; sourceTree = "<group>"; };
+		48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
+				48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */,
 				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
 				48A033D72D2DC75600BB6F8C /* DataStructures.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
@@ -229,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */,
 				4813F8332D2A8D5C0085D120 /* app.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 			);
@@ -239,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
+				48E9EE3F2D33C3B8007BC086 /* StoreManager.swift in Sources */,
 				48A033D82D2DC75600BB6F8C /* DataStructures.swift in Sources */,
 				48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */,
 			);
