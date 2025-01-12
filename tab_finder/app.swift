@@ -114,10 +114,13 @@ struct HelloWorldView: View {
         }
         
         // pressed option
-        if event.modifierFlags.rawValue != 524576 {
+        if event.modifierFlags.rawValue != 524576 &&
+
+        // pressed option with arrow up
+        event.modifierFlags.rawValue != 11010336{
             return
         }
-        
+
         switch event.type {
         case .keyDown:
             switch event.keyCode {
