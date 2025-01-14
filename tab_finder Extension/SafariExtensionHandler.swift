@@ -2,7 +2,6 @@ import SafariServices
 import SwiftUI
 
 func switchToTab(id: Int) async {
-//    log("Switching to \(id)")
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     let allTabs = await activeWindow.allTabs()
     
