@@ -53,8 +53,8 @@ func addNewTabToHistory(window: SFSafariWindow) async {
 }
 
 func addSpecificTabToHistory(tabNotTrueId: Int, allOpenTabsUnique: [Int]) {
-    var tabsMutable = allOpenTabsUnique
-    tabsMutable.append(tabsMutable.reversed()[tabNotTrueId])
+    var tabsMutated = allOpenTabsUnique
+    tabsMutated.append(tabsMutated.reversed()[tabNotTrueId])
     
     Store.currentTabId = tabNotTrueId
     Store.allOpenTabsUnique = allOpenTabsUnique
