@@ -67,7 +67,7 @@ func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
 func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInfo] {
     var pageTitlesAndHosts: [String: TabInfo] = [:]
     
-    let tabs = await window.allTabs()	
+    let tabs = await window.allTabs()
     for tab in tabs {
         if let activePage = await tab.activePage() {
             if let properties = await activePage.properties() {
