@@ -10,7 +10,6 @@ func switchToTab(id: Int) async {
         return
     }
     await allTabs[id].activate()
-    log("Switching to a tab")
 }
 
 func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
