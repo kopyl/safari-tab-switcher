@@ -1,14 +1,9 @@
 import SafariServices
 import SwiftUI
 
-
-//let allWindows = await SFSafariApplication.allWindows()
-
 func switchToTab(id: Int) async {
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     let allTabs = await activeWindow.allTabs()
-    
-    let allWindows = await SFSafariApplication.allWindows()
     
     guard allTabs.indices.contains(id) else {
         log("Previous tab ID \(id) is out of range.")
