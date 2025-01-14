@@ -154,8 +154,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
 
     private func handleNotification(_ notification: Notification) {
+        let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
         Task{
-            let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
             await switchToPreviousTab(by: Int(indexOfTabToSwitchTo) ?? -1)
             
             addSpecificTabToHistory(tabNotTrueId: Int(indexOfTabToSwitchTo) ?? -1)
