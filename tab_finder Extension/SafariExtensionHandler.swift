@@ -12,6 +12,14 @@ func switchToTab(id: Int) async {
     await allTabs[id].activate()
 }
 
+func addSpecificTabToHistory(tabId: Int, allOpenTabsUnique: [Int]) {
+    var tabsMutated = OrderedSet(allOpenTabsUnique)
+    tabsMutated.append(tabId)
+    
+    Store.currentTabId = tabId
+    Store.allOpenTabsUnique = tabsMutated.elements
+}
+
 func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let tabsFromNavigationHistory = Store.allOpenTabsUnique
     
@@ -23,6 +31,7 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     
     await switchToTab(id: previousTabId)
+    addSpecificTabToHistory(tabId: previousTabId, allOpenTabsUnique: tabsFromNavigationHistory)
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
