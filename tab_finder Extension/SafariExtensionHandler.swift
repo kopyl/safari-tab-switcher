@@ -14,7 +14,6 @@ func switchToTab(id: Int) async {
 
 func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let tabsFromNavigationHistory = Store.allOpenTabsUnique
-    log("tabsFromNavigationHistory: \(tabsFromNavigationHistory)")
     
     guard tabsFromNavigationHistory.count > 1 else {
         log("No previous tab to switch to.")
@@ -41,7 +40,6 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]
     let tabs = await window.allTabs()
     
     guard let activeTab = await window.activeTab() else { return }
-    log(tabs.firstIndex(of: activeTab))
     let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
     if changedToTabIndex == currentTabId {
         return
@@ -49,7 +47,6 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]
     Store.currentTabId = changedToTabIndex
 
     tabsMutated.append(changedToTabIndex)
-//    log(OrderedSet(tabsMutated).elements)
     Store.allOpenTabsUnique = tabsMutated
 }
 
