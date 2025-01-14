@@ -33,7 +33,7 @@ struct Store {
             return OrderedSet(userDefaults.array(forKey: "allOpenTabsUnique") as? [Int] ?? []).elements
         }
         set {
-            userDefaults.set(newValue, forKey: "allOpenTabsUnique")
+            userDefaults.set(OrderedSet(newValue).elements, forKey: "allOpenTabsUnique")
         }
     }
     

@@ -32,11 +32,21 @@ func getOpenTabs() -> [Int] {
     return openTabs
 }
 
+func addAllExistingTabsToHistory(window: SFSafariWindow) async {
+    let allOpenTabsUnique = getOpenTabs()
+    let tabs = await window.allTabs()
+    
+    var allOpenTabsUniqueOrderedSet = OrderedSet(allOpenTabsUnique)
+    allOpenTabsUniqueOrderedSet.append(contentsOf: Array(tabs.indices))
+    Store.allOpenTabsUnique = allOpenTabsUniqueOrderedSet.elements
+}
+
 func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
     let currentTabId = Store.currentTabId
     
     let tabs = await window.allTabs()
+    
     guard let activeTab = await window.activeTab() else { return }
     let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
     if changedToTabIndex == currentTabId {
@@ -153,6 +163,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 if let window = await tab.containingWindow() {
                     await removeNonExistentTabsFromHistory(window: window)
                     await saveAllTabsTitlesToUserDefaults(window: window)
+                    await addAllExistingTabsToHistory(window: window)
                 }
             }
             postDistributedNotification()
@@ -161,6 +172,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
+            await addAllExistingTabsToHistory(window: window)
             await addNewTabToHistory(window: window)
             await removeNonExistentTabsFromHistory(window: window)
             await saveAllTabsTitlesToUserDefaults(window: window)

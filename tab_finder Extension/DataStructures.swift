@@ -31,6 +31,17 @@ struct OrderedSet<Element: Hashable> {
         elements.append(element)
         seenElements.insert(element)
     }
+    
+    mutating func append(contentsOf: [Element]) {
+        var elementsToPrepend: [Element] = []
+        for element in contentsOf {
+            if seenElements.contains(element) {
+                continue
+            }
+            elementsToPrepend.append(element)
+        }
+        elements.insert(contentsOf: elementsToPrepend, at: 0)
+    }
 
     mutating func remove(at index: Int) {
         let removedElement = elements.remove(at: index)
