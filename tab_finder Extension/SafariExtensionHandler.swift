@@ -76,6 +76,25 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInf
     return pageTitlesAndHosts
 }
 
+func removeNonExistentTabsFromHistory(window: SFSafariWindow) async {
+    let allTabs = await window.allTabs()
+    let currentTabIndices = allTabs.indices
+
+    var allOpenTabsUnique = Store.allOpenTabsUnique
+    var allOpenTabsUniqueWithTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
+
+    allOpenTabsUnique.removeAll { tabId in
+        guard currentTabIndices.contains(tabId) else {
+            allOpenTabsUniqueWithTitlesAndHosts.removeValue(forKey: String(tabId))
+            return true
+        }
+        return false
+    }
+
+    Store.allOpenTabsUnique = allOpenTabsUnique
+    Store.allOpenTabsUniqueWithTitlesAndHosts = allOpenTabsUniqueWithTitlesAndHosts
+}
+
 enum JScommands: String {
     case opttab
 }
@@ -137,6 +156,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         Task{
             await saveAllTabsTitlesToUserDefaults(window: window)
             await addNewTabToHistory(window: window)
+            await removeNonExistentTabsFromHistory(window: window)
         }
         validationHandler(true, "")
     }

@@ -21,12 +21,14 @@ struct HelloWorldView: View {
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
                         let tabsToDisplay = Array(allOpenTabsUnique.reversed())
+
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                             let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
+                            let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "Start page" : pageTitleAndHost?.host ?? ""
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let pageHost = pageTitleAndHost?.host ?? ""
                             let pageHostFormatted = formatHost(pageHost)
+
                             
                             VStack(alignment: .leading, spacing: 15) {
                                 Text(pageHostFormatted)
