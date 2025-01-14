@@ -162,6 +162,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
             await addNewTabToHistory(window: window)
+            await removeNonExistentTabsFromHistory(window: window)
+            await saveAllTabsTitlesToUserDefaults(window: window)
         }
         validationHandler(true, "")
     }
