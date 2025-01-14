@@ -22,7 +22,6 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
         }
 
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
-    log("Switching to previous tab ID: \(previousTabId)")
     
     await switchToTab(id: previousTabId)
 }
