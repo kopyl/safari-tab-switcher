@@ -2,6 +2,7 @@ import SafariServices
 import SwiftUI
 
 func switchToTab(id: Int) async {
+//    log("Switching to \(id)")
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     let allTabs = await activeWindow.allTabs()
     
@@ -14,6 +15,7 @@ func switchToTab(id: Int) async {
 
 func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let tabsFromNavigationHistory = Store.allOpenTabsUnique
+    log("tabsFromNavigationHistory: \(tabsFromNavigationHistory)")
     
     guard tabsFromNavigationHistory.count > 1 else {
         log("No previous tab to switch to.")
@@ -23,7 +25,6 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     
     await switchToTab(id: previousTabId)
-    addSpecificTabToHistory(tabNotTrueId: tabIdInNavigaionHistory, allOpenTabsUnique: tabsFromNavigationHistory)
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
@@ -41,6 +42,7 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]
     let tabs = await window.allTabs()
     
     guard let activeTab = await window.activeTab() else { return }
+    log(tabs.firstIndex(of: activeTab))
     let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
     if changedToTabIndex == currentTabId {
         return
@@ -48,15 +50,8 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]
     Store.currentTabId = changedToTabIndex
 
     tabsMutated.append(changedToTabIndex)
+//    log(OrderedSet(tabsMutated).elements)
     Store.allOpenTabsUnique = tabsMutated
-}
-
-func addSpecificTabToHistory(tabNotTrueId: Int, allOpenTabsUnique: [Int]) {
-    var tabsMutated = allOpenTabsUnique
-    tabsMutated.append(tabsMutated.reversed()[tabNotTrueId])
-    
-    Store.currentTabId = tabNotTrueId
-    Store.allOpenTabsUnique = allOpenTabsUnique
 }
 
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
