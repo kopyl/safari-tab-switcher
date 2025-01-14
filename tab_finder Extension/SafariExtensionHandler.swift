@@ -16,9 +16,9 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let tabsFromNavigationHistory = getOpenTabs()
     
     guard tabsFromNavigationHistory.count > 1 else {
-            log("No previous tab to switch to.")
-            return
-        }
+        log("No previous tab to switch to.")
+        return
+    }
 
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     
