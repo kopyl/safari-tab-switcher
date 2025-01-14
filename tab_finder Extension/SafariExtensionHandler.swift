@@ -34,7 +34,7 @@ func getOpenTabs() -> [Int] {
 
 func addNewTabToHistory(window: SFSafariWindow) async {
     var allOpenTabsUnique = getOpenTabs()
-    let currentTabId = UserDefaults.standard.integer(forKey: "currentTabId")
+    let currentTabId = Store.currentTabId
     
     let tabs = await window.allTabs()
     guard let activeTab = await window.activeTab() else { return }
