@@ -58,6 +58,14 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     Store.allOpenTabsUnique = allOpenTabsUnique
 }
 
+func addSpecificTabToHistory(tabNotTrueId: Int) {
+    var allOpenTabsUnique = getOpenTabs()
+    allOpenTabsUnique.append(allOpenTabsUnique.reversed()[tabNotTrueId])
+    
+    Store.currentTabId = tabNotTrueId
+    Store.allOpenTabsUnique = allOpenTabsUnique
+}
+
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
     let titlesAndHostsOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
     Store.allOpenTabsUniqueWithTitlesAndHosts = titlesAndHostsOfAllTabs
@@ -149,6 +157,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         Task{
             let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
             await switchToPreviousTab(by: Int(indexOfTabToSwitchTo) ?? -1)
+            
+            addSpecificTabToHistory(tabNotTrueId: Int(indexOfTabToSwitchTo) ?? -1)
         }
         
     }
