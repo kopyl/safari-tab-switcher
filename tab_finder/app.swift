@@ -1,6 +1,7 @@
 import SwiftUI
 import BackgroundTasks
 import AppKit
+import Combine
 
 func formatHost(_ host: String) -> String {
     return host
@@ -14,6 +15,9 @@ struct HelloWorldView: View {
     @State private var savedTabTitlesAndHosts: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var eventMonitor: Any?
+    
+    @State private var isAppInFocus = false
+    @State private var cancellables = Set<AnyCancellable>()
     
     var body: some View {
         VStack {
@@ -76,12 +80,31 @@ struct HelloWorldView: View {
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
             setupInAppKeyListener()
+            setupAppFocusObserver()
         }
         .onDisappear {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
+            cancellables.removeAll()
         }
     }
+    
+    private func setupAppFocusObserver() {
+        NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)
+                    .sink { _ in
+                        isAppInFocus = true
+                        if !NSEvent.modifierFlags.contains(.option) {
+                            openSafariAndAskToSwitchTabs()
+                        }
+                    }
+                    .store(in: &cancellables)
+            
+        NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)
+                    .sink { _ in
+                        isAppInFocus = false
+                    }
+                    .store(in: &cancellables)
+        }
     
     func hideAppControls() {
         if let window = NSApp.windows.first {
