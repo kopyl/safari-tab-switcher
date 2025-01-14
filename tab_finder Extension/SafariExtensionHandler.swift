@@ -13,15 +13,15 @@ func switchToTab(id: Int) async {
     log("Switching to a tab")
 }
 
-func switchToPreviousTab(by idx: Int) async {
-    let allOpenTabsUnique = getOpenTabs()
+func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
+    let tabsFromNavigationHistory = getOpenTabs()
     
-    guard allOpenTabsUnique.count > 1 else {
+    guard tabsFromNavigationHistory.count > 1 else {
             log("No previous tab to switch to.")
             return
         }
 
-    let previousTabId = allOpenTabsUnique.reversed()[idx]
+    let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     log("Switching to previous tab ID: \(previousTabId)")
     
     await switchToTab(id: previousTabId)
@@ -156,7 +156,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     private func handleNotification(_ notification: Notification) {
         let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
         Task{
-            await switchToPreviousTab(by: Int(indexOfTabToSwitchTo) ?? -1)
+            await switchToTabFromNavigationHistory(by: Int(indexOfTabToSwitchTo) ?? -1)
             
             addSpecificTabToHistory(tabNotTrueId: Int(indexOfTabToSwitchTo) ?? -1)
         }
