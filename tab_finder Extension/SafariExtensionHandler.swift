@@ -23,6 +23,7 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     
     await switchToTab(id: previousTabId)
+    addSpecificTabToHistory(tabNotTrueId: tabIdInNavigaionHistory, allOpenTabsUnique: tabsFromNavigationHistory)
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow) async {
@@ -51,9 +52,9 @@ func addNewTabToHistory(window: SFSafariWindow) async {
     Store.allOpenTabsUnique = allOpenTabsUnique
 }
 
-func addSpecificTabToHistory(tabNotTrueId: Int) {
-    var allOpenTabsUnique = Store.allOpenTabsUnique
-    allOpenTabsUnique.append(allOpenTabsUnique.reversed()[tabNotTrueId])
+func addSpecificTabToHistory(tabNotTrueId: Int, allOpenTabsUnique: [Int]) {
+    var tabsMutable = allOpenTabsUnique
+    tabsMutable.append(tabsMutable.reversed()[tabNotTrueId])
     
     Store.currentTabId = tabNotTrueId
     Store.allOpenTabsUnique = allOpenTabsUnique
@@ -150,8 +151,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
         Task{
             await switchToTabFromNavigationHistory(by: Int(indexOfTabToSwitchTo) ?? -1)
-            
-            addSpecificTabToHistory(tabNotTrueId: Int(indexOfTabToSwitchTo) ?? -1)
         }
         
     }
