@@ -1,9 +1,14 @@
 import SafariServices
 import SwiftUI
 
+
+//let allWindows = await SFSafariApplication.allWindows()
+
 func switchToTab(id: Int) async {
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     let allTabs = await activeWindow.allTabs()
+    
+    let allWindows = await SFSafariApplication.allWindows()
     
     guard allTabs.indices.contains(id) else {
         log("Previous tab ID \(id) is out of range.")
@@ -148,15 +153,20 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         guard let command = JScommands(rawValue: messageName) else { return }
         switch command {
         case .opttab:
+            Task{
+                let tab = await page.containingTab()
+                if let window = await tab.containingWindow() {
+                    await removeNonExistentTabsFromHistory(window: window)
+                    await saveAllTabsTitlesToUserDefaults(window: window)
+                }
+            }
             postDistributedNotification()
         }
     }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
-            await saveAllTabsTitlesToUserDefaults(window: window)
             await addNewTabToHistory(window: window)
-            await removeNonExistentTabsFromHistory(window: window)
         }
         validationHandler(true, "")
     }
