@@ -66,7 +66,7 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInf
                     title: properties.title ?? "No title",
                     host: properties.url?.host ?? ""
                 )
-                
+
                 pageTitlesAndHosts[String(key)] = tabInfo
                 
             }
