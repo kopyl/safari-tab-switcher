@@ -158,7 +158,6 @@ struct HelloWorldView: View {
         default:
             break
         }
-        
     }
     
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
