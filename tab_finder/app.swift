@@ -147,16 +147,15 @@ struct HelloWorldView: View {
     func handleKeyPress(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
         guard !allOpenTabsUnique.isEmpty else { return }
+        guard let key = Keys(rawValue: event.keyCode) else { return }
         
-        switch Keys(rawValue: event.keyCode) {
+        switch key {
         case .arrowUp, .backTick:
             indexOfTabToSwitchTo -= 1
         case .arrowDown, .tab:
             indexOfTabToSwitchTo += 1
         case .return:
             openSafariAndAskToSwitchTabs()
-        default:
-            break
         }
     }
     
