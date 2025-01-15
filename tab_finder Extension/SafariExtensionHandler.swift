@@ -110,48 +110,19 @@ enum JScommands: String {
     case opttab
 }
 
+enum AppCommands: String {
+    case switchtabto
+}
+
 class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 }
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
-    private var notificationObserver: NSObjectProtocol?
-    
-    override init() {
-        super.init()
-        setupDistributedNotificationListener()
-    }
-    
-    deinit {
-        if let observer = notificationObserver {
-            DistributedNotificationCenter.default().removeObserver(observer)
-            notificationObserver = nil
-        }
-    }
 
     private func postDistributedNotification() {
         let notificationName = Notification.Name("com.tabfinder.example.notification")
         DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
-    }
-    
-    private func setupDistributedNotificationListener() {
-            let notificationName = Notification.Name("com.tabfinder-toExtension.example.notification")
-            
-            notificationObserver = DistributedNotificationCenter.default().addObserver(
-                forName: notificationName,
-                object: nil,
-                queue: .main
-            ) { notification in
-                self.handleNotification(notification)
-            }
-        }
-
-    private func handleNotification(_ notification: Notification) {
-        let indexOfTabToSwitchTo = notification.object as? String ?? "-1"
-        Task{
-            await switchToTabFromNavigationHistory(by: Int(indexOfTabToSwitchTo) ?? -1)
-        }
-        
     }
     
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
@@ -169,6 +140,18 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 }
             }
             postDistributedNotification()
+        }
+    }
+    
+    override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
+        guard let command = AppCommands(rawValue: withName) else { return }
+        switch command {
+        case .switchtabto:
+            guard let tabIdString = userInfo?["id"] as? String,
+                  let tabId = Int(tabIdString) else { return }
+            Task{
+                await switchToTabFromNavigationHistory(by: tabId)
+            }
         }
     }
 

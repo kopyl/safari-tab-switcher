@@ -2,6 +2,10 @@ import SwiftUI
 import BackgroundTasks
 import AppKit
 import Combine
+import SafariServices.SFSafariApplication
+import SafariServices.SFSafariExtensionManager
+
+let extensionBundleIdentifier = "kopyl.tab-finder-5.Extension"
 
 func formatHost(_ host: String) -> String {
     return host
@@ -218,12 +222,19 @@ struct HelloWorldView: View {
     private func openSafariAndAskToSwitchTabs() {
         NSApp.hide(nil)
         openSafari()
-        let notificationName = Notification.Name("com.tabfinder-toExtension.example.notification")
-        DistributedNotificationCenter.default().postNotificationName(
-            notificationName,
-            object: String(calculateTabToSwitchIndex(indexOfTabToSwitchTo)),
-            deliverImmediately: true
-        )
+        Task{ await sendMessageToExtensionAskingToSwitchTabs() }
+    }
+    
+    func sendMessageToExtensionAskingToSwitchTabs() async {
+        do {
+            try await SFSafariApplication.dispatchMessage(
+                withName: "switchtabto",
+                toExtensionWithIdentifier: extensionBundleIdentifier,
+                userInfo: ["id": String(calculateTabToSwitchIndex(indexOfTabToSwitchTo))]
+            )
+        } catch let error {
+            log("Dispatching message to the extension resulted in an error: \(error)")
+        }
     }
 }
 
