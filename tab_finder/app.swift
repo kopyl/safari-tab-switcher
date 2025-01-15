@@ -7,6 +7,14 @@ import SafariServices.SFSafariExtensionManager
 
 let extensionBundleIdentifier = "kopyl.tab-finder-5.Extension"
 
+enum Keys: UInt16 {
+    case `return` = 36
+    case tab = 48
+    case backTick = 50
+    case arrowDown = 125
+    case arrowUp = 126
+}
+
 func formatHost(_ host: String) -> String {
     return host
         .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
@@ -140,16 +148,12 @@ struct HelloWorldView: View {
         guard event.modifierFlags.contains(.option) else { return }
         guard !allOpenTabsUnique.isEmpty else { return }
         
-        switch event.keyCode {
-        case 126:
+        switch Keys(rawValue: event.keyCode) {
+        case .arrowUp, .backTick:
             indexOfTabToSwitchTo -= 1
-        case 50:  // `
-            indexOfTabToSwitchTo -= 1
-        case 125:
+        case .arrowDown, .tab:
             indexOfTabToSwitchTo += 1
-        case 48: // tab
-            indexOfTabToSwitchTo += 1
-        case 36: // tab
+        case .return:
             openSafariAndAskToSwitchTabs()
         default:
             break
