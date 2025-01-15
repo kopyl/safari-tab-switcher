@@ -18,7 +18,7 @@ struct HelloWorldView: View {
     @State private var allOpenTabsUnique: [Int] = []
     @State private var savedTabTitlesAndHosts: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
-    @State private var eventMonitor: Any?
+    @State private var keyMonitors: [Any] = []
     
     @State private var isAppInFocus = false
     @State private var cancellables = Set<AnyCancellable>()
@@ -124,20 +124,6 @@ struct HelloWorldView: View {
         }
     }
     
-    func setupInAppKeyListener() {
-        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { event in
-            handleKeyPress(event: event)
-            return nil
-        }
-    }
-
-    func removeInAppKeyListener() {
-        if let monitor = eventMonitor {
-            NSEvent.removeMonitor(monitor)
-            eventMonitor = nil
-        }
-    }
-    
     func openSafari() {
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
             NSWorkspace.shared.open(safariURL)
@@ -146,39 +132,47 @@ struct HelloWorldView: View {
         }
     }
     
+    func setupInAppKeyListener() {
+        let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+            handleKeyPress(event: event)
+            return nil
+        }
+        let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
+            handleKeyRelease(event: event)
+            return nil
+        }
+        if let keyUpMonitor, let keyDownMonitor {
+            keyMonitors.append(contentsOf: [keyUpMonitor, keyDownMonitor])
+        }
+    }
+
+    func removeInAppKeyListener() {
+        for monitor in keyMonitors {
+            NSEvent.removeMonitor(monitor)
+        }
+        keyMonitors = []
+    }
+    
+    func handleKeyRelease(event: NSEvent) {
+        guard !event.modifierFlags.contains(.option) else { return }
+        openSafariAndAskToSwitchTabs()
+    }
+    
     func handleKeyPress(event: NSEvent) {
+        guard event.modifierFlags.contains(.option) else { return }
         guard !allOpenTabsUnique.isEmpty else { return }
         
-        // released option
-        if event.modifierFlags.rawValue == 256 && event.keyCode == 58 {
+        switch event.keyCode {
+        case 126:
+            indexOfTabToSwitchTo -= 1
+        case 50:  // `
+            indexOfTabToSwitchTo -= 1
+        case 125:
+            indexOfTabToSwitchTo += 1
+        case 48: // tab
+            indexOfTabToSwitchTo += 1
+        case 36: // tab
             openSafariAndAskToSwitchTabs()
-            return
-        }
-        
-        // pressed option
-        if event.modifierFlags.rawValue != 524576 &&
-
-        // pressed option with arrow up
-        event.modifierFlags.rawValue != 11010336{
-            return
-        }
-
-        switch event.type {
-        case .keyDown:
-            switch event.keyCode {
-            case 126:
-                indexOfTabToSwitchTo -= 1
-            case 50:  // `
-                indexOfTabToSwitchTo -= 1
-            case 125:
-                indexOfTabToSwitchTo += 1
-            case 48: // tab
-                indexOfTabToSwitchTo += 1
-            case 36: // tab
-                openSafariAndAskToSwitchTabs()
-            default:
-                break
-            }
         default:
             break
         }
