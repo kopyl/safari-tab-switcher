@@ -38,7 +38,7 @@ struct HelloWorldView: View {
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                             let pageTitleAndHost = tabsTitleAndHost[String(tabsToDisplay[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
-                            let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "Start page" : pageTitleAndHost?.host ?? ""
+                            let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "No title" : pageTitleAndHost?.host ?? ""
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
