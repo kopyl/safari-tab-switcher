@@ -13,10 +13,9 @@ struct Store {
     static var tabsTitleAndHost: TabsStorage {
             get {
                 guard let data = userDefaults.data(forKey: "tabsTitleAndHost") else {
-                    return [:] // Return an empty dictionary if no data exists
+                    return [:]
                 }
 
-                // Decode the data into `TabsStorage`
                 let decoder = JSONDecoder()
                 return (try? decoder.decode(TabsStorage.self, from: data)) ?? [:]
             }
