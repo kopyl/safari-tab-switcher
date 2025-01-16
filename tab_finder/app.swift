@@ -24,7 +24,7 @@ func formatHost(_ host: String) -> String {
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDs: [Int] = []
-    @State private var savedTabTitlesAndHosts: TabsStorage = [:]
+    @State private var tabsTitleAndHost: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     
@@ -36,7 +36,7 @@ struct HelloWorldView: View {
                         let tabsToDisplay = Array(tabIDs.reversed())
 
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
-                            let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
+                            let pageTitleAndHost = tabsTitleAndHost[String(tabsToDisplay[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
                             let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "Start page" : pageTitleAndHost?.host ?? ""
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -83,7 +83,7 @@ struct HelloWorldView: View {
 
 
         .onAppear {
-            savedTabTitlesAndHosts = Store.tabsTitleAndHost
+            tabsTitleAndHost = Store.tabsTitleAndHost
             tabIDs = OrderedSet(Store.tabIDs).elements
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
@@ -187,7 +187,7 @@ struct HelloWorldView: View {
         }
 
     private func handleNotification(_ notification: Notification) {
-        savedTabTitlesAndHosts = Store.tabsTitleAndHost
+        tabsTitleAndHost = Store.tabsTitleAndHost
         tabIDs = Store.tabIDs
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
