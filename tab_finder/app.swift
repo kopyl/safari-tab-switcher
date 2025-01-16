@@ -187,7 +187,13 @@ struct HelloWorldView: View {
         switch key {
         case .arrowUp, .backTick:
             indexOfTabToSwitchTo -= 1
-        case .arrowDown, .tab:
+        case .tab:
+            if event.modifierFlags.contains(.shift) {
+                indexOfTabToSwitchTo -= 1
+            } else {
+                indexOfTabToSwitchTo += 1
+            }
+        case .arrowDown:
             indexOfTabToSwitchTo += 1
         case .return:
             openSafariAndAskToSwitchTabs()
