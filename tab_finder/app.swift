@@ -23,7 +23,7 @@ func formatHost(_ host: String) -> String {
 
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
-    @State private var allOpenTabsUnique: [Int] = []
+    @State private var tabIDs: [Int] = []
     @State private var savedTabTitlesAndHosts: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
@@ -33,7 +33,7 @@ struct HelloWorldView: View {
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        let tabsToDisplay = Array(allOpenTabsUnique.reversed())
+                        let tabsToDisplay = Array(tabIDs.reversed())
 
                         ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
                             let pageTitleAndHost = savedTabTitlesAndHosts[String(tabsToDisplay[tabIdx])]
@@ -83,8 +83,8 @@ struct HelloWorldView: View {
 
 
         .onAppear {
-            savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
-            allOpenTabsUnique = OrderedSet(Store.allOpenTabsUnique).elements
+            savedTabTitlesAndHosts = Store.tabsTitleAndHost
+            tabIDs = OrderedSet(Store.tabIDs).elements
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
@@ -146,7 +146,7 @@ struct HelloWorldView: View {
     
     func handleKeyPress(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
-        guard !allOpenTabsUnique.isEmpty else { return }
+        guard !tabIDs.isEmpty else { return }
         guard let key = Keys(rawValue: event.keyCode) else { return }
         
         switch key {
@@ -160,7 +160,7 @@ struct HelloWorldView: View {
     }
     
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        return pythonTrueModulo(indexOfTabToSwitchTo, allOpenTabsUnique.count)
+        return pythonTrueModulo(indexOfTabToSwitchTo, tabIDs.count)
     }
     
     private func bringWindowToFront() {
@@ -187,8 +187,8 @@ struct HelloWorldView: View {
         }
 
     private func handleNotification(_ notification: Notification) {
-        savedTabTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
-        allOpenTabsUnique = Store.allOpenTabsUnique
+        savedTabTitlesAndHosts = Store.tabsTitleAndHost
+        tabIDs = Store.tabIDs
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
     }

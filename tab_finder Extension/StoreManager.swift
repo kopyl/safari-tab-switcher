@@ -10,9 +10,9 @@ typealias TabsStorage = [String: TabInfo]
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
 
-    static var allOpenTabsUniqueWithTitlesAndHosts: TabsStorage {
+    static var tabsTitleAndHost: TabsStorage {
             get {
-                guard let data = userDefaults.data(forKey: "allOpenTabsUniqueWithTitlesAndHosts") else {
+                guard let data = userDefaults.data(forKey: "tabsTitleAndHost") else {
                     return [:] // Return an empty dictionary if no data exists
                 }
                 
@@ -23,17 +23,17 @@ struct Store {
             set {
                 let encoder = JSONEncoder()
                 if let data = try? encoder.encode(newValue) {
-                    userDefaults.set(data, forKey: "allOpenTabsUniqueWithTitlesAndHosts")
+                    userDefaults.set(data, forKey: "tabsTitleAndHost")
                 }
             }
         }
     
-    static var allOpenTabsUnique: [Int] {
+    static var tabIDs: [Int] {
         get {
-            return OrderedSet(userDefaults.array(forKey: "allOpenTabsUnique") as? [Int] ?? []).elements
+            return OrderedSet(userDefaults.array(forKey: "tabIDs") as? [Int] ?? []).elements
         }
         set {
-            userDefaults.set(OrderedSet(newValue).elements, forKey: "allOpenTabsUnique")
+            userDefaults.set(OrderedSet(newValue).elements, forKey: "tabIDs")
         }
     }
     

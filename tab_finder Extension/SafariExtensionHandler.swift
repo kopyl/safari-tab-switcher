@@ -12,16 +12,16 @@ func switchToTab(id: Int) async {
     await allTabs[id].activate()
 }
 
-func addSpecificTabToHistory(tabId: Int, allOpenTabsUnique: [Int]) {
-    var tabsMutated = OrderedSet(allOpenTabsUnique)
+func addSpecificTabToHistory(tabId: Int, tabIDs: [Int]) {
+    var tabsMutated = OrderedSet(tabIDs)
     tabsMutated.append(tabId)
     
     Store.currentTabId = tabId
-    Store.allOpenTabsUnique = tabsMutated.elements
+    Store.tabIDs = tabsMutated.elements
 }
 
 func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
-    let tabsFromNavigationHistory = Store.allOpenTabsUnique
+    let tabsFromNavigationHistory = Store.tabIDs
     
     guard tabsFromNavigationHistory.count > 1 else {
         log("No previous tab to switch to.")
@@ -31,15 +31,15 @@ func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
     let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
     
     await switchToTab(id: previousTabId)
-    addSpecificTabToHistory(tabId: previousTabId, allOpenTabsUnique: tabsFromNavigationHistory)
+    addSpecificTabToHistory(tabId: previousTabId, tabIDs: tabsFromNavigationHistory)
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
     let tabs = await window.allTabs()
     
-    var allOpenTabsUniqueOrderedSet = OrderedSet(tabsFromNavigationHistory)
-    allOpenTabsUniqueOrderedSet.append(contentsOf: Array(tabs.indices))
-    Store.allOpenTabsUnique = allOpenTabsUniqueOrderedSet.elements
+    var tabIDsOrderedSet = OrderedSet(tabsFromNavigationHistory)
+    tabIDsOrderedSet.append(contentsOf: Array(tabs.indices))
+    Store.tabIDs = tabIDsOrderedSet.elements
 }
 
 func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
@@ -56,12 +56,12 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]
     Store.currentTabId = changedToTabIndex
 
     tabsMutated.append(changedToTabIndex)
-    Store.allOpenTabsUnique = tabsMutated
+    Store.tabIDs = tabsMutated
 }
 
 func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
     let titlesAndHostsOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
-    Store.allOpenTabsUniqueWithTitlesAndHosts = titlesAndHostsOfAllTabs
+    Store.tabsTitleAndHost = titlesAndHostsOfAllTabs
 }
 
 func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInfo] {
@@ -91,19 +91,19 @@ func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigation
     let allTabs = await window.allTabs()
     let currentTabIndices = allTabs.indices
 
-    var tabsMutated = Store.allOpenTabsUnique
-    var allOpenTabsUniqueWithTitlesAndHosts = Store.allOpenTabsUniqueWithTitlesAndHosts
+    var tabsMutated = Store.tabIDs
+    var tabsTitleAndHost = Store.tabsTitleAndHost
 
     tabsMutated.removeAll { tabId in
         guard currentTabIndices.contains(tabId) else {
-            allOpenTabsUniqueWithTitlesAndHosts.removeValue(forKey: String(tabId))
+            tabsTitleAndHost.removeValue(forKey: String(tabId))
             return true
         }
         return false
     }
 
-    Store.allOpenTabsUnique = tabsMutated
-    Store.allOpenTabsUniqueWithTitlesAndHosts = allOpenTabsUniqueWithTitlesAndHosts
+    Store.tabIDs = tabsMutated
+    Store.tabsTitleAndHost = tabsTitleAndHost
 }
 
 enum JScommands: String {
@@ -132,7 +132,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             Task{
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
-                    let tabsFromNavigationHistory = Store.allOpenTabsUnique
+                    let tabsFromNavigationHistory = Store.tabIDs
                     
                     await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
                     await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
@@ -157,7 +157,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
-            let tabsFromNavigationHistory = Store.allOpenTabsUnique
+            let tabsFromNavigationHistory = Store.tabIDs
             
             await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
