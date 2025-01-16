@@ -29,7 +29,7 @@ struct HelloWorldView: View {
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
-    
+
     var filteredTabIDs: [Int] {
             if searchQuery.isEmpty {
                 return Array(tabIDs.reversed())
