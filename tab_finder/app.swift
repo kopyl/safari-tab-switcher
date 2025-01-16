@@ -42,7 +42,6 @@ struct HelloWorldView: View {
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
-                            
                             VStack(alignment: .leading, spacing: 15) {
                                 Text(pageHostFormatted)
                                 .font(.system(size: 18))
