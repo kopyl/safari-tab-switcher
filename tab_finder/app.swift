@@ -110,7 +110,8 @@ struct HelloWorldView: View {
         }
     }
     
-    func openSafari() {
+    func openSafariAndHideTabSwitcherUI() {
+        NSApp.hide(nil)
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
             NSWorkspace.shared.open(safariURL)
         } else {
@@ -157,8 +158,7 @@ struct HelloWorldView: View {
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
-            NSApp.hide(nil)
-            openSafari()
+            openSafariAndHideTabSwitcherUI()
         }
     }
     
@@ -197,8 +197,7 @@ struct HelloWorldView: View {
     }
     
     private func openSafariAndAskToSwitchTabs() {
-        NSApp.hide(nil)
-        openSafari()
+        openSafariAndHideTabSwitcherUI()
         Task{ await sendMessageToExtensionAskingToSwitchTabs() }
     }
     
