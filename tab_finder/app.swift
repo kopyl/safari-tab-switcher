@@ -11,6 +11,7 @@ enum Keys: UInt16 {
     case `return` = 36
     case tab = 48
     case backTick = 50
+    case escape = 53
     case arrowDown = 125
     case arrowUp = 126
 }
@@ -155,6 +156,9 @@ struct HelloWorldView: View {
             indexOfTabToSwitchTo += 1
         case .return:
             openSafariAndAskToSwitchTabs()
+        case .escape:
+            NSApp.hide(nil)
+            openSafari()
         }
     }
     
