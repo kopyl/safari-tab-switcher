@@ -178,7 +178,7 @@ struct HelloWorldView: View {
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
     }
-    
+
     func handleKeyPress(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
         guard !tabIDs.isEmpty else { return }
