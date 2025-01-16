@@ -198,10 +198,10 @@ struct HelloWorldView: View {
     
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
-        Task{ await sendMessageToExtensionAskingToSwitchTabs() }
+        Task{ await switchTabs() }
     }
     
-    func sendMessageToExtensionAskingToSwitchTabs() async {
+    func switchTabs() async {
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
