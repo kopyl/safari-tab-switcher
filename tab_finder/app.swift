@@ -50,8 +50,12 @@ struct HelloWorldView: View {
             TextField("Search tabs...", text: $searchQuery)
                             .padding(10)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: searchQuery) { _ in
-                                indexOfTabToSwitchTo = 0
+                            .onChange(of: searchQuery) { query in
+                                if query.isEmpty {
+                                    indexOfTabToSwitchTo = 1
+                                } else {
+                                    indexOfTabToSwitchTo = 0
+                                }
                             }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
