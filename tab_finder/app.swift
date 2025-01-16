@@ -223,6 +223,7 @@ struct HelloWorldView: View {
         tabsTitleAndHost = Store.tabsTitleAndHost
         tabIDs = Store.tabIDs
         indexOfTabToSwitchTo = 1
+        searchQuery = ""
         bringWindowToFront()
     }
     
