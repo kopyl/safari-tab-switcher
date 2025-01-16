@@ -44,7 +44,7 @@ struct HelloWorldView: View {
                 }
             }
         }
-    
+
     var body: some View {
         VStack {
             TextField("Search tabs...", text: $searchQuery)
@@ -119,7 +119,7 @@ struct HelloWorldView: View {
             removeInAppKeyListener()
         }
     }
-    
+
     func hideAppControls() {
         if let window = NSApp.windows.first {
             window.standardWindowButton(.closeButton)?.isHidden = true
@@ -128,12 +128,12 @@ struct HelloWorldView: View {
 
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
-            
+
             window.setContentSize(NSSize(width: 800, height: 1400))
             window.center()
         }
     }
-    
+
     func openSafariAndHideTabSwitcherUI() {
         NSApp.hide(nil)
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
@@ -142,7 +142,7 @@ struct HelloWorldView: View {
             print("Safari is not installed or not found.")
         }
     }
-    
+
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
             if Keys(rawValue: event.keyCode) != nil {
@@ -173,7 +173,7 @@ struct HelloWorldView: View {
         }
         keyMonitors = []
     }
-    
+
     func handleKeyRelease(event: NSEvent) {
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
@@ -208,18 +208,18 @@ struct HelloWorldView: View {
         }
         return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
     }
-    
+
     private func bringWindowToFront() {
         NSApp.activate(ignoringOtherApps: true)
         hideAppControls()
     }
-    
+
     private func removeDistributedNotificationListener() {
             if let observer = notificationObserver {
                 DistributedNotificationCenter.default().removeObserver(observer)
             }
         }
-    
+
     private func setupDistributedNotificationListener() {
             let notificationName = Notification.Name("com.tabfinder.example.notification")
             
@@ -239,7 +239,7 @@ struct HelloWorldView: View {
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
     }
-    
+
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
         if filteredTabIDs.isEmpty{
@@ -248,7 +248,7 @@ struct HelloWorldView: View {
         }
         Task{ await switchTabs() }
     }
-    
+
     func switchTabs() async {
         let indexOfTabToSwitchToInSafari = filteredTabIDs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
         do {
