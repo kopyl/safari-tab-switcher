@@ -221,9 +221,9 @@ struct HelloWorldView: View {
 
     private func handleNotification(_ notification: Notification) {
         tabsTitleAndHost = Store.tabsTitleAndHost
+        searchQuery = ""
         tabIDs = Store.tabIDs
         indexOfTabToSwitchTo = 1
-        searchQuery = ""
         bringWindowToFront()
     }
     
