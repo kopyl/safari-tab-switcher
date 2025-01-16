@@ -10,28 +10,15 @@ func switchToTab(id: Int) async {
         return
     }
     await allTabs[id].activate()
+    addSpecificTabToHistory(tabId: id)
 }
 
-func addSpecificTabToHistory(tabId: Int, tabIDs: [Int]) {
-    var tabsMutated = OrderedSet(tabIDs)
+func addSpecificTabToHistory(tabId: Int) {
+    var tabsMutated = OrderedSet(Store.tabIDs)
     tabsMutated.append(tabId)
     
     Store.currentTabId = tabId
     Store.tabIDs = tabsMutated.elements
-}
-
-func switchToTabFromNavigationHistory(by tabIdInNavigaionHistory: Int) async {
-    let tabsFromNavigationHistory = Store.tabIDs
-    
-    guard tabsFromNavigationHistory.count > 1 else {
-        log("No previous tab to switch to.")
-        return
-    }
-
-    let previousTabId = tabsFromNavigationHistory.reversed()[tabIdInNavigaionHistory]
-    
-    await switchToTab(id: previousTabId)
-    addSpecificTabToHistory(tabId: previousTabId, tabIDs: tabsFromNavigationHistory)
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
@@ -150,7 +137,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             guard let tabIdString = userInfo?["id"] as? String,
                   let tabId = Int(tabIdString) else { return }
             Task{
-                await switchToTabFromNavigationHistory(by: tabId)
+                await switchToTab(id: tabId)
             }
         }
     }

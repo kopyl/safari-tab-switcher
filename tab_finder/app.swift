@@ -28,16 +28,36 @@ struct HelloWorldView: View {
     @State private var tabsTitleAndHost: TabsStorage = [:]
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
+    @State private var searchQuery: String = ""
+    
+    var filteredTabIDs: [Int] {
+            if searchQuery.isEmpty {
+                return Array(tabIDs.reversed())
+            } else {
+                return tabIDs.reversed().filter { tabID in
+                    let pageTitleAndHost = tabsTitleAndHost[String(tabID)]
+                    let pageTitle = pageTitleAndHost?.title ?? ""
+                    let pageHost = pageTitleAndHost?.host ?? ""
+                    
+                    return pageTitle.localizedCaseInsensitiveContains(searchQuery) ||
+                           pageHost.localizedCaseInsensitiveContains(searchQuery)
+                }
+            }
+        }
     
     var body: some View {
         VStack {
+            TextField("Search tabs...", text: $searchQuery)
+                            .padding(10)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .onChange(of: searchQuery) { _ in
+                                indexOfTabToSwitchTo = 0
+                            }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        let tabsToDisplay = Array(tabIDs.reversed())
-
-                        ForEach(tabsToDisplay.indices, id: \.self) { tabIdx in
-                            let pageTitleAndHost = tabsTitleAndHost[String(tabsToDisplay[tabIdx])]
+                        ForEach(filteredTabIDs.indices, id: \.self) { tabIdx in
+                            let pageTitleAndHost = tabsTitleAndHost[String(filteredTabIDs	[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
                             let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "No title" : pageTitleAndHost?.host ?? ""
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -52,7 +72,7 @@ struct HelloWorldView: View {
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 10).padding(.bottom, tabIdx != tabsToDisplay.indices.last ? 10 : 20)
+                                .padding(.top, 10).padding(.bottom, tabIdx != filteredTabIDs.indices.last ? 10 : 20)
                                 .padding(.leading, 10).padding(.trailing, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(.blue.opacity(
@@ -65,7 +85,7 @@ struct HelloWorldView: View {
                                     openSafariAndAskToSwitchTabs()
                                 }
                             
-                            if tabIdx != tabsToDisplay.indices.last && tabIdx != tabsToDisplay.indices.first {
+                            if tabIdx != filteredTabIDs.indices.last && tabIdx != filteredTabIDs.indices.first {
                                 Divider().background(.gray.opacity(0.01))
                             }
                         }
@@ -121,12 +141,22 @@ struct HelloWorldView: View {
     
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
-            handleKeyPress(event: event)
+            if Keys(rawValue: event.keyCode) != nil {
+                handleKeyPress(event: event)
+                return nil
+            }
+            if event.keyCode == 51 {
+                if !searchQuery.isEmpty {
+                    searchQuery.removeLast()
+                }
+                return nil
+            }
+            searchQuery.append(event.charactersIgnoringModifiers ?? "")
             return nil
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
             handleKeyRelease(event: event)
-            return nil
+            return event
         }
         if let keyUpMonitor, let keyDownMonitor {
             keyMonitors.append(contentsOf: [keyUpMonitor, keyDownMonitor])
@@ -163,7 +193,7 @@ struct HelloWorldView: View {
     }
     
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        return pythonTrueModulo(indexOfTabToSwitchTo, tabIDs.count)
+        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
     }
     
     private func bringWindowToFront() {
@@ -198,15 +228,20 @@ struct HelloWorldView: View {
     
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
+        if filteredTabIDs.isEmpty{
+            openSafariAndHideTabSwitcherUI()
+            return
+        }
         Task{ await switchTabs() }
     }
     
     func switchTabs() async {
+        let indexOfTabToSwitchToInSafari = filteredTabIDs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
                 toExtensionWithIdentifier: extensionBundleIdentifier,
-                userInfo: ["id": String(calculateTabToSwitchIndex(indexOfTabToSwitchTo))]
+                userInfo: ["id": String(indexOfTabToSwitchToInSafari)]
             )
         } catch let error {
             log("Dispatching message to the extension resulted in an error: \(error)")
