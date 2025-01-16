@@ -183,7 +183,7 @@ struct HelloWorldView: View {
         guard event.modifierFlags.contains(.option) else { return }
         guard !tabIDs.isEmpty else { return }
         guard let key = Keys(rawValue: event.keyCode) else { return }
-        
+
         switch key {
         case .arrowUp, .backTick:
             indexOfTabToSwitchTo -= 1
