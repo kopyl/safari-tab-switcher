@@ -4,7 +4,7 @@ import SwiftUI
 func switchToTab(id: Int) async {
     guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
     let allTabs = await activeWindow.allTabs()
-    
+
     guard allTabs.indices.contains(id) else {
         log("Previous tab ID \(id) is out of range.")
         return
@@ -16,14 +16,14 @@ func switchToTab(id: Int) async {
 func addSpecificTabToHistory(tabId: Int) {
     var tabsMutated = OrderedSet(Store.tabIDs)
     tabsMutated.append(tabId)
-    
+
     Store.currentTabId = tabId
     Store.tabIDs = tabsMutated.elements
 }
 
 func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
     let tabs = await window.allTabs()
-    
+
     var tabIDsOrderedSet = OrderedSet(tabsFromNavigationHistory)
     tabIDsOrderedSet.append(contentsOf: Array(tabs.indices))
     Store.tabIDs = tabIDsOrderedSet.elements
@@ -32,9 +32,9 @@ func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHisto
 func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
     var tabsMutated = tabsFromNavigationHistory
     let currentTabId = Store.currentTabId
-    
+
     let tabs = await window.allTabs()
-    
+
     guard let activeTab = await window.activeTab() else { return }
     let changedToTabIndex = tabs.firstIndex(of: activeTab) ?? currentTabId
     if changedToTabIndex == currentTabId {
@@ -53,7 +53,7 @@ func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
 
 func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInfo] {
     var pageTitlesAndHosts: [String: TabInfo] = [:]
-    
+
     let tabs = await window.allTabs()
     for tab in tabs {
         if let activePage = await tab.activePage() {
@@ -66,11 +66,10 @@ func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInf
                 )
 
                 pageTitlesAndHosts[String(key)] = tabInfo
-                
             }
         }
     }
-    
+
     return pageTitlesAndHosts
 }
 
@@ -111,7 +110,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         let notificationName = Notification.Name("com.tabfinder.example.notification")
         DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
     }
-    
+
     override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
         guard let command = JScommands(rawValue: messageName) else { return }
         switch command {
@@ -120,7 +119,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
                     let tabsFromNavigationHistory = Store.tabIDs
-                    
+
                     await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
                     await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
                     await saveAllTabsTitlesToUserDefaults(window: window)
@@ -129,7 +128,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             postDistributedNotification()
         }
     }
-    
+
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
         guard let command = AppCommands(rawValue: withName) else { return }
         switch command {
@@ -145,7 +144,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
             let tabsFromNavigationHistory = Store.tabIDs
-            
+
             await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)

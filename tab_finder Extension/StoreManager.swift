@@ -15,7 +15,7 @@ struct Store {
                 guard let data = userDefaults.data(forKey: "tabsTitleAndHost") else {
                     return [:] // Return an empty dictionary if no data exists
                 }
-                
+
                 // Decode the data into `TabsStorage`
                 let decoder = JSONDecoder()
                 return (try? decoder.decode(TabsStorage.self, from: data)) ?? [:]
@@ -27,7 +27,7 @@ struct Store {
                 }
             }
         }
-    
+
     static var tabIDs: [Int] {
         get {
             return OrderedSet(userDefaults.array(forKey: "tabIDs") as? [Int] ?? []).elements
@@ -36,7 +36,7 @@ struct Store {
             userDefaults.set(OrderedSet(newValue).elements, forKey: "tabIDs")
         }
     }
-    
+
     static var currentTabId: Int {
         get {
             return userDefaults.object(forKey: "currentTabId") as? Int ?? -1
