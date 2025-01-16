@@ -5,7 +5,3 @@ document.addEventListener("keydown", function (event) {
         console.log("Option+Tab Pressed")
     }
 });
-
-window.onbeforeunload = function () {
-    safari.extension.dispatchMessage("tabclose");
-};
