@@ -57,7 +57,7 @@ struct HelloWorldView: View {
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
                         ForEach(filteredTabIDs.indices, id: \.self) { tabIdx in
-                            let pageTitleAndHost = tabsTitleAndHost[String(filteredTabIDs	[tabIdx])]
+                            let pageTitleAndHost = tabsTitleAndHost[String(filteredTabIDs[tabIdx])]
                             let pageTitle = pageTitleAndHost?.title ?? ""
                             let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "No title" : pageTitleAndHost?.host ?? ""
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
