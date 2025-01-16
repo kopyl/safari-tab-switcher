@@ -191,7 +191,7 @@ struct HelloWorldView: View {
             openSafariAndHideTabSwitcherUI()
         }
     }
-    
+
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
         return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
     }
