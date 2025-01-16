@@ -193,6 +193,9 @@ struct HelloWorldView: View {
     }
 
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
+        if filteredTabIDs.isEmpty {
+            return 0
+        }
         return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
     }
     
