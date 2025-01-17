@@ -24,26 +24,24 @@ func formatHost(_ host: String) -> String {
 
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
-    @State private var tabIDs: [Int] = []
-    @State private var tabsTitleAndHost: TabsStorage = [:]
+    @State private var tabs: OrderedSet<TabInfo> = OrderedSet()
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
 
-    var filteredTabIDs: [Int] {
-            if searchQuery.isEmpty {
-                return Array(tabIDs.reversed())
-            } else {
-                return tabIDs.reversed().filter { tabID in
-                    let pageTitleAndHost = tabsTitleAndHost[String(tabID)]
-                    let pageTitle = pageTitleAndHost?.title ?? ""
-                    let pageHost = pageTitleAndHost?.host ?? ""
-                    
-                    return pageTitle.localizedCaseInsensitiveContains(searchQuery) ||
-                           pageHost.localizedCaseInsensitiveContains(searchQuery)
-                }
+    var filteredTabs: OrderedSet<TabInfo> {
+        if searchQuery.isEmpty {
+            return tabs.reversed()
+        } else {
+            let filteredArray = tabs.reversed().filter { tab in
+                let pageTitle = tab.title
+                let pageHost = tab.host
+                return pageTitle.localizedCaseInsensitiveContains(searchQuery) ||
+                       pageHost.localizedCaseInsensitiveContains(searchQuery)
             }
+            return OrderedSet(filteredArray)
         }
+    }
 
     var body: some View {
         VStack {
@@ -60,10 +58,10 @@ struct HelloWorldView: View {
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        ForEach(filteredTabIDs.indices, id: \.self) { tabIdx in
-                            let pageTitleAndHost = tabsTitleAndHost[String(filteredTabIDs[tabIdx])]
-                            let pageTitle = pageTitleAndHost?.title ?? ""
-                            let pageHost = pageTitleAndHost?.host ?? "" == "" && pageTitle == "" ? "No title" : pageTitleAndHost?.host ?? ""
+                        ForEach(filteredTabs.indices, id: \.self) { tabIdx in
+                            let tab = filteredTabs[tabIdx]
+                            let pageTitle = tab.title
+                            let pageHost = tab.host == "" && pageTitle == "" ? "No title" : tab.host
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
@@ -76,7 +74,7 @@ struct HelloWorldView: View {
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 10).padding(.bottom, tabIdx != filteredTabIDs.indices.last ? 10 : 20)
+                                .padding(.top, 10).padding(.bottom, tabIdx != filteredTabs.indices.last ? 10 : 20)
                                 .padding(.leading, 10).padding(.trailing, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(.blue.opacity(
@@ -89,7 +87,7 @@ struct HelloWorldView: View {
                                     openSafariAndAskToSwitchTabs()
                                 }
                             
-                            if tabIdx != filteredTabIDs.indices.last && tabIdx != filteredTabIDs.indices.first {
+                            if tabIdx != filteredTabs.indices.last && tabIdx != filteredTabs.indices.first {
                                 Divider().background(.gray.opacity(0.01))
                             }
                         }
@@ -107,8 +105,7 @@ struct HelloWorldView: View {
 
 
         .onAppear {
-            tabsTitleAndHost = Store.tabsTitleAndHost
-            tabIDs = OrderedSet(Store.tabIDs).elements
+            tabs = Store.tabs
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
@@ -181,7 +178,7 @@ struct HelloWorldView: View {
 
     func handleKeyPress(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
-        guard !tabIDs.isEmpty else { return }
+        guard !tabs.isEmpty else { return }
         guard let key = Keys(rawValue: event.keyCode) else { return }
 
         switch key {
@@ -203,10 +200,10 @@ struct HelloWorldView: View {
     }
 
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        if filteredTabIDs.isEmpty {
+        if filteredTabs.isEmpty {
             return 0
         }
-        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
+        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabs.count)
     }
 
     private func bringWindowToFront() {
@@ -233,16 +230,15 @@ struct HelloWorldView: View {
         }
 
     private func handleNotification(_ notification: Notification) {
-        tabsTitleAndHost = Store.tabsTitleAndHost
         searchQuery = ""
-        tabIDs = Store.tabIDs
+        tabs = Store.tabs
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
     }
 
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
-        if filteredTabIDs.isEmpty{
+        if filteredTabs.isEmpty{
             openSafariAndHideTabSwitcherUI()
             return
         }
@@ -250,12 +246,12 @@ struct HelloWorldView: View {
     }
 
     func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = filteredTabIDs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
+        let indexOfTabToSwitchToInSafari = filteredTabs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
                 toExtensionWithIdentifier: extensionBundleIdentifier,
-                userInfo: ["id": String(indexOfTabToSwitchToInSafari)]
+                userInfo: ["id": String(indexOfTabToSwitchToInSafari.id)]
             )
         } catch let error {
             log("Dispatching message to the extension resulted in an error: \(error)")
