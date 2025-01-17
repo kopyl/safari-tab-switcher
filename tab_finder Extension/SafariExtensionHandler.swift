@@ -54,6 +54,18 @@ func removeNonExistentTabsFromHistory(_ tabs: [SFSafariTab], _ tabsFromNavigatio
     }
 }
 
+func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
+    var allTabsInfoUpdated = OrderedSet<TabInfoWithID>()
+    
+    for historyTab in tabsFromNavigationHistory.elements {
+        let safariTab = tabs[historyTab.id]
+        let tabInfo = await TabInfoWithID(tabId: historyTab.id, tab: safariTab)
+        allTabsInfoUpdated.append(tabInfo)
+    }
+    
+    return allTabsInfoUpdated
+}
+
 enum JScommands: String {
     case opttab
 }
@@ -86,6 +98,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
                     tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
                     tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
+                    tabsFromNavigationHistory = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
                     
                     Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
                 }
@@ -114,8 +127,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             let tabs = await window.allTabs()
 
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
-            tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
             tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
 
             Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
         }
