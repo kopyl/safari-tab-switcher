@@ -113,9 +113,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             var tabsFromNavigationHistory = Store.tabIDsWithTitleAndHost
             let tabs = await window.allTabs()
 
-            tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
             tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
 
             Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
         }
