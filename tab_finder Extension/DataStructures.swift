@@ -2,6 +2,8 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
     public var elements: [Element] = []
     private var seenIDs: Set<Element.ID> = []
     
+    init() {}
+    
     init(_ elements: [Element]) {
         for element in elements {
             append(element)
