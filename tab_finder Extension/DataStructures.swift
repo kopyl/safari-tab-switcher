@@ -12,12 +12,6 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
 
     var isEmpty: Bool { elements.isEmpty }
 
-    subscript(index: Int) -> Element {
-        let adjustedIndex = index < 0 ? elements.count + index : index
-        precondition(adjustedIndex >= 0 && adjustedIndex < elements.count, "Index out of bounds")
-        return elements[adjustedIndex]
-    }
-
     mutating func append(_ element: Element) {
         if seenIDs.contains(element.id) {
             if let index = elements.firstIndex(where: { $0.id == element.id }) {
