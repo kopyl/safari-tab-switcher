@@ -219,9 +219,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             await removeNonExistentTabsFromHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
 //
             await saveAllTabsTitlesToUserDefaults(window: window)
-            
-            log("Store.tabIDs after updates: \(Store.tabIDs)")
-            log("Store.tabIDsWithTitleAndHost after updates: \(Store.tabIDsWithTitleAndHost.elements.map{$0.id})")
         }
         validationHandler(true, "")
     }
