@@ -33,7 +33,6 @@ func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHisto
     }
     tabsFromNavigationHistoryMutated.append(contentsOf: tabsToPrepend)
 
-    Store.tabIDsWithTitleAndHost = tabsFromNavigationHistoryMutated
     return tabsFromNavigationHistoryMutated
 }
 
@@ -52,14 +51,14 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: Order
     let tabInfo = await TabInfoWithID(tabId: changedToTabIndex, tab: activeTab)
 
     tabsMutated.append(tabInfo)
-    Store.tabIDsWithTitleAndHost = tabsMutated
+
     return tabsMutated
 }
 
-func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async {
+func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
     let allTabs = await window.allTabs()
     
-    Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory.filter { tab in
+    return tabsFromNavigationHistory.filter { tab in
         allTabs.indices.contains(tab.id)
     }
 }
@@ -94,8 +93,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                     var tabsFromNavigationHistory = Store.tabIDsWithTitleAndHost
 
                     tabsFromNavigationHistory = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-
-                    await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
+                    tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
+                    
+                    Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
                 }
             }
             postDistributedNotification()
@@ -120,8 +120,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
             tabsFromNavigationHistory = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             tabsFromNavigationHistory = await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-            
-            await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
+
+            Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
         }
         validationHandler(true, "")
     }
