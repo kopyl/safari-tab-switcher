@@ -66,6 +66,14 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
     return allTabsInfoUpdated
 }
 
+func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
+    var tabsHistoryMutated = tabsFromNavigationHistory
+    tabsHistoryMutated = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
+    tabsHistoryMutated = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
+    tabsHistoryMutated = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
+    return tabsHistoryMutated
+}
+
 enum JScommands: String {
     case opttab
 }
@@ -95,10 +103,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
                     var tabsFromNavigationHistory = Store.tabIDsWithTitleAndHost
                     let tabs = await window.allTabs()
-
-                    tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
-                    tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
-                    tabsFromNavigationHistory = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
+                    
+                    tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
                     
                     Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
                 }
@@ -127,9 +133,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             let tabs = await window.allTabs()
 
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
-            tabsFromNavigationHistory = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
-            tabsFromNavigationHistory = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
-            tabsFromNavigationHistory = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
 
             Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
         }
