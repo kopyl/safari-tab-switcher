@@ -1,11 +1,6 @@
 import Foundation
 import SafariServices
 
-struct TabInfo: Codable {
-    var title: String = "No title"
-    var host: String = ""
-}
-
 struct TabInfoWithID: Codable, Hashable, Identifiable {
     var id: Int
     var title: String = "No title"
@@ -25,9 +20,6 @@ struct TabInfoWithID: Codable, Hashable, Identifiable {
             }
         }
 }
-
-typealias TabsStorage = [String: TabInfo]
-typealias TabsStorageWithTabID = [String: TabInfoWithID]
 
 func encode<T: Codable>(_ value: T) -> Data? {
     let encoder = JSONEncoder()
