@@ -59,15 +59,6 @@ struct Store {
             }
         }
 
-    static var tabIDs: [Int] {
-        get {
-            return OrderedSet(userDefaults.array(forKey: "tabIDs") as? [Int] ?? []).elements
-        }
-        set {
-            userDefaults.set(OrderedSet(newValue).elements, forKey: "tabIDs")
-        }
-    }
-    
     static var tabIDsWithTitleAndHost: OrderedSet2<TabInfoWithID> {
             get {
                 if let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") {
