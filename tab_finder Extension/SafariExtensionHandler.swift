@@ -10,43 +10,17 @@ func switchToTab(id: Int) async {
         return
     }
     await allTabs[id].activate()
-    addSpecificTabToHistory(tabId: id)
+    await addSpecificTabToHistory(tabId: id, tab: allTabs[id])
 }
 
-func switchToTab2(id: Int) async {
-    guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
-    let allTabs = await activeWindow.allTabs()
-
-    guard allTabs.indices.contains(id) else {
-        log("Previous tab ID \(id) is out of range.")
-        return
-    }
-    await allTabs[id].activate()
-    await addSpecificTabToHistory2(tabId: id, tab: allTabs[id])
-}
-
-func addSpecificTabToHistory(tabId: Int) {
-    var tabsMutated = OrderedSet(Store.tabIDs)
-    tabsMutated.append(tabId)
-    Store.tabIDs = tabsMutated.elements
-}
-
-func addSpecificTabToHistory2(tabId: Int, tab: SFSafariTab) async {
+func addSpecificTabToHistory(tabId: Int, tab: SFSafariTab) async {
     var tabsMutated = Store.tabIDsWithTitleAndHost
     let tabIDsWithTitleAndHost = await TabInfoWithID(tabId: tabId, tab: tab)
     tabsMutated.append(tabIDsWithTitleAndHost)
     Store.tabIDsWithTitleAndHost = tabsMutated
 }
 
-func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
-    let tabs = await window.allTabs()
-
-    var tabIDsOrderedSet = OrderedSet(tabsFromNavigationHistory)
-    tabIDsOrderedSet.append(contentsOf: Array(tabs.indices))
-    Store.tabIDs = tabIDsOrderedSet.elements
-}
-
-func addAllExistingTabsToHistory2(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
+func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
     let tabs = await window.allTabs()
     
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
@@ -63,19 +37,7 @@ func addAllExistingTabsToHistory2(window: SFSafariWindow, tabsFromNavigationHist
     return tabsFromNavigationHistoryMutated
 }
 
-func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
-    var tabsMutated = tabsFromNavigationHistory
-    let tabs = await window.allTabs()
-
-    guard let activeTab = await window.activeTab() else { return }
-    guard let changedToTabIndex = tabs.firstIndex(of: activeTab) else { return }
-
-    tabsMutated.append(changedToTabIndex)
-    Store.tabIDs = tabsMutated
-    
-}
-
-func addNewTabToHistory2(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
+func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
     var tabsMutated = tabsFromNavigationHistory
 
     let tabs = await window.allTabs()
@@ -94,59 +56,11 @@ func addNewTabToHistory2(window: SFSafariWindow, tabsFromNavigationHistory: Orde
     return tabsMutated
 }
 
-func saveAllTabsTitlesToUserDefaults(window: SFSafariWindow) async {
-    let titlesAndHostsOfAllTabs = await getTitlesAndHostsOfAllTabs(window: window)
-    Store.tabsTitleAndHost = titlesAndHostsOfAllTabs
-}
-
-func getTitlesAndHostsOfAllTabs(window: SFSafariWindow) async -> [String: TabInfo] {
-    var pageTitlesAndHosts: [String: TabInfo] = [:]
-
-    let tabs = await window.allTabs()
-    for tab in tabs {
-        if let activePage = await tab.activePage() {
-            if let properties = await activePage.properties() {
-                let key = tabs.firstIndex(of: tab) ?? -1
-
-                let tabInfo = TabInfo(
-                    title: properties.title ?? "No title",
-                    host: properties.url?.host ?? ""
-                )
-
-                pageTitlesAndHosts[String(key)] = tabInfo
-            }
-        }
-    }
-
-    return pageTitlesAndHosts
-}
-
-func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: [Int]) async {
+func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async {
     let allTabs = await window.allTabs()
-    let currentTabIndices = allTabs.indices
-
-    var tabsMutated = Store.tabIDs
-    var tabsTitleAndHost = Store.tabsTitleAndHost
-
-    tabsMutated.removeAll { tabId in
-        guard currentTabIndices.contains(tabId) else {
-            tabsTitleAndHost.removeValue(forKey: String(tabId))
-            return true
-        }
-        return false
-    }
-
-    Store.tabIDs = tabsMutated
-    Store.tabsTitleAndHost = tabsTitleAndHost
-    log("removeNonExistentTabsFromHistory after filter: \(tabsMutated)")
-}
-
-func removeNonExistentTabsFromHistory2(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async {
-    let allTabs = await window.allTabs()
-    let currentTabIndices = allTabs.indices
     
     Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory.filter { tab in
-        currentTabIndices.contains(tab.id)
+        allTabs.indices.contains(tab.id)
     }
 }
 
@@ -179,13 +93,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                     let tabsFromNavigationHistory = Store.tabIDs
                     var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
 
-                    await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-                    tabsFromNavigationHistory2 = await addAllExistingTabsToHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+                    tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
 
-                    await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-                    await removeNonExistentTabsFromHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
-                    
-                    await saveAllTabsTitlesToUserDefaults(window: window)
+                    await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
                 }
             }
             postDistributedNotification()
@@ -209,15 +119,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             let tabsFromNavigationHistory = Store.tabIDs
             var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
 
-            await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-            tabsFromNavigationHistory2 = await addAllExistingTabsToHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+            tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+            tabsFromNavigationHistory2 = await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
             
-            await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-            tabsFromNavigationHistory2 = await addNewTabToHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
-            
-            await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
-            await removeNonExistentTabsFromHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
-            await saveAllTabsTitlesToUserDefaults(window: window)
+            await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
         }
         validationHandler(true, "")
     }
