@@ -217,7 +217,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             
             await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             await removeNonExistentTabsFromHistory2(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
-//
             await saveAllTabsTitlesToUserDefaults(window: window)
         }
         validationHandler(true, "")
