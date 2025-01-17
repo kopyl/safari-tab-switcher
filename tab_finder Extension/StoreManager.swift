@@ -3,7 +3,7 @@ import SafariServices
 
 struct TabInfoWithID: Codable, Hashable, Identifiable {
     var id: Int
-    var title: String = "No title"
+    var title: String = ""
     var host: String = ""
     
     init(tabId: Int, tab: SFSafariTab) async {
