@@ -91,11 +91,11 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
 
-                    var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
+                    var tabsFromNavigationHistory = Store.tabIDsWithTitleAndHost
 
-                    tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+                    tabsFromNavigationHistory = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
 
-                    await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+                    await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
                 }
             }
             postDistributedNotification()
@@ -116,12 +116,12 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
-            var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
+            var tabsFromNavigationHistory = Store.tabIDsWithTitleAndHost
 
-            tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
-            tabsFromNavigationHistory2 = await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+            tabsFromNavigationHistory = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
+            tabsFromNavigationHistory = await addNewTabToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
             
-            await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
+            await removeNonExistentTabsFromHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory)
         }
         validationHandler(true, "")
     }
