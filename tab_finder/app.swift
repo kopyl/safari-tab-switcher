@@ -31,14 +31,11 @@ struct HelloWorldView: View {
 
     var filteredTabIDs: [TabInfoWithID] {
             if searchQuery.isEmpty {
-                return Array(tabIDsWithTitleAndHost.elements.reversed())
+                return tabIDsWithTitleAndHost.elements.reversed()
             } else {
-                return tabIDsWithTitleAndHost.elements.reversed().filter { tab in
-                    let pageTitle = tab.title
-                    let pageHost = tab.host
-                    
-                    return pageTitle.localizedCaseInsensitiveContains(searchQuery) ||
-                           pageHost.localizedCaseInsensitiveContains(searchQuery)
+                return tabIDsWithTitleAndHost.elements.reversed().filter { tab in                    
+                    return tab.title.localizedCaseInsensitiveContains(searchQuery) ||
+                           tab.host.localizedCaseInsensitiveContains(searchQuery)
                 }
             }
         }
