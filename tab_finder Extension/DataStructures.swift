@@ -1,4 +1,4 @@
-struct OrderedSet2<Element: Hashable & Identifiable> where Element.ID: Hashable {
+struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
     public var elements: [Element] = []
     private var seenIDs: Set<Element.ID> = []
     
@@ -62,8 +62,8 @@ struct OrderedSet2<Element: Hashable & Identifiable> where Element.ID: Hashable 
         return elements.firstIndex(where: { $0.id == element.id })
     }
     
-    func filter(_ isIncluded: (Element) -> Bool) -> OrderedSet2 {
+    func filter(_ isIncluded: (Element) -> Bool) -> OrderedSet {
             let filteredElements = elements.filter(isIncluded)
-            return OrderedSet2(filteredElements)
+            return OrderedSet(filteredElements)
         }
 }

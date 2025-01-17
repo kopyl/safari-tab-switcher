@@ -20,7 +20,7 @@ func addSpecificTabToHistory(tabId: Int, tab: SFSafariTab) async {
     Store.tabIDsWithTitleAndHost = tabsMutated
 }
 
-func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
+func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
     let tabs = await window.allTabs()
     
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
@@ -37,7 +37,7 @@ func addAllExistingTabsToHistory(window: SFSafariWindow, tabsFromNavigationHisto
     return tabsFromNavigationHistoryMutated
 }
 
-func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async -> OrderedSet2<TabInfoWithID> {
+func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
     var tabsMutated = tabsFromNavigationHistory
 
     let tabs = await window.allTabs()
@@ -56,7 +56,7 @@ func addNewTabToHistory(window: SFSafariWindow, tabsFromNavigationHistory: Order
     return tabsMutated
 }
 
-func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet2<TabInfoWithID>) async {
+func removeNonExistentTabsFromHistory(window: SFSafariWindow, tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async {
     let allTabs = await window.allTabs()
     
     Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory.filter { tab in
