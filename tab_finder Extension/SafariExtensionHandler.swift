@@ -68,9 +68,9 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
 
 func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet<TabInfoWithID>) async -> OrderedSet<TabInfoWithID> {
     var tabsHistoryMutated = tabsFromNavigationHistory
-    tabsHistoryMutated = await addAllExistingTabsToHistory(tabs, tabsFromNavigationHistory)
-    tabsHistoryMutated = await removeNonExistentTabsFromHistory(tabs, tabsFromNavigationHistory)
-    tabsHistoryMutated = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsFromNavigationHistory)
+    tabsHistoryMutated = await addAllExistingTabsToHistory(tabs, tabsHistoryMutated)
+    tabsHistoryMutated = await removeNonExistentTabsFromHistory(tabs, tabsHistoryMutated)
+    tabsHistoryMutated = await makeSureEveryOtherTabInfoIsCorrect(tabs, tabsHistoryMutated)
     return tabsHistoryMutated
 }
 
