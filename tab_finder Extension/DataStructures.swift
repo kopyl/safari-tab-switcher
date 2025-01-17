@@ -10,7 +10,6 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
         }
     }
 
-    var count: Int { elements.count }
     var isEmpty: Bool { elements.isEmpty }
 
     subscript(index: Int) -> Element {
