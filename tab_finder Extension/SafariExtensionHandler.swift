@@ -90,7 +90,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             Task{
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
-                    let tabsFromNavigationHistory = Store.tabIDs
+
                     var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
 
                     tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
@@ -116,7 +116,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
-            let tabsFromNavigationHistory = Store.tabIDs
             var tabsFromNavigationHistory2 = Store.tabIDsWithTitleAndHost
 
             tabsFromNavigationHistory2 = await addAllExistingTabsToHistory(window: window, tabsFromNavigationHistory: tabsFromNavigationHistory2)
