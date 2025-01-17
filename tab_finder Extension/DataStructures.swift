@@ -39,25 +39,6 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
         }
         elements.insert(contentsOf: elementsToPrepend, at: 0)
     }
-
-    mutating func remove(at index: Int) {
-        let removedElement = elements.remove(at: index)
-        seenIDs.remove(removedElement.id)
-    }
-
-    mutating func remove(_ element: Element) {
-        guard let index = elements.firstIndex(where: { $0.id == element.id }) else { return }
-        remove(at: index)
-    }
-
-    mutating func removeAll() {
-        elements.removeAll()
-        seenIDs.removeAll()
-    }
-
-    func index(of element: Element) -> Int? {
-        return elements.firstIndex(where: { $0.id == element.id })
-    }
     
     func filter(_ isIncluded: (Element) -> Bool) -> OrderedSet {
             let filteredElements = elements.filter(isIncluded)
