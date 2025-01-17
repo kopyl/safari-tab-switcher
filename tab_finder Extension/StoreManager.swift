@@ -35,13 +35,5 @@ struct Store {
             userDefaults.set(OrderedSet(newValue).elements, forKey: "tabIDs")
         }
     }
-
-    static var currentTabId: Int {
-        get {
-            return userDefaults.object(forKey: "currentTabId") as? Int ?? -1
         }
-        set {
-            userDefaults.set(newValue, forKey: "currentTabId")
-        }
-    }
 }
