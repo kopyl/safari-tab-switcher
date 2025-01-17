@@ -18,10 +18,6 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
         return elements[adjustedIndex]
     }
 
-    func contains(_ element: Element) -> Bool {
-        return seenIDs.contains(element.id)
-    }
-
     mutating func append(_ element: Element) {
         if seenIDs.contains(element.id) {
             if let index = elements.firstIndex(where: { $0.id == element.id }) {
