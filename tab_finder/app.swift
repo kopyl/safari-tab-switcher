@@ -36,6 +36,7 @@ struct HelloWorldView: View {
                 let _searchQuery = searchQuery.lowercased()
                 
                 let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
+                    if tab.host == "" { return nil}
                     var score = 0
 
                     var hostParts = tab.host.split(separator: ".")
