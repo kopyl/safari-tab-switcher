@@ -33,10 +33,23 @@ struct HelloWorldView: View {
             if searchQuery.isEmpty {
                 return tabIDsWithTitleAndHost.elements.reversed()
             } else {
-                return tabIDsWithTitleAndHost.elements.reversed().filter { tab in                    
-                    return tab.title.localizedCaseInsensitiveContains(searchQuery) ||
-                           tab.host.localizedCaseInsensitiveContains(searchQuery)
+                let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
+                    var score = 0
+                    
+                    if let hostRange = tab.host.range(of: searchQuery, options: .caseInsensitive) {
+                        let position = tab.host.distance(from: tab.host.startIndex, to: hostRange.lowerBound)
+                        score += max(50 - position, 0)
+                    }
+
+                    if let titleRange = tab.title.range(of: searchQuery, options: .caseInsensitive) {
+                        let position = tab.title.distance(from: tab.title.startIndex, to: titleRange.lowerBound)
+                        score += max(30 - position, 0)
+                    }
+                    
+                    return score > 0 ? (tab, score) : nil
                 }
+                
+                return weightedResults.sorted { $0.score > $1.score }.map { $0.tab }
             }
         }
 
