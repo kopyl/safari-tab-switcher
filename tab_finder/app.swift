@@ -33,19 +33,46 @@ struct HelloWorldView: View {
             if searchQuery.isEmpty {
                 return tabIDsWithTitleAndHost.elements.reversed()
             } else {
+                let _searchQuery = searchQuery.lowercased()
+                
                 let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
                     var score = 0
                     
-                    if let hostRange = tab.host.range(of: searchQuery, options: .caseInsensitive) {
-                        let position = tab.host.distance(from: tab.host.startIndex, to: hostRange.lowerBound)
-                        score += max(50 - position, 0)
+                    
+                    var hostParts = tab.host.split(separator: ".")
+                    hostParts = hostParts.filter { $0 != "www" }
+                    let domainZone = hostParts.last ?? ""
+                    hostParts.removeLast()
+                    
+                    var scoreMultiplier = 10
+                    
+                    for hostPartIndex in hostParts.indices {
+                        scoreMultiplier -= hostPartIndex
+                        if scoreMultiplier < 1 {
+                            scoreMultiplier = 1
+                        }
+                        
+                        let hostPart = hostParts.reversed()[hostPartIndex]
+                        
+                        if hostPart.starts(with: _searchQuery) {
+                            score += 5*scoreMultiplier
+                        }
+                        else if hostPart.localizedCaseInsensitiveContains(searchQuery) {
+                            score += 2
+                        }
                     }
 
-                    if let titleRange = tab.title.range(of: searchQuery, options: .caseInsensitive) {
-                        let position = tab.title.distance(from: tab.title.startIndex, to: titleRange.lowerBound)
-                        score += max(30 - position, 0)
+                    if domainZone.localizedCaseInsensitiveContains(searchQuery) {
+                        score += 1
                     }
                     
+                    if tab.title.starts(with: _searchQuery) {
+                        score += 4
+                    }
+                    else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
+                        score += 1
+                    }
+
                     return score > 0 ? (tab, score) : nil
                 }
                 
