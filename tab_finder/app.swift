@@ -61,6 +61,13 @@ struct HelloWorldView: View {
                             score += 2
                         }
                     }
+                    
+                    if score == 0 {
+                        // if a users types with ".", i need to do at least something
+                        if tab.host.localizedCaseInsensitiveContains(searchQuery) {
+                            score += 1
+                        }
+                    }
 
                     if domainZone.localizedCaseInsensitiveContains(searchQuery) {
                         score += 1
