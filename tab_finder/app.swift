@@ -37,8 +37,7 @@ struct HelloWorldView: View {
                 
                 let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
                     var score = 0
-                    
-                    
+
                     var hostParts = tab.host.split(separator: ".")
                     hostParts = hostParts.filter { $0 != "www" }
                     let domainZone = hostParts.last ?? ""
