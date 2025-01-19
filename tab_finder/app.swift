@@ -36,10 +36,13 @@ struct HelloWorldView: View {
                 let _searchQuery = searchQuery.lowercased()
                 
                 let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
-                    if tab.host == "" { return nil}
+                    var host = tab.host
+                    if host == "" {
+                        host = "No title"
+                    }
                     var score = 0
 
-                    var hostParts = tab.host.split(separator: ".")
+                    var hostParts = host.split(separator: ".")
                     hostParts = hostParts.filter { $0 != "www" }
                     let domainZone = hostParts.last ?? ""
                     hostParts.removeLast()
@@ -48,11 +51,16 @@ struct HelloWorldView: View {
                     
                     for hostPartIndex in hostParts.indices {
                         scoreMultiplier -= hostPartIndex
+                        
                         if scoreMultiplier < 1 {
                             scoreMultiplier = 1
                         }
                         
                         let hostPart = hostParts.reversed()[hostPartIndex]
+                        
+                        if hostPart == "No title" {
+                            continue
+                        }
                         
                         if hostPart.starts(with: _searchQuery) {
                             score += 5*scoreMultiplier
@@ -64,7 +72,7 @@ struct HelloWorldView: View {
                     
                     if score == 0 {
                         // if a users types with ".", i need to do at least something
-                        if tab.host.localizedCaseInsensitiveContains(searchQuery) {
+                        if host.localizedCaseInsensitiveContains(searchQuery) {
                             score += 1
                         }
                     }
