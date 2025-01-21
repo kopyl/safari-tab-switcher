@@ -52,16 +52,14 @@ struct HelloWorldView: View {
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
     
-    @State private var tabsForSearch: [TabForSearch] = []
     @State private var filteredTabs: [TabForSearch] = []
     
     func filterTabs() {
-        filteredTabs = tabsForSearch
         guard !searchQuery.isEmpty else { return }
         
         let _searchQuery = searchQuery.lowercased()
         
-        let _filteredTabs = tabsForSearch.filter {
+        let _filteredTabs = filteredTabs.filter {
             $0.host.localizedCaseInsensitiveContains(searchQuery) ||
             $0.title.localizedCaseInsensitiveContains(searchQuery)
         }
@@ -308,7 +306,7 @@ struct HelloWorldView: View {
 
     private func handleNotification(_ notification: Notification) {
         tabIDsWithTitleAndHost = Store.tabIDsWithTitleAndHost
-        tabsForSearch = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
+        filteredTabs = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
         
         searchQuery = ""
         filterTabs()
