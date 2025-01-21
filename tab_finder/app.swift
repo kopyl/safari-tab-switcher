@@ -55,6 +55,7 @@ struct HelloWorldView: View {
     @State private var filteredTabs: [TabForSearch] = []
     
     func filterTabs() {
+        filteredTabs = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
         guard !searchQuery.isEmpty else { return }
         
         let _searchQuery = searchQuery.lowercased()
@@ -306,8 +307,6 @@ struct HelloWorldView: View {
 
     private func handleNotification(_ notification: Notification) {
         tabIDsWithTitleAndHost = Store.tabIDsWithTitleAndHost
-        filteredTabs = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
-        
         searchQuery = ""
         filterTabs()
         indexOfTabToSwitchTo = 1
