@@ -53,70 +53,70 @@ struct HelloWorldView: View {
     @State private var searchQuery: String = ""
     
     @State private var tabsForSearch: [TabForSearch] = []
-
-    var filteredTabIDs: [TabForSearch] {
-            if searchQuery.isEmpty {
-                return tabsForSearch
-            } else {
-                let _searchQuery = searchQuery.lowercased()
-                
-                let filteredTabs = tabsForSearch.filter {
-                    $0.host.localizedCaseInsensitiveContains(searchQuery) ||
-                    $0.title.localizedCaseInsensitiveContains(searchQuery)
-                }
-                
-                let weightedResults = filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
-                    var tab = tab
-                    let host = tab.host
-                    
-                    tab.searchRating = 0
-                    
-                    var scoreMultiplier = 10
-                    
-                    for hostPartIndex in tab.hostParts.indices {
-                        scoreMultiplier -= hostPartIndex
-                        
-                        if scoreMultiplier < 1 {
-                            scoreMultiplier = 1
-                        }
-                        
-                        let hostPart = tab.hostParts[hostPartIndex]
-                        
-                        if hostPart == "No title" {
-                            continue
-                        }
-                        
-                        if hostPart.starts(with: _searchQuery) {
-                            tab.searchRating += 5*scoreMultiplier
-                        }
-                        else if hostPart.localizedCaseInsensitiveContains(searchQuery) {
-                            tab.searchRating += 2
-                        }
-                    }
-                    
-                    if tab.searchRating == 0 {
-                        if host.localizedCaseInsensitiveContains(searchQuery) {
-                            tab.searchRating += 1
-                        }
-                    }
-
-                    if tab.domainZone.localizedCaseInsensitiveContains(searchQuery) {
-                        tab.searchRating += 1
-                    }
-                    
-                    if tab.title.starts(with: _searchQuery) {
-                        tab.searchRating += 4
-                    }
-                    else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
-                        tab.searchRating += 1
-                    }
-
-                    return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
-                }
-                
-                return weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
-            }
+    @State private var filteredTabs: [TabForSearch] = []
+    
+    func filterTabs() {
+        filteredTabs = tabsForSearch
+        guard !searchQuery.isEmpty else { return }
+        
+        let _searchQuery = searchQuery.lowercased()
+        
+        let _filteredTabs = tabsForSearch.filter {
+            $0.host.localizedCaseInsensitiveContains(searchQuery) ||
+            $0.title.localizedCaseInsensitiveContains(searchQuery)
         }
+        
+        let weightedResults = _filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
+            var tab = tab
+            let host = tab.host
+            
+            tab.searchRating = 0
+            
+            var scoreMultiplier = 10
+            
+            for hostPartIndex in tab.hostParts.indices {
+                scoreMultiplier -= hostPartIndex
+                
+                if scoreMultiplier < 1 {
+                    scoreMultiplier = 1
+                }
+                
+                let hostPart = tab.hostParts[hostPartIndex]
+                
+                if hostPart == "No title" {
+                    continue
+                }
+                
+                if hostPart.starts(with: _searchQuery) {
+                    tab.searchRating += 5*scoreMultiplier
+                }
+                else if hostPart.localizedCaseInsensitiveContains(searchQuery) {
+                    tab.searchRating += 2
+                }
+            }
+            
+            if tab.searchRating == 0 {
+                if host.localizedCaseInsensitiveContains(searchQuery) {
+                    tab.searchRating += 1
+                }
+            }
+
+            if tab.domainZone.localizedCaseInsensitiveContains(searchQuery) {
+                tab.searchRating += 1
+            }
+            
+            if tab.title.starts(with: _searchQuery) {
+                tab.searchRating += 4
+            }
+            else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
+                tab.searchRating += 1
+            }
+
+            return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
+        }
+        
+        filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
+    }
 
     var body: some View {
         VStack {
@@ -133,8 +133,8 @@ struct HelloWorldView: View {
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        ForEach(filteredTabIDs.indices, id: \.self) { id in
-                            let tab = filteredTabIDs[id]
+                        ForEach(filteredTabs.indices, id: \.self) { id in
+                            let tab = filteredTabs[id]
                             let pageTitle = tab.title
                             let pageHost = tab.host
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -149,7 +149,7 @@ struct HelloWorldView: View {
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 10).padding(.bottom, id != filteredTabIDs.indices.last ? 10 : 20)
+                                .padding(.top, 10).padding(.bottom, id != filteredTabs.indices.last ? 10 : 20)
                                 .padding(.leading, 10).padding(.trailing, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(.blue.opacity(
@@ -162,7 +162,7 @@ struct HelloWorldView: View {
                                     openSafariAndAskToSwitchTabs()
                                 }
                             
-                            if id != filteredTabIDs.indices.last && id != filteredTabIDs.indices.first {
+                            if id != filteredTabs.indices.last && id != filteredTabs.indices.first {
                                 Divider().background(.gray.opacity(0.01))
                             }
                         }
@@ -224,10 +224,12 @@ struct HelloWorldView: View {
             if event.keyCode == 51 {
                 if !searchQuery.isEmpty {
                     searchQuery.removeLast()
+                    filterTabs()
                 }
                 return nil
             }
             searchQuery.append(event.charactersIgnoringModifiers ?? "")
+            filterTabs()
             return nil
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
@@ -275,10 +277,10 @@ struct HelloWorldView: View {
     }
 
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        if filteredTabIDs.isEmpty {
+        if filteredTabs.isEmpty {
             return 0
         }
-        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabIDs.count)
+        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabs.count)
     }
 
     private func bringWindowToFront() {
@@ -309,13 +311,14 @@ struct HelloWorldView: View {
         tabsForSearch = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
         
         searchQuery = ""
+        filterTabs()
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
     }
 
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
-        if filteredTabIDs.isEmpty{
+        if filteredTabs.isEmpty{
             openSafariAndHideTabSwitcherUI()
             return
         }
@@ -323,7 +326,7 @@ struct HelloWorldView: View {
     }
 
     func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = filteredTabIDs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
+        let indexOfTabToSwitchToInSafari = filteredTabs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
