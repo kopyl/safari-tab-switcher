@@ -121,15 +121,15 @@ struct HelloWorldView: View {
     var body: some View {
         VStack {
             TextField("Search among ^[\(tabIDsWithTitleAndHost.count) \("tab")](inflect: true)", text: $searchQuery)
-                            .padding(10)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: searchQuery) { query in
-                                if query.isEmpty {
-                                    indexOfTabToSwitchTo = 1
-                                } else {
-                                    indexOfTabToSwitchTo = 0
-                                }
-                            }
+            .padding(10)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .onChange(of: searchQuery) { query in
+                if query.isEmpty {
+                    indexOfTabToSwitchTo = 1
+                } else {
+                    indexOfTabToSwitchTo = 0
+                }
+            }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
