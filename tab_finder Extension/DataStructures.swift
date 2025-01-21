@@ -38,4 +38,10 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
             let filteredElements = elements.filter(isIncluded)
             return OrderedSet(filteredElements)
         }
+    
+    var count: Int {
+        get {
+            return elements.count
+        }
+    }
 }
