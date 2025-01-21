@@ -40,6 +40,7 @@ struct TabForSearch {
         hostParts = host.split(separator: ".")
         hostParts = hostParts.filter { $0 != "www" }
         domainZone = hostParts.last ?? ""
+        guard !hostParts.isEmpty else { return }
         hostParts.removeLast()
         hostParts = hostParts.reversed()
     }
