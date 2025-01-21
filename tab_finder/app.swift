@@ -22,76 +22,99 @@ func formatHost(_ host: String) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
+struct TabForSearch {
+    var id: Int
+    var title: String
+    var host: String
+    var hostParts: [String.SubSequence] = []
+    var domainZone: String.SubSequence = ""
+    var searchRating: Int = 0
+    
+    
+    init(tab: TabInfoWithID){
+        id = tab.id
+        title = tab.title
+        host = tab.host == "" && title == "" ? "No title" : tab.host
+        
+        
+        hostParts = host.split(separator: ".")
+        hostParts = hostParts.filter { $0 != "www" }
+        domainZone = hostParts.last ?? ""
+        hostParts.removeLast()
+        hostParts = hostParts.reversed()
+    }
+}
+
 struct HelloWorldView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost: OrderedSet<TabInfoWithID> = OrderedSet()
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
+    
+    @State private var tabsForSearch: [TabForSearch] = []
 
-    var filteredTabIDs: [TabInfoWithID] {
+    var filteredTabIDs: [TabForSearch] {
             if searchQuery.isEmpty {
-                return tabIDsWithTitleAndHost.elements.reversed()
+                return tabsForSearch
             } else {
                 let _searchQuery = searchQuery.lowercased()
                 
-                let weightedResults = tabIDsWithTitleAndHost.elements.reversed().compactMap { tab -> (tab: TabInfoWithID, score: Int)? in
-                    var host = tab.host
-                    if host == "" {
-                        host = "No title"
-                    }
-                    var score = 0
-
-                    var hostParts = host.split(separator: ".")
-                    hostParts = hostParts.filter { $0 != "www" }
-                    let domainZone = hostParts.last ?? ""
-                    hostParts.removeLast()
+                let filteredTabs = tabsForSearch.filter {
+                    $0.host.localizedCaseInsensitiveContains(searchQuery) ||
+                    $0.title.localizedCaseInsensitiveContains(searchQuery)
+                }
+                
+                let weightedResults = filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
+                    var tab = tab
+                    let host = tab.host
+                    
+                    tab.searchRating = 0
                     
                     var scoreMultiplier = 10
                     
-                    for hostPartIndex in hostParts.indices {
+                    for hostPartIndex in tab.hostParts.indices {
                         scoreMultiplier -= hostPartIndex
                         
                         if scoreMultiplier < 1 {
                             scoreMultiplier = 1
                         }
                         
-                        let hostPart = hostParts.reversed()[hostPartIndex]
+                        let hostPart = tab.hostParts[hostPartIndex]
                         
                         if hostPart == "No title" {
                             continue
                         }
                         
                         if hostPart.starts(with: _searchQuery) {
-                            score += 5*scoreMultiplier
+                            tab.searchRating += 5*scoreMultiplier
                         }
                         else if hostPart.localizedCaseInsensitiveContains(searchQuery) {
-                            score += 2
+                            tab.searchRating += 2
                         }
                     }
                     
-                    if score == 0 {
-                        // if a users types with ".", i need to do at least something
+                    if tab.searchRating == 0 {
                         if host.localizedCaseInsensitiveContains(searchQuery) {
-                            score += 1
+                            tab.searchRating += 1
                         }
                     }
 
-                    if domainZone.localizedCaseInsensitiveContains(searchQuery) {
-                        score += 1
+                    if tab.domainZone.localizedCaseInsensitiveContains(searchQuery) {
+                        tab.searchRating += 1
                     }
                     
                     if tab.title.starts(with: _searchQuery) {
-                        score += 4
+                        tab.searchRating += 4
                     }
                     else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
-                        score += 1
+                        tab.searchRating += 1
                     }
 
-                    return score > 0 ? (tab, score) : nil
+                    return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
                 }
                 
-                return weightedResults.sorted { $0.score > $1.score }.map { $0.tab }
+                return weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
             }
         }
 
@@ -113,7 +136,7 @@ struct HelloWorldView: View {
                         ForEach(filteredTabIDs.indices, id: \.self) { id in
                             let tab = filteredTabIDs[id]
                             let pageTitle = tab.title
-                            let pageHost = tab.host == "" && pageTitle == "" ? "No title" : tab.host
+                            let pageHost = tab.host
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
@@ -283,6 +306,8 @@ struct HelloWorldView: View {
 
     private func handleNotification(_ notification: Notification) {
         tabIDsWithTitleAndHost = Store.tabIDsWithTitleAndHost
+        tabsForSearch = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
+        
         searchQuery = ""
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
