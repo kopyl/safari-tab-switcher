@@ -120,7 +120,7 @@ struct HelloWorldView: View {
 
     var body: some View {
         VStack {
-            TextField("Search among \(tabIDsWithTitleAndHost.count) tabs", text: $searchQuery)
+            TextField("Search among ^[\(tabIDsWithTitleAndHost.count) \("tab")](inflect: true)", text: $searchQuery)
                             .padding(10)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .onChange(of: searchQuery) { query in
