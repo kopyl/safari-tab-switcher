@@ -121,10 +121,16 @@ struct HelloWorldView: View {
     var body: some View {
         VStack(spacing: -5) {
             let tabsCount = tabIDsWithTitleAndHost.count
-            CustomTextField(
-                text: $searchQuery,
-                placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
-            )
+            HStack(spacing: 15){
+                Image(systemName: "magnifyingglass")
+                    .symbolRenderingMode(.monochrome)
+                    .foregroundStyle(.gray)
+                    .font(.system(size: 22))
+                CustomTextField(
+                    text: $searchQuery,
+                    placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+                )
+            }
             .padding(.leading, 20)
             .padding(.top, -12)
             .padding(.trailing, 20)
