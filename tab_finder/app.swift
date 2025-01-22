@@ -147,7 +147,7 @@ struct HelloWorldView: View {
             }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
-                    VStack(spacing: 0) {
+                    LazyVStack(spacing: 0) {
                         ForEach(filteredTabs.indices, id: \.self) { id in
                             let tab = filteredTabs[id]
                             let pageTitle = tab.title
