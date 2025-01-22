@@ -120,10 +120,18 @@ struct HelloWorldView: View {
 
     var body: some View {
         VStack(spacing: -5) {
-            TextField("Search among ^[\(tabIDsWithTitleAndHost.count) \("tab")](inflect: true)", text: $searchQuery)
-                .padding(.top, -26)
+            let tabsCount = tabIDsWithTitleAndHost.count
+            CustomTextField(
+                text: $searchQuery,
+                placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+            )
+            .padding(.leading, 20)
+            .padding(.top, -12)
+            .padding(.trailing, 20)
+            .padding(.bottom, 26)
+            
+            Divider().background(.gray.opacity(0.01))
 
-            .textFieldStyle(RoundedBorderTextFieldStyle())
             .onChange(of: searchQuery) { query in
                 if query.isEmpty {
                     indexOfTabToSwitchTo = 1
@@ -143,14 +151,14 @@ struct HelloWorldView: View {
 
                             VStack(alignment: .leading, spacing: 15) {
                                 Text(pageHostFormatted)
-                                .font(.system(size: 18))
+                                .font(.system(size: 20))
                                 
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 12))
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 10).padding(.bottom, id != filteredTabs.indices.last ? 10 : 20)
+                                .padding(.top, 20).padding(.bottom, 20)
                                 .padding(.leading, 10).padding(.trailing, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(.blue.opacity(
@@ -163,7 +171,7 @@ struct HelloWorldView: View {
                                     openSafariAndAskToSwitchTabs()
                                 }
                             
-                            if id != filteredTabs.indices.last && id != filteredTabs.indices.first {
+                            if id != filteredTabs.indices.last {
                                 Divider().background(.gray.opacity(0.01))
                             }
                         }

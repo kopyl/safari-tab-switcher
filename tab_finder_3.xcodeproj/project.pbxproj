@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4813F8332D2A8D5C0085D120 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4813F8322D2A8D5C0085D120 /* app.swift */; };
+		4835D5012D40A6C500B775DD /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4835D5002D40A6C500B775DD /* UI.swift */; };
 		48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A033D82D2DC75600BB6F8C /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		4813F8322D2A8D5C0085D120 /* app.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = app.swift; sourceTree = "<group>"; };
+		4835D5002D40A6C500B775DD /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		48534A232D333B3D003FF94A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		48A033D72D2DC75600BB6F8C /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				4813F8322D2A8D5C0085D120 /* app.swift */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
+				4835D5002D40A6C500B775DD /* UI.swift */,
 			);
 			path = tab_finder;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				4813F8332D2A8D5C0085D120 /* app.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48E9EE422D33E20B007BC086 /* Math.swift in Sources */,
+				4835D5012D40A6C500B775DD /* UI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
