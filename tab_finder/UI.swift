@@ -37,18 +37,18 @@ struct CustomTextField: NSViewRepresentable {
 
     func makeNSView(context: Context) -> NSTextField {
         let textField = NSTextField()
-        textField.isBezeled = true
+        textField.isBezeled = false
+        textField.isBordered = false
+        textField.backgroundColor = nil
+
+        textField.focusRingType = .none
+        textField.font = font
+        
         textField.isEditable = false
         textField.isSelectable = false
         textField.delegate = context.coordinator
 
         textField.placeholderAttributedString = getPlaceholderAttributedString()
-
-        textField.focusRingType = .none
-        textField.isBezeled = false
-        textField.isBordered = false
-        textField.backgroundColor = nil
-        textField.font = font
 
         return textField
     }
