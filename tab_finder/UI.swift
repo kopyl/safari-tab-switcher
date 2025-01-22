@@ -44,8 +44,8 @@ struct CustomTextField: NSViewRepresentable {
         textField.focusRingType = .none
         textField.font = font
         
-        textField.isEditable = false
-        textField.isSelectable = false
+        textField.isEditable = true
+        textField.isSelectable = true
         textField.delegate = context.coordinator
 
         textField.placeholderAttributedString = getPlaceholderAttributedString()
@@ -54,7 +54,12 @@ struct CustomTextField: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSTextField, context: Context) {
+        let selectedRange = NSRange(location: nsView.stringValue.count+1, length: 0)
+        
         nsView.stringValue = text
         nsView.placeholderAttributedString = getPlaceholderAttributedString()
+
+        guard let editor = nsView.currentEditor() else { return }
+        editor.selectedRange = selectedRange
     }
 }
