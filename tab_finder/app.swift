@@ -374,10 +374,7 @@ struct VisualEffectBlur: NSViewRepresentable {
         _makeNSView()
     }
 
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
-    }
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
 
 @main
