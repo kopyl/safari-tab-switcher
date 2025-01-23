@@ -218,6 +218,17 @@ struct TabHistoryView: View {
 
             window.setContentSize(NSSize(width: 800, height: 1400))
             window.center()
+            
+            let titlebarBlurView = NSVisualEffectView()
+            titlebarBlurView.material = .sidebar
+            titlebarBlurView.blendingMode = .behindWindow
+            titlebarBlurView.state = .active
+
+            let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
+            titlebarBlurView.frame = titlebarFrame
+            titlebarBlurView.autoresizingMask = [.width, .minYMargin]
+
+            window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
         }
     }
 
