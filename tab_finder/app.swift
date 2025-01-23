@@ -216,9 +216,6 @@ struct TabHistoryView: View {
             window.standardWindowButton(.miniaturizeButton)?.isHidden = true
             window.standardWindowButton(.zoomButton)?.isHidden = true
 
-            window.titleVisibility = .hidden
-            window.titlebarAppearsTransparent = true
-
             window.setContentSize(NSSize(width: 800, height: 1400))
             window.center()
             
@@ -385,5 +382,6 @@ struct MySafariApp: App {
         WindowGroup {
             TabHistoryView()
         }
+        .windowStyle(HiddenTitleBarWindowStyle())
     }
 }
