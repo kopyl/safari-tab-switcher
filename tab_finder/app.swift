@@ -55,6 +55,8 @@ struct TabHistoryView: View {
     
     @State private var filteredTabs: [TabForSearch] = []
     
+    @Environment(\.scenePhase) var scenePhase
+    
     func filterTabs() {
         filteredTabs = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
         guard !searchQuery.isEmpty else { return }
@@ -207,6 +209,10 @@ struct TabHistoryView: View {
         }
         .task {
             hideAppControls()
+        }
+        .onChange(of: scenePhase) { phase in
+            guard !NSEvent.modifierFlags.contains(.option) else { return }
+            openSafariAndAskToSwitchTabs()
         }
     }
 
