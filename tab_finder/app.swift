@@ -219,15 +219,10 @@ struct TabHistoryView: View {
             window.setContentSize(NSSize(width: 800, height: 1400))
             window.center()
             
-            let titlebarBlurView = NSVisualEffectView()
-            titlebarBlurView.material = .sidebar
-            titlebarBlurView.blendingMode = .behindWindow
-            titlebarBlurView.state = .active
-
+            let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
             let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
             titlebarBlurView.frame = titlebarFrame
             titlebarBlurView.autoresizingMask = [.width, .minYMargin]
-
             window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
         }
     }
@@ -366,13 +361,17 @@ struct TabHistoryView: View {
 struct VisualEffectBlur: NSViewRepresentable {
     var material: NSVisualEffectView.Material
     var blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
+    
+    func _makeNSView() -> NSVisualEffectView {
         let visualEffectView = NSVisualEffectView()
         visualEffectView.material = material
         visualEffectView.blendingMode = blendingMode
         visualEffectView.state = .active
         return visualEffectView
+    }
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        _makeNSView()
     }
 
     func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
