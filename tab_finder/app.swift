@@ -205,6 +205,9 @@ struct TabHistoryView: View {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
         }
+        .task {
+            hideAppControls()
+        }
     }
 
     func hideAppControls() {
@@ -306,7 +309,6 @@ struct TabHistoryView: View {
 
     private func bringWindowToFront() {
         NSApp.activate(ignoringOtherApps: true)
-        hideAppControls()
     }
 
     private func removeDistributedNotificationListener() {
