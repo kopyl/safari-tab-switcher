@@ -46,7 +46,7 @@ struct TabForSearch {
     }
 }
 
-struct HelloWorldView: View {
+struct TabHistoryView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost: OrderedSet<TabInfoWithID> = OrderedSet()
     @State private var notificationObserver: NSObjectProtocol?
@@ -374,7 +374,7 @@ struct VisualEffectBlur: NSViewRepresentable {
 struct MySafariApp: App {
     var body: some Scene {
         WindowGroup {
-            HelloWorldView()
+            TabHistoryView()
         }
     }
 }
