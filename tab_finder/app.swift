@@ -136,7 +136,7 @@ struct TabHistoryView: View {
             .padding(.leading, 20)
             .padding(.top, -12)
             .padding(.trailing, 20)
-            .padding(.bottom, 26)
+            .padding(.bottom, 26	)
             
             Divider().background(.gray.opacity(0.01))
 
@@ -157,13 +157,15 @@ struct TabHistoryView: View {
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
-                            VStack(alignment: .leading, spacing: 10) {
+                            HStack(alignment: .center) {
                                 Text(pageHostFormatted)
-                                .font(.system(size: 25))
+                                .font(.system(size: 18))
                                 .foregroundStyle(
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? .white : .primary.opacity(0.9)
                                 )
+                                
+                                Spacer()
                                 
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 13))
@@ -174,9 +176,8 @@ struct TabHistoryView: View {
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 20).padding(.bottom, 20)
+                                .padding(.top, 12).padding(.bottom, 12)
                                 .padding(.leading, 10).padding(.trailing, 10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(.blue.opacity(
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? 1 : 0))
@@ -192,6 +193,7 @@ struct TabHistoryView: View {
                             }
                         }
                     }
+                    .padding(.top, 5)
                     .frame(minWidth: 800)
                 }
                 .onChange(of: indexOfTabToSwitchTo) { newIndex in
