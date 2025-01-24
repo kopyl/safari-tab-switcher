@@ -164,8 +164,7 @@ struct TabHistoryView: View {
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? .white : .primary.opacity(0.9)
                                 )
-                                
-                                Spacer()
+                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 13))
@@ -173,6 +172,7 @@ struct TabHistoryView: View {
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? .white : Color.primary
                                 )
+                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
