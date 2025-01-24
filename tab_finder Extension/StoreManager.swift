@@ -36,15 +36,12 @@ struct Store {
 
     static var tabIDsWithTitleAndHost: OrderedSet {
             get {
-                if let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") {
-                    return OrderedSet(decode([TabInfoWithID].self, from: data) ?? [])
-                }
-                return OrderedSet([])
+                guard let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") else { return OrderedSet([]) }
+                return OrderedSet(decode([TabInfoWithID].self, from: data) ?? [])
             }
             set {
-                if let encodedData = encode(OrderedSet(newValue.tabs).tabs) {
-                    userDefaults.set(encodedData, forKey: "tabIDsWithTitleAndHost")
-                }
+                guard let encodedData = encode(OrderedSet(newValue.tabs).tabs) else { return }
+                userDefaults.set(encodedData, forKey: "tabIDsWithTitleAndHost")
             }
         }
 }
