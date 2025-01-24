@@ -1,4 +1,4 @@
-struct OrderedSet: Sequence {
+struct Tabs: Sequence {
     public var tabs: [TabInfoWithID] = []
     private var seenIDs: Set<Int> = []
     
@@ -34,9 +34,9 @@ struct OrderedSet: Sequence {
         tabs.insert(contentsOf: elementsToPrepend, at: 0)
     }
     
-    func filter(_ isIncluded: (Element) -> Bool) -> OrderedSet {
+    func filter(_ isIncluded: (Element) -> Bool) -> Tabs {
             let filteredElements = tabs.filter(isIncluded)
-            return OrderedSet(filteredElements)
+            return Tabs(filteredElements)
         }
     
     var count: Int {

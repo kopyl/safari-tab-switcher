@@ -34,14 +34,14 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
 
-    static var tabIDsWithTitleAndHost: OrderedSet {
+    static var tabIDsWithTitleAndHost: Tabs {
             get {
-                guard let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") else { return OrderedSet() }
-                guard let decodedData = decode([TabInfoWithID].self, from: data) else { return OrderedSet() }
-                return OrderedSet(decodedData)
+                guard let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") else { return Tabs() }
+                guard let decodedData = decode([TabInfoWithID].self, from: data) else { return Tabs() }
+                return Tabs(decodedData)
             }
             set {
-                guard let encodedData = encode(OrderedSet(newValue.tabs).tabs) else { return }
+                guard let encodedData = encode(Tabs(newValue.tabs).tabs) else { return }
                 userDefaults.set(encodedData, forKey: "tabIDsWithTitleAndHost")
             }
         }

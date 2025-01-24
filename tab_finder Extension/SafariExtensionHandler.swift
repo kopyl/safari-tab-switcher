@@ -17,7 +17,7 @@ func addSpecificTabToHistory(tabId: Int, tabs: [SFSafariTab]) async {
     Store.tabIDsWithTitleAndHost = tabsMutated
 }
 
-func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet) async -> OrderedSet {
+func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
 
     var tabsToPrepend: [TabInfoWithID] = []
@@ -31,7 +31,7 @@ func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHist
     return tabsFromNavigationHistoryMutated
 }
 
-func addNewTabToHistory(_ window: SFSafariWindow, _ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet) async -> OrderedSet {
+func addNewTabToHistory(_ window: SFSafariWindow, _ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsMutated = tabsFromNavigationHistory
 
     guard let activeTab = await window.activeTab() else {
@@ -48,14 +48,14 @@ func addNewTabToHistory(_ window: SFSafariWindow, _ tabs: [SFSafariTab], _ tabsF
     return tabsMutated
 }
 
-func removeNonExistentTabsFromHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet) async -> OrderedSet {
+func removeNonExistentTabsFromHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     return tabsFromNavigationHistory.filter { tab in
         tabs.indices.contains(tab.id)
     }
 }
 
-func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet) async -> OrderedSet {
-    var allTabsInfoUpdated = OrderedSet()
+func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
+    var allTabsInfoUpdated = Tabs()
     
     for historyTab in tabsFromNavigationHistory {
         let safariTab = tabs[historyTab.id]
@@ -66,7 +66,7 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
     return allTabsInfoUpdated
 }
 
-func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: OrderedSet) async -> OrderedSet {
+func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsHistoryMutated = tabsFromNavigationHistory
     tabsHistoryMutated = await addAllExistingTabsToHistory(tabs, tabsHistoryMutated)
     tabsHistoryMutated = await removeNonExistentTabsFromHistory(tabs, tabsHistoryMutated)
