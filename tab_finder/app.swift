@@ -157,16 +157,16 @@ struct TabHistoryView: View {
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                             let pageHostFormatted = formatHost(pageHost)
 
-                            VStack(alignment: .leading, spacing: 15) {
+                            VStack(alignment: .leading, spacing: 10) {
                                 Text(pageHostFormatted)
-                                .font(.system(size: 20))
+                                .font(.system(size: 25))
                                 .foregroundStyle(
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
-                                    ? .white : Color.primary
+                                    ? .white : .primary.opacity(0.9)
                                 )
                                 
                                 Text(pageTitleFormatted)
-                                .font(.system(size: 12))
+                                .font(.system(size: 13))
                                 .foregroundStyle(
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? .white : Color.primary
