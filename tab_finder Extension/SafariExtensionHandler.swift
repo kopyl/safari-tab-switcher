@@ -107,9 +107,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                     tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
                     
                     Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
+    
+                    postDistributedNotification()
                 }
             }
-            postDistributedNotification()
         }
     }
 
