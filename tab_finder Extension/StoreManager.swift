@@ -1,7 +1,7 @@
 import Foundation
 import SafariServices
 
-struct TabInfoWithID: Codable, Hashable, Identifiable {
+struct TabInfoWithID: Codable {
     var id: Int
     var title: String = ""
     var host: String = ""
