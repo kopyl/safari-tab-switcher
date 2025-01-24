@@ -26,7 +26,7 @@ func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHist
         let tabInfo = await Tab(tabId: tabId ?? -1, tab: tab)
         tabsToPrepend.append(tabInfo)
     }
-    tabsFromNavigationHistoryMutated.append(_tabs: tabsToPrepend)
+    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend)
 
     return tabsFromNavigationHistoryMutated
 }

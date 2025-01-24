@@ -23,7 +23,7 @@ struct Tabs: Sequence {
         seenIDs.insert(tab.id)
     }
     
-    mutating func append(_tabs: [Tab]) {
+    mutating func prepend(contentsOf _tabs: [Tab]) {
         var tabsToPrepend: [Tab] = []
         for tab in _tabs {
             if seenIDs.contains(tab.id) {
@@ -31,7 +31,7 @@ struct Tabs: Sequence {
             }
             tabsToPrepend.append(tab)
         }
-        tabs.insert(contentsOf: tabsToPrepend, at: 0)
+        tabs.insert(contentsOf: _tabs, at: 0)
     }
     
     func filter(_ tab: (Tab) -> Bool) -> Tabs {
