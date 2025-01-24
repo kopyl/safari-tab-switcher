@@ -160,9 +160,17 @@ struct TabHistoryView: View {
                             VStack(alignment: .leading, spacing: 15) {
                                 Text(pageHostFormatted)
                                 .font(.system(size: 20))
+                                .foregroundStyle(
+                                    id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    ? .white : Color.primary
+                                )
                                 
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 12))
+                                .foregroundStyle(
+                                    id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    ? .white : Color.primary
+                                )
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
