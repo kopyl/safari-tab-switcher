@@ -12,7 +12,7 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
 
 func addSpecificTabToHistory(tabId: Int, tabs: [SFSafariTab]) async {
     var tabsMutated = Store.tabIDsWithTitleAndHost
-    let tabIDsWithTitleAndHost = await Tab(tabId: tabId, tab: tabs[tabId])
+    let tabIDsWithTitleAndHost = await Tab(id: tabId, tab: tabs[tabId])
     tabsMutated.append(tabIDsWithTitleAndHost)
     Store.tabIDsWithTitleAndHost = tabsMutated
 }
@@ -23,7 +23,7 @@ func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHist
     var tabsToPrepend: [Tab] = []
     for tab in tabs {
         let tabId = tabs.firstIndex(of: tab)
-        let tabInfo = await Tab(tabId: tabId ?? -1, tab: tab)
+        let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
         tabsToPrepend.append(tabInfo)
     }
     tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend)
@@ -41,7 +41,7 @@ func addNewTabToHistory(_ window: SFSafariWindow, _ tabs: [SFSafariTab], _ tabsF
         return tabsMutated
     }
     
-    let tabInfo = await Tab(tabId: changedToTabIndex, tab: activeTab)
+    let tabInfo = await Tab(id: changedToTabIndex, tab: activeTab)
 
     tabsMutated.append(tabInfo)
 
@@ -59,7 +59,7 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
     
     for historyTab in tabsFromNavigationHistory {
         let safariTab = tabs[historyTab.id]
-        let tabInfo = await Tab(tabId: historyTab.id, tab: safariTab)
+        let tabInfo = await Tab(id: historyTab.id, tab: safariTab)
         allTabsInfoUpdated.append(tabInfo)
     }
     

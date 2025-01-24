@@ -6,8 +6,8 @@ struct Tab: Codable {
     var title: String = ""
     var host: String = ""
     
-    init(tabId: Int, tab: SFSafariTab) async {
-        self.id = tabId
+    init(id: Int, tab: SFSafariTab) async {
+        self.id = id
         await setTitleAndHostFromTab(tab: tab)
     }
     
