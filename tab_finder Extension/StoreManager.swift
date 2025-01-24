@@ -36,8 +36,9 @@ struct Store {
 
     static var tabIDsWithTitleAndHost: OrderedSet {
             get {
-                guard let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") else { return OrderedSet([]) }
-                return OrderedSet(decode([TabInfoWithID].self, from: data) ?? [])
+                guard let data = userDefaults.data(forKey: "tabIDsWithTitleAndHost") else { return OrderedSet() }
+                guard let decodedData = decode([TabInfoWithID].self, from: data) else { return OrderedSet() }
+                return OrderedSet(decodedData)
             }
             set {
                 guard let encodedData = encode(OrderedSet(newValue.tabs).tabs) else { return }
