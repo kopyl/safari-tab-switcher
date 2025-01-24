@@ -31,7 +31,7 @@ struct TabForSearch {
     var searchRating: Int = 0
     
     
-    init(tab: TabInfoWithID){
+    init(tab: Tab){
         id = tab.id
         title = tab.title
         host = tab.host == "" && title == "" ? "No title" : tab.host

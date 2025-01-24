@@ -1,7 +1,7 @@
 import Foundation
 import SafariServices
 
-struct TabInfoWithID: Codable {
+struct Tab: Codable {
     var id: Int
     var title: String = ""
     var host: String = ""
@@ -38,7 +38,7 @@ struct Store {
     static var tabIDsWithTitleAndHost: Tabs {
             get {
                 guard let data = userDefaults.data(forKey: key) else { return Tabs() }
-                guard let decodedData = decode([TabInfoWithID].self, from: data) else { return Tabs() }
+                guard let decodedData = decode([Tab].self, from: data) else { return Tabs() }
                 return Tabs(decodedData)
             }
             set {

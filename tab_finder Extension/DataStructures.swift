@@ -1,10 +1,10 @@
 struct Tabs: Sequence {
-    public var tabs: [TabInfoWithID] = []
+    public var tabs: [Tab] = []
     private var seenIDs: Set<Int> = []
     
     init() {}
     
-    init(_ tabs: [TabInfoWithID]) {
+    init(_ tabs: [Tab]) {
         for tab in tabs {
             append(tab)
         }
@@ -12,7 +12,7 @@ struct Tabs: Sequence {
 
     var isEmpty: Bool { tabs.isEmpty }
 
-    mutating func append(_ tab: Element) {
+    mutating func append(_ tab: Tab) {
         if seenIDs.contains(tab.id) {
             if let index = tabs.firstIndex(where: { $0.id == tab.id }) {
                 tabs.remove(at: index)
@@ -23,19 +23,19 @@ struct Tabs: Sequence {
         seenIDs.insert(tab.id)
     }
     
-    mutating func append(contentsOf: [Element]) {
-        var elementsToPrepend: [Element] = []
-        for element in contentsOf {
-            if seenIDs.contains(element.id) {
+    mutating func append(_tabs: [Tab]) {
+        var tabsToPrepend: [Tab] = []
+        for tab in _tabs {
+            if seenIDs.contains(tab.id) {
                 continue
             }
-            elementsToPrepend.append(element)
+            tabsToPrepend.append(tab)
         }
-        tabs.insert(contentsOf: elementsToPrepend, at: 0)
+        tabs.insert(contentsOf: tabsToPrepend, at: 0)
     }
     
-    func filter(_ isIncluded: (Element) -> Bool) -> Tabs {
-            let filteredElements = tabs.filter(isIncluded)
+    func filter(_ tab: (Tab) -> Bool) -> Tabs {
+            let filteredElements = tabs.filter(tab)
             return Tabs(filteredElements)
         }
     
@@ -45,7 +45,7 @@ struct Tabs: Sequence {
         }
     }
     
-    func makeIterator() -> IndexingIterator<[TabInfoWithID]> {
+    func makeIterator() -> IndexingIterator<[Tab]> {
         return tabs.makeIterator()
     }
 }
