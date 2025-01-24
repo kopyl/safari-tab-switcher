@@ -1,6 +1,27 @@
 import Foundation
 import SafariServices
 
+struct _Window: Codable {
+    var tabs: Tabs
+    var combinedID: String
+    
+    init(tabs: Tabs) {
+        self.tabs = tabs
+        self.combinedID = tabs.map{$0.title}.joined()
+    }
+    
+    enum CodingKeys: String, CodingKey {
+            case tabs
+            case combinedID
+        }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.tabs = try container.decode(Tabs.self, forKey: .tabs)
+        self.combinedID = try container.decode(String.self, forKey: .combinedID)
+    }
+}
+
 struct Tab: Codable {
     var id: Int
     var title: String = ""
@@ -8,6 +29,11 @@ struct Tab: Codable {
     
     init(id: Int, tab: SFSafariTab) async {
         self.id = id
+        await setTitleAndHostFromTab(tab: tab)
+    }
+    
+    init(tab: SFSafariTab) async {
+        self.id = -1
         await setTitleAndHostFromTab(tab: tab)
     }
     
@@ -33,17 +59,30 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
-    private static let key = "tabIDsWithTitleAndHost"
+    private static let tabsStoreKey = "tabIDsWithTitleAndHost"
+    private static let windowsStoreKey = "windows"
 
     static var tabIDsWithTitleAndHost: Tabs {
             get {
-                guard let data = userDefaults.data(forKey: key) else { return Tabs() }
+                guard let data = userDefaults.data(forKey: tabsStoreKey) else { return Tabs() }
                 guard let decodedData = decode([Tab].self, from: data) else { return Tabs() }
                 return Tabs(decodedData)
             }
             set {
                 guard let encodedData = encode(Tabs(newValue.tabs).tabs) else { return }
-                userDefaults.set(encodedData, forKey: key)
+                userDefaults.set(encodedData, forKey: tabsStoreKey)
+            }
+        }
+    
+    static var windows: Windows {
+            get {
+                guard let data = userDefaults.data(forKey: windowsStoreKey) else { return Windows() }
+                guard let decodedData = decode([_Window].self, from: data) else { return Windows() }
+                return Windows(decodedData)
+            }
+            set {
+                guard let encodedData = encode(newValue.windows) else { return }
+                userDefaults.set(encodedData, forKey: windowsStoreKey)
             }
         }
 }

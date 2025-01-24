@@ -5,7 +5,7 @@ class FileLogger {
     static let shared = FileLogger()
     private let logFileURL: URL
 
-    private init() {
+private init() {
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         logFileURL = documentsURL.appendingPathComponent("SafariExtensionLogs.txt")

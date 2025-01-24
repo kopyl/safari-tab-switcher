@@ -74,6 +74,52 @@ func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async
     return tabsHistoryMutated
 }
 
+func saveWindows(tabsFromNavigationHistory: Tabs) async {
+    
+    var windowsFromNavigationHistory = Store.windows
+    
+    let allWindows = await SFSafariApplication.allWindows()
+    
+    let newWindow = _Window(tabs: tabsFromNavigationHistory)
+    
+    
+    
+    if allWindows.count > windowsFromNavigationHistory.windows.count {
+        windowsFromNavigationHistory.append(newWindow)
+        Store.windows = windowsFromNavigationHistory
+        return
+    }
+
+    else if allWindows.count < windowsFromNavigationHistory.windows.count {
+        var newWindows = Windows()
+        
+        for window in allWindows {
+            var tabs = Tabs()
+            
+            let allTabs = await window.allTabs()
+            for _tab in allTabs {
+                let tab = await Tab(tab: _tab)
+                tabs.append(tab)
+            }
+            let newWindow = _Window(tabs: tabs)
+            newWindows.append(newWindow)
+        }
+        
+        windowsFromNavigationHistory.removeNonExisting(newWindows)
+        
+        Store.windows = windowsFromNavigationHistory
+
+    }
+    
+    do {
+        try windowsFromNavigationHistory.replace(newWindow)
+        Store.windows = windowsFromNavigationHistory
+    }
+    catch let error {
+        log(error)
+    }
+}
+
 enum JScommands: String {
     case opttab
 }
@@ -137,6 +183,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
 
             Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
+            
+            await saveWindows(tabsFromNavigationHistory: tabsFromNavigationHistory)
         }
         validationHandler(true, "")
     }

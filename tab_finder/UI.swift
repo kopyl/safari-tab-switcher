@@ -63,3 +63,22 @@ struct CustomTextField: NSViewRepresentable {
         editor.selectedRange = selectedRange
     }
 }
+
+struct VisualEffectBlur: NSViewRepresentable {
+    var material: NSVisualEffectView.Material
+    var blendingMode: NSVisualEffectView.BlendingMode
+    
+    func _makeNSView() -> NSVisualEffectView {
+        let visualEffectView = NSVisualEffectView()
+        visualEffectView.material = material
+        visualEffectView.blendingMode = blendingMode
+        visualEffectView.state = .active
+        return visualEffectView
+    }
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        _makeNSView()
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
+}
