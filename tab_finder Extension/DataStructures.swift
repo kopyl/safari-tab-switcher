@@ -1,26 +1,26 @@
-struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
-    public var elements: [Element] = []
-    private var seenIDs: Set<Element.ID> = []
+struct OrderedSet: Sequence {
+    public var tabs: [TabInfoWithID] = []
+    private var seenIDs: Set<Int> = []
     
     init() {}
     
-    init(_ elements: [Element]) {
-        for element in elements {
-            append(element)
+    init(_ tabs: [TabInfoWithID]) {
+        for tab in tabs {
+            append(tab)
         }
     }
 
-    var isEmpty: Bool { elements.isEmpty }
+    var isEmpty: Bool { tabs.isEmpty }
 
-    mutating func append(_ element: Element) {
-        if seenIDs.contains(element.id) {
-            if let index = elements.firstIndex(where: { $0.id == element.id }) {
-                elements.remove(at: index)
+    mutating func append(_ tab: Element) {
+        if seenIDs.contains(tab.id) {
+            if let index = tabs.firstIndex(where: { $0.id == tab.id }) {
+                tabs.remove(at: index)
             }
-            seenIDs.remove(element.id)
+            seenIDs.remove(tab.id)
         }
-        elements.append(element)
-        seenIDs.insert(element.id)
+        tabs.append(tab)
+        seenIDs.insert(tab.id)
     }
     
     mutating func append(contentsOf: [Element]) {
@@ -31,23 +31,21 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
             }
             elementsToPrepend.append(element)
         }
-        elements.insert(contentsOf: elementsToPrepend, at: 0)
+        tabs.insert(contentsOf: elementsToPrepend, at: 0)
     }
     
     func filter(_ isIncluded: (Element) -> Bool) -> OrderedSet {
-            let filteredElements = elements.filter(isIncluded)
+            let filteredElements = tabs.filter(isIncluded)
             return OrderedSet(filteredElements)
         }
     
     var count: Int {
         get {
-            return elements.count
+            return tabs.count
         }
     }
-}
-
-extension OrderedSet: Sequence {
-    func makeIterator() -> IndexingIterator<[Element]> {
-        return elements.makeIterator()
+    
+    func makeIterator() -> IndexingIterator<[TabInfoWithID]> {
+        return tabs.makeIterator()
     }
 }

@@ -48,7 +48,7 @@ struct TabForSearch {
 
 struct TabHistoryView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
-    @State private var tabIDsWithTitleAndHost: OrderedSet<TabInfoWithID> = OrderedSet()
+    @State private var tabIDsWithTitleAndHost = OrderedSet()
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
