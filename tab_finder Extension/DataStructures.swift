@@ -45,3 +45,9 @@ struct OrderedSet<Element: Hashable & Identifiable> where Element.ID: Hashable {
         }
     }
 }
+
+extension OrderedSet: Sequence {
+    func makeIterator() -> IndexingIterator<[Element]> {
+        return elements.makeIterator()
+    }
+}

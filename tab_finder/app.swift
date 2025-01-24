@@ -58,7 +58,7 @@ struct TabHistoryView: View {
     @Environment(\.scenePhase) var scenePhase
     
     func filterTabs() {
-        filteredTabs = tabIDsWithTitleAndHost.elements.reversed().map{TabForSearch(tab: $0)}
+        filteredTabs = tabIDsWithTitleAndHost.reversed().map{TabForSearch(tab: $0)}
         guard !searchQuery.isEmpty else { return }
         
         let _searchQuery = searchQuery.lowercased()
