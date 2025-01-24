@@ -40,9 +40,7 @@ struct Tabs: Sequence {
         }
     
     var count: Int {
-        get {
-            return tabs.count
-        }
+        tabs.count
     }
     
     func makeIterator() -> IndexingIterator<[Tab]> {
