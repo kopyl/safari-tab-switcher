@@ -136,7 +136,7 @@ struct TabHistoryView: View {
             .padding(.leading, 20)
             .padding(.top, -12)
             .padding(.trailing, 20)
-            .padding(.bottom, 26	)
+            .padding(.bottom, 26)
             
             Divider().background(.gray.opacity(0.01))
 
