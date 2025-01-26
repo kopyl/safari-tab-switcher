@@ -1,14 +1,5 @@
 import Foundation
 
-enum WindowsParseError: String, LocalizedError {
-    case ArraysCountMismatch
-    case SimilarStringNotFound
-    
-    var errorDescription: String? {
-        rawValue
-    }
-}
-
 struct Windows: Sequence {
     public var windows: [_Window] = []
     private var windowCombinedIDs: Set<String> = []
@@ -25,58 +16,13 @@ struct Windows: Sequence {
     
     func getClosestWindowID(id: String) -> String {
         let windowIDsWithDistances = windowCombinedIDs.compactMap{ _id -> (_id: String, distance: Int) in
-            if _id.isEmpty || id.isEmpty {
-                return (_id, 0)
-            }
-            return (_id, levenshtein(sourceString: id, target: _id))
+            return (_id, LevenshteinDistance.get(id, _id))
         }
         let bestMatch = windowIDsWithDistances.min{$0._id < $1._id}
         return bestMatch?._id ?? windowCombinedIDs.first!
     }
     
-    mutating func removeNonExisting(_ currentWindows: Windows) {
-        var closestMatchesByWindowID: [String] = []
-        for window in currentWindows {
-            let closestMatchByWindowID = getClosestWindowID(id: window.combinedID)
-            closestMatchesByWindowID.append(closestMatchByWindowID)
-        }
-        
-        windows = currentWindows.filter { window in
-            closestMatchesByWindowID.contains(window.combinedID)
-        }
-    }
-    
     mutating func append(_ window: _Window) {
-        windows.append(window)
-        windowCombinedIDs.insert(window.combinedID)
-    }
-    
-    mutating func replace(_ window: _Window) throws {
-        if windowCombinedIDs.isEmpty {
-            append(window)
-        }
-        
-        if windows.count == 1 {
-            guard windowCombinedIDs.count == 1 else {
-                throw WindowsParseError.ArraysCountMismatch
-            }
-            
-            windows.removeFirst()
-            windows.append(window)
-            
-            windowCombinedIDs.removeFirst()
-            windowCombinedIDs.insert(window.combinedID)
-
-            return
-        }
-        
-        let closestWindowID = getClosestWindowID(id: window.combinedID)
-        guard let index = windows.firstIndex(where: { $0.combinedID == closestWindowID }) else {
-            throw WindowsParseError.SimilarStringNotFound
-        }
-        windows.remove(at: index)
-        windowCombinedIDs.remove(closestWindowID)
-        
         windows.append(window)
         windowCombinedIDs.insert(window.combinedID)
     }

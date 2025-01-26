@@ -8,7 +8,7 @@ class FileLogger {
 private init() {
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        logFileURL = documentsURL.appendingPathComponent("SafariExtensionLogs.txt")
+        logFileURL = documentsURL.appendingPathComponent("  ")
         log("Logger file created at \(logFileURL.path)")
 
         if !fileManager.fileExists(atPath: logFileURL.path) {

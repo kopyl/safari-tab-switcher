@@ -74,50 +74,28 @@ func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async
     return tabsHistoryMutated
 }
 
-func saveWindows(tabsFromNavigationHistory: Tabs) async {
-    
-    var windowsFromNavigationHistory = Store.windows
-    
+func saveWindowsWithTabsUnordered() async {
     let allWindows = await SFSafariApplication.allWindows()
-    
-    let newWindow = _Window(tabs: tabsFromNavigationHistory)
-    
-    
-    
-    if allWindows.count > windowsFromNavigationHistory.windows.count {
-        windowsFromNavigationHistory.append(newWindow)
-        Store.windows = windowsFromNavigationHistory
-        return
-    }
-
-    else if allWindows.count < windowsFromNavigationHistory.windows.count {
-        var newWindows = Windows()
+    var newWindows = Windows()
+    for window in allWindows {
         
-        for window in allWindows {
-            var tabs = Tabs()
-            
-            let allTabs = await window.allTabs()
-            for _tab in allTabs {
-                let tab = await Tab(tab: _tab)
-                tabs.append(tab)
-            }
-            let newWindow = _Window(tabs: tabs)
-            newWindows.append(newWindow)
+        var tabs = Tabs()
+        
+        let allTabs = await window.allTabs()
+        var tabsToPrepend: [Tab] = []
+        for tab in allTabs {
+            let tabId = allTabs.firstIndex(of: tab)
+            let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
+            tabsToPrepend.append(tabInfo)
         }
-        
-        windowsFromNavigationHistory.removeNonExisting(newWindows)
-        
-        Store.windows = windowsFromNavigationHistory
+        tabs.prepend(contentsOf: tabsToPrepend)
 
+        let newWindow = _Window(tabs: tabs)
+        newWindows.append(newWindow)
+        
     }
     
-    do {
-        try windowsFromNavigationHistory.replace(newWindow)
-        Store.windows = windowsFromNavigationHistory
-    }
-    catch let error {
-        log(error)
-    }
+    Store.windows = newWindows
 }
 
 enum JScommands: String {
@@ -184,7 +162,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
             Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
             
-            await saveWindows(tabsFromNavigationHistory: tabsFromNavigationHistory)
+            await saveWindowsWithTabsUnordered()
         }
         validationHandler(true, "")
     }
