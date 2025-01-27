@@ -146,9 +146,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             Task{
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
-
-                    let currentWinowID = await getWindowCombinedID(window: window)
-                    guard var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs else { return }
+                    guard var tabsFromNavigationHistory = Store.windows.windows.last?.tabs else { return }
                     let tabs = await window.allTabs()
                     
                     tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
@@ -178,7 +176,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         Task{
             let currentWinowID = await getWindowCombinedID(window: window)
             
-            guard var tabsFromNavigationHistory = Store.windows.getClosest(windowCombinedID: currentWinowID)?.tabs else { return }
+            var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs ?? _Window(tabs: Tabs()).tabs
+            
             let tabs = await window.allTabs()
 
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
@@ -193,3 +192,4 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         return SafariExtensionViewController.shared
     }
 }
+
