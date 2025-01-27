@@ -2,7 +2,7 @@ import Foundation
 
 struct Windows: Sequence {
     public var windows: [_Window] = []
-    private var windowCombinedIDs: Set<String> = []
+    public var windowCombinedIDs: Set<String> = []
     
     init() {}
     
@@ -25,10 +25,35 @@ struct Windows: Sequence {
     mutating func append(_ window: _Window) {
         windows.append(window)
         windowCombinedIDs.insert(window.combinedID)
+        self.deduplicate()
     }
     
     func makeIterator() -> IndexingIterator<[_Window]> {
         return windows.makeIterator()
+    }
+    
+    func filter(_ window: (_Window) -> Bool) -> Windows {
+            let filteredElements = windows.filter(window)
+            return Windows(filteredElements)
+        }
+    
+    mutating func deduplicate() {
+        var seenCombinedIDs = Set<String>()
+        var uniqueWindows = [_Window]()
+
+        for window in windows.reversed() {
+            if !seenCombinedIDs.contains(window.combinedID) {
+                seenCombinedIDs.insert(window.combinedID)
+                uniqueWindows.append(window)
+            }
+        }
+
+        self.windows = uniqueWindows.reversed()
+        self.windowCombinedIDs = seenCombinedIDs
+    }
+    
+    func get(windowCombinedID: String) -> _Window? {
+        return windows.first(where: {$0.combinedID == windowCombinedID})
     }
 }
 
