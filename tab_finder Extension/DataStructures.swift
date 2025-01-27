@@ -15,19 +15,6 @@ struct Windows: Sequence {
         self.windowCombinedIDs = Set(windows.map{$0.combinedID})
     }
     
-    func getClosestWindowID(id: String) -> String {
-        let windowIDsWithDistances = windowCombinedIDs.compactMap{ _id -> (_id: String, distance: Int) in
-            return (_id, LevenshteinDistance.get(id, _id))
-        }
-        let bestMatch = windowIDsWithDistances.min{$0._id < $1._id}
-        return bestMatch?._id ?? windowCombinedIDs.first!
-    }
-    
-    func getClosest(windowCombinedID: String) -> _Window? {
-        let closestWindowID = getClosestWindowID(id: windowCombinedID)
-        return windows.first(where: {$0.combinedID == closestWindowID})
-    }
-    
     mutating func append(_ window: _Window) {
         windows.append(window)
         windowCombinedIDs.insert(window.combinedID)
