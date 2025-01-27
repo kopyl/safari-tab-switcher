@@ -11,16 +11,10 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
 }
 
 func addSpecificTabToHistory(tabId: Int, tabs: [SFSafariTab]) async {
-    var windows = Store.windows
-    guard var tabsMutated = windows.windows.last?.tabs else { return }
-    
+    var tabsMutated = Store.windows.windows.last?.tabs ?? Store.tabIDsWithTitleAndHost
     let tabIDsWithTitleAndHost = await Tab(id: tabId, tab: tabs[tabId])
     tabsMutated.append(tabIDsWithTitleAndHost)
-    
-    let currentWindow = _Window(tabs: tabsMutated)
-    windows.append(currentWindow)
-    
-    Store.windows = windows
+    Store.tabIDsWithTitleAndHost = tabsMutated
 }
 
 func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
@@ -148,11 +142,13 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 if let window = await tab.containingWindow() {
 
                     let currentWinowID = await getWindowCombinedID(window: window)
-                    guard var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs else { return }
+                    var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs ?? Store.tabIDsWithTitleAndHost
                     let tabs = await window.allTabs()
                     
                     tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
                     await saveWindows(tabs: tabsFromNavigationHistory)
+                    
+                    Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
     
                     postDistributedNotification()
                 }
@@ -178,11 +174,13 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         Task{
             let currentWinowID = await getWindowCombinedID(window: window)
             
-            guard var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs else { return }
+            var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs ?? Store.tabIDsWithTitleAndHost
             let tabs = await window.allTabs()
 
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
             tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
+
+            Store.tabIDsWithTitleAndHost = tabsFromNavigationHistory
             
             await saveWindows(tabs: tabsFromNavigationHistory)
         }

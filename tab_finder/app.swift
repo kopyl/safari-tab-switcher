@@ -207,8 +207,7 @@ struct TabHistoryView: View {
 
 
         .onAppear {
-            guard let tabs = Store.windows.windows.last?.tabs else { return }
-            tabIDsWithTitleAndHost = tabs
+            tabIDsWithTitleAndHost = Store.windows.windows.last?.tabs ?? Store.tabIDsWithTitleAndHost
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
@@ -344,8 +343,7 @@ struct TabHistoryView: View {
         }
 
     private func handleNotification(_ notification: Notification) {
-        guard let tabs = Store.windows.windows.last?.tabs else { return }
-        tabIDsWithTitleAndHost = tabs
+        tabIDsWithTitleAndHost = Store.windows.windows.last?.tabs ?? Store.tabIDsWithTitleAndHost
         searchQuery = ""
         filterTabs()
         indexOfTabToSwitchTo = 1

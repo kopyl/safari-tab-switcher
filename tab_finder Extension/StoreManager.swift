@@ -59,8 +59,21 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 
 struct Store {
     private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
+    private static let tabsStoreKey = "tabIDsWithTitleAndHost"
     private static let windowsStoreKey = "windows"
 
+    static var tabIDsWithTitleAndHost: Tabs {
+            get {
+                guard let data = userDefaults.data(forKey: tabsStoreKey) else { return Tabs() }
+                guard let decodedData = decode([Tab].self, from: data) else { return Tabs() }
+                return Tabs(decodedData)
+            }
+            set {
+                guard let encodedData = encode(Tabs(newValue.tabs).tabs) else { return }
+                userDefaults.set(encodedData, forKey: tabsStoreKey)
+            }
+        }
+    
     static var windows: Windows {
             get {
                 guard let data = userDefaults.data(forKey: windowsStoreKey) else { return Windows() }
