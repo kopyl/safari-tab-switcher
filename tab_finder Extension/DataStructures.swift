@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 
 struct Windows: Sequence {
     public var windows: [_Window] = []
@@ -57,8 +58,9 @@ struct Windows: Sequence {
         self.windowCombinedIDs = seenCombinedIDs
     }
     
-    func get(windowCombinedID: String) -> _Window? {
-        return windows.first(where: {$0.combinedID == windowCombinedID})
+    func get(SFWindow: SFSafariWindow) async -> _Window? {
+        let windowID = await SFWindow.id()
+        return windows.first(where: {$0.combinedID == windowID})
     }
 }
 
@@ -110,5 +112,24 @@ struct Tabs: Sequence, Codable {
     
     func makeIterator() -> IndexingIterator<[Tab]> {
         return tabs.makeIterator()
+    }
+}
+
+extension SFSafariWindow {
+    func id() async -> String {
+        var tabs = Tabs()
+        
+        let allTabs = await self.allTabs()
+        var tabsToPrepend: [Tab] = []
+        for tab in allTabs {
+            let tabId = allTabs.firstIndex(of: tab)
+            let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
+            tabsToPrepend.append(tabInfo)
+        }
+        tabs.prepend(contentsOf: tabsToPrepend)
+
+        let newWindow = _Window(tabs: tabs)
+        
+        return newWindow.combinedID
     }
 }

@@ -80,37 +80,16 @@ func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async
     return tabsHistoryMutated
 }
 
-func getWindowCombinedID(window: SFSafariWindow) async -> String {
-    var tabs = Tabs()
-    
-    let allTabs = await window.allTabs()
-    var tabsToPrepend: [Tab] = []
-    for tab in allTabs {
-        let tabId = allTabs.firstIndex(of: tab)
-        let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
-        tabsToPrepend.append(tabInfo)
-    }
-    tabs.prepend(contentsOf: tabsToPrepend)
-
-    let newWindow = _Window(tabs: tabs)
-    
-    return newWindow.combinedID
-}
-
 func saveWindows(tabs: Tabs) async {
     var windows = Store.windows
     let currentWindow = _Window(tabs: tabs)
-    
-    
+
     windows.append(currentWindow)
 
     let allWindows = await SFSafariApplication.allWindows()
     var newWindowCombinedIDs: [String] = []
     for window in allWindows {
-
-        let windowID = await getWindowCombinedID(window: window)
-        newWindowCombinedIDs.append(windowID)
-
+        newWindowCombinedIDs.append(await window.id())
     }
     
     windows = windows.filter{ window in
@@ -174,9 +153,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
-            let currentWinowID = await getWindowCombinedID(window: window)
-            
-            var tabsFromNavigationHistory = Store.windows.get(windowCombinedID: currentWinowID)?.tabs ?? _Window(tabs: Tabs()).tabs
+            var tabsFromNavigationHistory = await Store.windows.get(SFWindow: window)?.tabs ?? _Window(tabs: Tabs()).tabs
             
             let tabs = await window.allTabs()
 
@@ -192,4 +169,3 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         return SafariExtensionViewController.shared
     }
 }
-
