@@ -350,10 +350,7 @@ struct TabHistoryView: View {
 
     private func openSafariAndAskToSwitchTabs() {
         openSafariAndHideTabSwitcherUI()
-        if filteredTabs.isEmpty{
-            openSafariAndHideTabSwitcherUI()
-            return
-        }
+        guard !filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
     }
 
