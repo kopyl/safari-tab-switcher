@@ -52,6 +52,7 @@ struct TabHistoryView: View {
     @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
+    @State private var searchCursorPosition: Int = 0
     
     @State private var filteredTabs: [TabForSearch] = []
     
@@ -130,6 +131,7 @@ struct TabHistoryView: View {
                     .font(.system(size: 22))
                 CustomTextField(
                     text: $searchQuery,
+                    cursorPosition: $searchCursorPosition,
                     placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
                 )
             }
@@ -256,6 +258,20 @@ struct TabHistoryView: View {
                 handleKeyPress(event: event)
                 return nil
             }
+            
+            if event.keyCode == 123 { // left
+                if !searchQuery.isEmpty {
+                    searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
+                }
+                return nil
+            }
+            if event.keyCode == 124 { // right
+                if !searchQuery.isEmpty {
+                    print(searchCursorPosition, searchQuery.count)
+                    searchCursorPosition = min(searchCursorPosition+1, 0)
+                }
+                return nil
+            }
             if event.keyCode == 51 {
                 if !searchQuery.isEmpty {
                     searchQuery.removeLast()
@@ -344,6 +360,7 @@ struct TabHistoryView: View {
         guard let tabs = Store.windows.windows.last?.tabs else { return }
         tabIDsWithTitleAndHost = tabs
         searchQuery = ""
+        searchCursorPosition = 0
         filterTabs()
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
