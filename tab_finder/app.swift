@@ -258,30 +258,7 @@ struct TabHistoryView: View {
                 handleShortcuts(event: event)
                 return nil
             }
-            
-            if event.keyCode == 123 { // left
-                if !searchQuery.isEmpty {
-                    searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
-                }
-                return nil
-            }
-            if event.keyCode == 124 { // right
-                if !searchQuery.isEmpty {
-                    print(searchCursorPosition, searchQuery.count)
-                    searchCursorPosition = min(searchCursorPosition+1, 0)
-                }
-                return nil
-            }
-            if event.keyCode == 51 {
-                if !searchQuery.isEmpty {
-                    searchQuery.removeLast()
-                    filterTabs()
-                }
-                return nil
-            }
-            searchQuery.append(event.charactersIgnoringModifiers ?? "")
-            filterTabs()
-            return nil
+            return handleTyping(event: event)
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
             handleKeyRelease(event: event)
@@ -302,6 +279,32 @@ struct TabHistoryView: View {
     func handleKeyRelease(event: NSEvent) {
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
+    }
+    
+    func handleTyping(event: NSEvent) -> NSEvent? {
+        if event.keyCode == 123 { // left
+            if !searchQuery.isEmpty {
+                searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
+            }
+            return nil
+        }
+        if event.keyCode == 124 { // right
+            if !searchQuery.isEmpty {
+                print(searchCursorPosition, searchQuery.count)
+                searchCursorPosition = min(searchCursorPosition+1, 0)
+            }
+            return nil
+        }
+        if event.keyCode == 51 {
+            if !searchQuery.isEmpty {
+                searchQuery.removeLast()
+                filterTabs()
+            }
+            return nil
+        }
+        searchQuery.append(event.charactersIgnoringModifiers ?? "")
+        filterTabs()
+        return nil
     }
 
     func handleShortcuts(event: NSEvent) {
