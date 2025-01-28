@@ -137,8 +137,6 @@ struct TabHistoryView: View {
             .padding(.top, -12)
             .padding(.trailing, 20)
             .padding(.bottom, 26)
-            
-            Divider().background(.gray.opacity(0.01))
 
             .onChange(of: searchQuery) { query in
                 if query.isEmpty {
@@ -176,21 +174,22 @@ struct TabHistoryView: View {
                                 .opacity(0.65)
                             }
                                 .lineLimit(1)
-                                .padding(.top, 12).padding(.bottom, 12)
-                                .padding(.leading, 10).padding(.trailing, 10)
+                                .padding(.top, 14).padding(.bottom, 14)
+                                .padding(.leading, 18).padding(.trailing, 18)
                                 .background(.blue.opacity(
                                     id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
                                     ? 1 : 0))
                                 .id(id)
                                 .contentShape(Rectangle())
+                                .cornerRadius(6)
+                            
+                                .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, maxWidth: .infinity)
+                                .padding(4)
+                            
                                 .onTapGesture {
                                     indexOfTabToSwitchTo = id
                                     openSafariAndAskToSwitchTabs()
                                 }
-                            
-                            if id != filteredTabs.indices.last {
-                                Divider().background(.gray.opacity(0.01))
-                            }
                         }
                     }
                     .padding(.top, 5)
@@ -231,7 +230,7 @@ struct TabHistoryView: View {
             window.standardWindowButton(.miniaturizeButton)?.isHidden = true
             window.standardWindowButton(.zoomButton)?.isHidden = true
 
-            window.setContentSize(NSSize(width: 800, height: 1400))
+            window.setContentSize(NSSize(width: 800, height: 500))
             window.center()
             
             let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
