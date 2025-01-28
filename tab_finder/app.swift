@@ -290,11 +290,10 @@ struct TabHistoryView: View {
     func handleTypingKeyPresses(event: NSEvent) -> NSEvent? {
         switch TypingKeys(rawValue: event.keyCode) {
         case .arrowLeft:
-            guard !searchQuery.isEmpty else { return nil }
             searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
         case .arrowRight:
-            guard !searchQuery.isEmpty else { return nil }
             searchCursorPosition = min(searchCursorPosition+1, 0)
+
         case .backspace:
             guard !searchQuery.isEmpty else { return nil }
             searchQuery.removeLast()
