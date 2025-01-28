@@ -255,7 +255,7 @@ struct TabHistoryView: View {
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
             if Keys(rawValue: event.keyCode) != nil {
-                handleKeyPress(event: event)
+                handleShortcuts(event: event)
                 return nil
             }
             
@@ -304,7 +304,7 @@ struct TabHistoryView: View {
         openSafariAndAskToSwitchTabs()
     }
 
-    func handleKeyPress(event: NSEvent) {
+    func handleShortcuts(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
         guard !tabIDsWithTitleAndHost.isEmpty else { return }
         guard let key = Keys(rawValue: event.keyCode) else { return }
