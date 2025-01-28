@@ -51,7 +51,6 @@ struct Windows: Sequence {
     }
 }
 
-
 struct Tabs: Sequence, Codable {
     public var tabs: [Tab] = []
     private var seenIDs: Set<Int> = []
