@@ -94,6 +94,12 @@
 		48B48FBC2D2A59620054B680 = {
 			isa = PBXGroup;
 			children = (
+				4849CB5D2D4889F4000BCA77 /* Constants.swift */,
+				48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */,
+				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
+				48A033D72D2DC75600BB6F8C /* DataStructures.swift */,
+				48E9EE412D33E20B007BC086 /* Math.swift */,
+				48D10B0A2D47F9F7007EDBAA /* LevenshteinDistance.swift */,
 				48B48FC72D2A59620054B680 /* tab_finder */,
 				48B48FE52D2A59630054B680 /* tab_finder Extension */,
 				48B48FC62D2A59620054B680 /* Products */,
@@ -117,7 +123,6 @@
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
 				4835D5002D40A6C500B775DD /* UI.swift */,
-				4849CB5D2D4889F4000BCA77 /* Constants.swift */,
 			);
 			path = tab_finder;
 			sourceTree = "<group>";
@@ -126,14 +131,9 @@
 			isa = PBXGroup;
 			children = (
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
-				48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */,
-				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
-				48A033D72D2DC75600BB6F8C /* DataStructures.swift */,
-				48E9EE412D33E20B007BC086 /* Math.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
 				48B48FEA2D2A59630054B680 /* Resources */,
-				48D10B0A2D47F9F7007EDBAA /* LevenshteinDistance.swift */,
 			);
 			path = "tab_finder Extension";
 			sourceTree = "<group>";
