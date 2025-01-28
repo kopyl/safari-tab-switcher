@@ -5,7 +5,7 @@ import Combine
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let extensionBundleIdentifier = "kopyl.tab-finder-8.Extension"
+let extensionBundleIdentifier = "kopyl.tab-finder-9.Extension"
 
 enum Keys: UInt16 {
     case `return` = 36
