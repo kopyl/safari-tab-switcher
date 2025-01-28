@@ -125,7 +125,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             Task{
                 let tab = await page.containingTab()
                 if let window = await tab.containingWindow() {
-                    guard var tabsFromNavigationHistory = Store.windows.windows.last?.tabs else { return }
+                    guard var tabsFromNavigationHistory = await Store.windows.get(SFWindow: window)?.tabs else { return }
                     let tabs = await window.allTabs()
                     
                     tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)

@@ -5,7 +5,7 @@ import Combine
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let extensionBundleIdentifier = "kopyl.tab-finder-6.Extension"
+let extensionBundleIdentifier = "kopyl.tab-finder-8.Extension"
 
 enum Keys: UInt16 {
     case `return` = 36
@@ -207,8 +207,6 @@ struct TabHistoryView: View {
 
 
         .onAppear {
-            guard let tabs = Store.windows.windows.last?.tabs else { return }
-            tabIDsWithTitleAndHost = tabs
             NSApp.hide(nil)
             NSApp.setActivationPolicy(.accessory)
             setupDistributedNotificationListener()
