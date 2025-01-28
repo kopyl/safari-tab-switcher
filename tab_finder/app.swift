@@ -7,13 +7,19 @@ import SafariServices.SFSafariExtensionManager
 
 let extensionBundleIdentifier = "kopyl.tab-finder-9.Extension"
 
-enum Keys: UInt16 {
+enum NavigationKeys: UInt16 {
     case `return` = 36
     case tab = 48
     case backTick = 50
     case escape = 53
     case arrowDown = 125
     case arrowUp = 126
+}
+
+enum TypingKeys: UInt16 {
+    case arrowLeft = 123
+    case arrowRight = 124
+    case backspace = 51
 }
 
 func formatHost(_ host: String) -> String {
@@ -254,11 +260,11 @@ struct TabHistoryView: View {
 
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
-            if Keys(rawValue: event.keyCode) != nil {
-                handleShortcuts(event: event)
+            if NavigationKeys(rawValue: event.keyCode) != nil {
+                handleNavigationKeyPresses(event: event)
                 return nil
             }
-            return handleTyping(event: event)
+            return handleTypingKeyPresses(event: event)
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
             handleKeyRelease(event: event)
@@ -281,36 +287,29 @@ struct TabHistoryView: View {
         openSafariAndAskToSwitchTabs()
     }
     
-    func handleTyping(event: NSEvent) -> NSEvent? {
-        if event.keyCode == 123 { // left
-            if !searchQuery.isEmpty {
-                searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
-            }
-            return nil
+    func handleTypingKeyPresses(event: NSEvent) -> NSEvent? {
+        switch TypingKeys(rawValue: event.keyCode) {
+        case .arrowLeft:
+            guard !searchQuery.isEmpty else { return nil }
+            searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
+        case .arrowRight:
+            guard !searchQuery.isEmpty else { return nil }
+            searchCursorPosition = min(searchCursorPosition+1, 0)
+        case .backspace:
+            guard !searchQuery.isEmpty else { return nil }
+            searchQuery.removeLast()
+            filterTabs()
+        default:
+            searchQuery.append(event.charactersIgnoringModifiers ?? "")
+            filterTabs()
         }
-        if event.keyCode == 124 { // right
-            if !searchQuery.isEmpty {
-                print(searchCursorPosition, searchQuery.count)
-                searchCursorPosition = min(searchCursorPosition+1, 0)
-            }
-            return nil
-        }
-        if event.keyCode == 51 {
-            if !searchQuery.isEmpty {
-                searchQuery.removeLast()
-                filterTabs()
-            }
-            return nil
-        }
-        searchQuery.append(event.charactersIgnoringModifiers ?? "")
-        filterTabs()
         return nil
     }
 
-    func handleShortcuts(event: NSEvent) {
+    func handleNavigationKeyPresses(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
         guard !tabIDsWithTitleAndHost.isEmpty else { return }
-        guard let key = Keys(rawValue: event.keyCode) else { return }
+        guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
 
         switch key {
         case .arrowUp, .backTick:
