@@ -5,23 +5,6 @@ import Combine
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let extensionBundleIdentifier = "kopyl.tab-finder-9.Extension"
-
-enum NavigationKeys: UInt16 {
-    case `return` = 36
-    case tab = 48
-    case backTick = 50
-    case escape = 53
-    case arrowDown = 125
-    case arrowUp = 126
-}
-
-enum TypingKeys: UInt16 {
-    case arrowLeft = 123
-    case arrowRight = 124
-    case backspace = 51
-}
-
 func formatHost(_ host: String) -> String {
     return host
         .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
@@ -346,8 +329,6 @@ struct TabHistoryView: View {
         }
 
     private func setupDistributedNotificationListener() {
-            let notificationName = Notification.Name("com.tabfinder.example.notification")
-            
             notificationObserver = DistributedNotificationCenter.default().addObserver(
                 forName: notificationName,
                 object: nil,
