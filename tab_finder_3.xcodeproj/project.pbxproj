@@ -154,7 +154,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "tab_finder_3" */;
 			buildPhases = (
-				48632C7C2D387A7A0093D7AA /* ShellScript */,
 				48B48FC12D2A59620054B680 /* Sources */,
 				48B48FC22D2A59620054B680 /* Frameworks */,
 				48B48FC32D2A59620054B680 /* Resources */,
@@ -244,27 +243,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		48632C7C2D387A7A0093D7AA /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nkillall -9 \"tab_finder_3\" >/dev/null 2>&1\nkillall -9 \"tab_finder_3 Extension\" >/dev/null 2>&1\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		48B48FC12D2A59620054B680 /* Sources */ = {
