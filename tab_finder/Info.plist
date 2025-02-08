@@ -48,7 +48,7 @@
 	<string>NSApplication</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>This app requires accessibility access to listen for key presses globally.</string>
-	<key>LSApplicationCategory</key>
+	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 </dict>
 </plist>
