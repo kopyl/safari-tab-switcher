@@ -1,6 +1,7 @@
 import Foundation
 
-let extensionBundleIdentifier = "kopyl.tab-finder-10.Extension"
+let bundleID = Bundle.main.bundleIdentifier ?? ""
+let extensionBundleIdentifier = "\(bundleID).Extension"
 
 enum NavigationKeys: UInt16 {
     case `return` = 36
