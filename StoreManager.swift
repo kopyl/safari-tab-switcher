@@ -58,7 +58,7 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 }
 
 struct Store {
-    private static let userDefaults = UserDefaults(suiteName: "com.tabfinder.sharedgroup") ?? UserDefaults.standard
+    private static let userDefaults = UserDefaults(suiteName: "9QNMAN8CT6.tabfinder.sharedgroup") ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
 
     static var windows: Windows {
