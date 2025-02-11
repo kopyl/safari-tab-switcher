@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1520"
-   wasCreatedForAppExtension = "YES"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,24 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "48B48FE02D2A59630054B680"
-               BuildableName = "tab_finder_3 Extension.appex"
-               BlueprintName = "tab_finder_3 Extension"
-               ReferencedContainer = "container:tab_finder_3.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "48B48FC42D2A59620054B680"
-               BuildableName = "tab_finder_3.app"
-               BlueprintName = "tab_finder_3"
-               ReferencedContainer = "container:tab_finder_3.xcodeproj">
+               BuildableName = "Tab Finder.app"
+               BlueprintName = "Tab Finder"
+               ReferencedContainer = "container:Tab Finder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,11 +31,11 @@
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      launchStyle = "1"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      ignoresPersistentStateOnLaunch = "YES"
+      ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
@@ -59,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48B48FC42D2A59620054B680"
-            BuildableName = "tab_finder_3.app"
-            BlueprintName = "tab_finder_3"
-            ReferencedContainer = "container:tab_finder_3.xcodeproj">
+            BuildableName = "Tab Finder.app"
+            BlueprintName = "Tab Finder"
+            ReferencedContainer = "container:Tab Finder.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -70,17 +55,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      askForAppToLaunch = "Yes"
-      launchAutomaticallySubstyle = "2">
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48B48FC42D2A59620054B680"
-            BuildableName = "tab_finder_3.app"
-            BlueprintName = "tab_finder_3"
-            ReferencedContainer = "container:tab_finder_3.xcodeproj">
+            BuildableName = "Tab Finder.app"
+            BlueprintName = "Tab Finder"
+            ReferencedContainer = "container:Tab Finder.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

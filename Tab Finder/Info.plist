@@ -7,15 +7,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>tab_finder</string>
+	<string>Tab Finder</string>
 	<key>CFBundleExecutable</key>
-	<string>tab_finder_3</string>
+	<string>Tab Finder</string>
 	<key>CFBundleIdentifier</key>
 	<string>kopyl.tab-finder</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>tab_finder_3</string>
+	<string>Tab Finder</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
