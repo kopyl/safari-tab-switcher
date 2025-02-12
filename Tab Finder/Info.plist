@@ -11,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Tab Finder</string>
 	<key>CFBundleIdentifier</key>
-	<string>kopyl.tab-finder</string>
+	<string>$(BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
