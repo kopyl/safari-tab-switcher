@@ -38,13 +38,13 @@ struct Tab: Codable {
     }
     
     mutating func setTitleAndHostFromTab(tab: SFSafariTab) async {
-            if let activePage = await tab.activePage() {
-                if let properties = await activePage.properties() {
-                    title = properties.title ?? "No title"
-                    host = properties.url?.host ?? ""
-                }
+        if let activePage = await tab.activePage() {
+            if let properties = await activePage.properties() {
+                title = properties.title ?? "No title"
+                host = properties.url?.host ?? ""
             }
         }
+    }
 }
 
 func encode<T: Codable>(_ value: T) -> Data? {
