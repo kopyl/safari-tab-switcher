@@ -19,3 +19,5 @@ enum TypingKeys: UInt16 {
 }
 
 let notificationName = Notification.Name("com.tabfinder.example.notification")
+
+let appGroup = "9QNMAN8CT6.tabfinder.sharedgroup"
