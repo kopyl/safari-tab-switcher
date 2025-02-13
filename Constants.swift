@@ -21,3 +21,19 @@ enum TypingKeys: UInt16 {
 let notificationName = Notification.Name("com.tabfinder.example.notification")
 
 let appGroup = "9QNMAN8CT6.tabfinder.sharedgroup"
+
+class Copy {
+    class Onboarding {    
+        static let description = "Switch easily between last open tabs in the same way you switch between last open apps"
+        static let title = "Welcome to Tab Finder"
+        static let button = "Start using Tab Finder"
+    }
+}
+
+class AssetNames {
+    class Onboarding {
+        static let left = "onboardingLeft"
+        static let right = "onboardingRight"
+    }
+}
+

@@ -35,6 +35,106 @@ struct TabForSearch {
     }
 }
 
+struct OnboardingImage: View {
+    var name: String
+    
+    var body: some View {
+        if let onboardingImageLeft = NSImage(named: name) {
+            Image(nsImage: onboardingImageLeft)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 458)
+        }
+    }
+}
+
+struct GreetingView: View {
+    func startUsingTabFinder() {
+        if let greetingWindow = NSApp.windows.first {
+            greetingWindow.orderOut(nil)
+            NSApp.setActivationPolicy(.accessory)
+            Store.isUserOnboarded = true
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            HStack(spacing: 33) {
+                OnboardingImage(name: AssetNames.Onboarding.left)
+                OnboardingImage(name: AssetNames.Onboarding.right)
+            }
+            .padding(.top, 41)
+            Spacer()
+            Text(Copy.Onboarding.description)
+                .font(.title3)
+                .padding(.top, 6)
+            Spacer()
+            
+            OnboardingButton {
+                startUsingTabFinder()
+            }
+            .padding(.bottom, 41)
+            .padding(.horizontal, 41)
+        }
+        .frame(width: 759, height: 781)
+        .background(.greetingBg)
+        .onDisappear {
+            startUsingTabFinder()
+        }
+    }
+}
+
+var greetingWindow: NSWindow?
+
+func showGreetingWindow(isOnboarded: Bool) {
+    if isOnboarded == true {
+        NSApp.setActivationPolicy(.accessory)
+        return
+    }
+    
+    let greetingView = NSHostingController(rootView: GreetingView())
+    
+    let window = NSWindow(
+        contentRect: NSRect(x: 0, y: 0, width: 400, height: 200),
+        styleMask: [.titled, .closable, .miniaturizable],
+        backing: .buffered,
+        defer: false
+    )
+    
+    window.titlebarAppearsTransparent = true
+    
+    window.backgroundColor = .greetingBg
+
+    window.contentViewController = greetingView
+    window.title = Copy.Onboarding.title
+    window.center()
+    window.makeKeyAndOrderFront(nil)
+    
+    greetingWindow = window
+}
+
+func hideMainWindow() {
+    if let mainWindow = NSApp.windows.last {
+        mainWindow.orderOut(nil)
+    }
+}
+
+func showMainWindow() {
+    let isUserOnboarded = Store.isUserOnboarded
+    if !isUserOnboarded {
+        if let greetingWindow = NSApp.windows.first {
+            greetingWindow.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+    }
+    
+    if let mainWindow = NSApp.windows.last {
+        mainWindow.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+}
+
 struct TabHistoryView: View {
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost = Tabs()
@@ -46,6 +146,15 @@ struct TabHistoryView: View {
     @State private var filteredTabs: [TabForSearch] = []
     
     @Environment(\.scenePhase) var scenePhase
+    
+    @AppStorage(Store.isUserOnboardedKey, store: Store.userDefaults) private var isUserOnboarded: Bool = false
+    
+    func setUp(isOnboarded: Bool) {
+        if isOnboarded == true {
+            setupDistributedNotificationListener()
+            setupInAppKeyListener()
+        }
+    }
     
     func filterTabs() {
         filteredTabs = tabIDsWithTitleAndHost.reversed().map{TabForSearch(tab: $0)}
@@ -197,26 +306,29 @@ struct TabHistoryView: View {
 
 
         .onAppear {
-            NSApp.hide(nil)
-            NSApp.setActivationPolicy(.accessory)
-            setupDistributedNotificationListener()
-            setupInAppKeyListener()
+            setUp(isOnboarded: isUserOnboarded)
+            showGreetingWindow(isOnboarded: isUserOnboarded)
         }
         .onDisappear {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
         }
         .task {
+            hideMainWindow()
             hideAppControls()
         }
+        .onChange(of: isUserOnboarded) { isOnboarded in
+            setUp(isOnboarded: isOnboarded)
+        }
         .onChange(of: scenePhase) { phase in
+            guard isUserOnboarded == true else { return }
             guard !NSEvent.modifierFlags.contains(.option) else { return }
             openSafariAndAskToSwitchTabs()
         }
     }
 
     func hideAppControls() {
-        if let window = NSApp.windows.first {
+        if let window = NSApp.windows.last {
             window.standardWindowButton(.closeButton)?.isHidden = true
             window.standardWindowButton(.miniaturizeButton)?.isHidden = true
             window.standardWindowButton(.zoomButton)?.isHidden = true
@@ -319,7 +431,7 @@ struct TabHistoryView: View {
     }
 
     private func bringWindowToFront() {
-        NSApp.activate(ignoringOtherApps: true)
+        showMainWindow()
     }
 
     private func removeDistributedNotificationListener() {

@@ -83,3 +83,35 @@ struct VisualEffectBlur: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
+
+struct OnboardingButtonStyle: ButtonStyle {
+    var foregroundColor = Color.white
+    var backgroundColor = Color.blue
+    var pressedColor = Color.black
+
+  func makeBody(configuration: Self.Configuration) -> some View {
+    configuration.label
+          .frame(maxWidth: .infinity)
+      .font(.system(size: 16))
+      .padding(.vertical, 14)
+      .padding(.horizontal, 20)
+      .foregroundColor(foregroundColor)
+      .background(configuration.isPressed ? pressedColor : backgroundColor)
+      .cornerRadius(7)
+  }
+}
+
+struct OnboardingButton: View {
+    var startUsingTabFinder: () -> Void
+    
+    init(startUsingTabFinder: @escaping () -> Void ) {
+        self.startUsingTabFinder = startUsingTabFinder
+    }
+    
+    var body: some View {
+        Button(Copy.Onboarding.button) {
+            startUsingTabFinder()
+        }
+        .buttonStyle(OnboardingButtonStyle())
+    }
+}
