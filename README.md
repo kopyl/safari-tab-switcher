@@ -1,8 +1,6 @@
 # Safari tab switcher extension
 
-### Download in on App Store:
-
-<a href="https://apps.apple.com/us/app/tab-finder/id6741719894">
+[
 <svg version="1.1" class="download-btn" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="-237.1 377.9 133.1 38.2" enable-background="new -237.1 377.9 133.1 38.2" role="img" aria-label="Download on the Apple store" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
   <g fill="currentColor">
     <path d="M-157.1,389.6c0.2-0.1,0.3-0.3,0.4-0.6c0-0.1,0-0.1,0-0.2v-0.7c-1.2,0-1.7,0.3-1.7,1c0,0.2,0.1,0.4,0.2,0.6
@@ -76,7 +74,7 @@
       C-117.8,387.3-117.9,387-118,386.8z"></path>
   </g>
 </svg>
-</a>
+](https://github.com/Schecher1/Minecraft-Server-Creator/blob/master/README.md)
 
 ### Here is a video demo on how it works:
 ![Video demo](https://github.com/user-attachments/assets/ad107c73-8fa5-4bb3-8c65-4d47a202ebf9)
