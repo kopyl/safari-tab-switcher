@@ -1,4 +1,6 @@
-# Safari tab switcher extension
+# Safari tab switcher extension with option+tab
+
+aka command+tab but for Safari
 
 [<img src="https://github.com/user-attachments/assets/4e81b325-0446-4b92-8141-aaaee9e41bec">](https://apps.apple.com/us/app/tab-finder/id6741719894)
 
