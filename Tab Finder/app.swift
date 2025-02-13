@@ -1,8 +1,4 @@
 import SwiftUI
-import BackgroundTasks
-import AppKit
-import Combine
-import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
 func formatHost(_ host: String) -> String {
