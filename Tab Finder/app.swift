@@ -24,8 +24,7 @@ struct TabForSearch {
         id = tab.id
         title = tab.title
         host = tab.host == "" && title == "" ? "No title" : tab.host
-        
-        
+
         hostParts = host.split(separator: ".")
         hostParts = hostParts.filter { $0 != "www" }
         domainZone = hostParts.last ?? ""
@@ -303,7 +302,6 @@ struct TabHistoryView: View {
             }
         }
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
-
 
         .onAppear {
             setUp(isOnboarded: isUserOnboarded)
