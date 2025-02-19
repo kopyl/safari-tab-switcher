@@ -45,11 +45,12 @@ struct OnboardingImage: View {
 
 struct GreetingView: View {
     func startUsingTabFinder() {
-        if let greetingWindow = NSApp.windows.first {
-            greetingWindow.orderOut(nil)
-            NSApp.setActivationPolicy(.accessory)
-            Store.isUserOnboarded = true
+        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
+            return
         }
+        greetingWindow.orderOut(nil)
+        NSApp.setActivationPolicy(.accessory)
+        Store.isUserOnboarded = true
     }
     
     var body: some View {
@@ -109,25 +110,29 @@ func showGreetingWindow(isOnboarded: Bool) {
 }
 
 func hideMainWindow() {
-    if let mainWindow = NSApp.windows.last {
-        mainWindow.orderOut(nil)
+    guard let mainWindow = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
+        return
     }
+    mainWindow.orderOut(nil)
 }
 
 func showMainWindow() {
     let isUserOnboarded = Store.isUserOnboarded
     if !isUserOnboarded {
-        if let greetingWindow = NSApp.windows.first {
-            greetingWindow.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
             return
         }
+        
+        greetingWindow.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        return
     }
     
-    if let mainWindow = NSApp.windows.last {
-        mainWindow.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+    guard let mainWindow = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
+        return
     }
+    mainWindow.makeKeyAndOrderFront(nil)
+    NSApp.activate(ignoringOtherApps: true)
 }
 
 struct TabHistoryView: View {
@@ -322,20 +327,22 @@ struct TabHistoryView: View {
     }
 
     func hideAppControls() {
-        if let window = NSApp.windows.last {
-            window.standardWindowButton(.closeButton)?.isHidden = true
-            window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-            window.standardWindowButton(.zoomButton)?.isHidden = true
-
-            window.setContentSize(NSSize(width: 800, height: 500))
-            window.center()
-            
-            let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
-            let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
-            titlebarBlurView.frame = titlebarFrame
-            titlebarBlurView.autoresizingMask = [.width, .minYMargin]
-            window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
+        guard let window = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
+            return
         }
+        
+        window.standardWindowButton(.closeButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+
+        window.setContentSize(NSSize(width: 800, height: 500))
+        window.center()
+        
+        let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
+        let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
+        titlebarBlurView.frame = titlebarFrame
+        titlebarBlurView.autoresizingMask = [.width, .minYMargin]
+        window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
     }
 
     func openSafariAndHideTabSwitcherUI() {
