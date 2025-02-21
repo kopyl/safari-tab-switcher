@@ -141,7 +141,6 @@ struct TabHistoryView: View {
     
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost = Tabs()
-    @State private var notificationObserver: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
     @State private var searchCursorPosition: Int = 0
@@ -154,7 +153,7 @@ struct TabHistoryView: View {
     
     func setUp(isOnboarded: Bool) {
         if isOnboarded == true {
-            showOrHideTabsHistoryWindowHotKey.keyDownHandler = buttonHandler
+            showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleNotification
             setupInAppKeyListener()
         }
     }
@@ -312,7 +311,6 @@ struct TabHistoryView: View {
             showGreetingWindow(isOnboarded: isUserOnboarded)
         }
         .onDisappear {
-            removeDistributedNotificationListener()
             removeInAppKeyListener()
         }
         .task {
@@ -327,20 +325,6 @@ struct TabHistoryView: View {
             guard !NSEvent.modifierFlags.contains(.option) else { return }
             openSafariAndAskToSwitchTabs()
         }
-    }
-    
-    func buttonHandler() {
-//        let application = NSApplication.shared
-//        if application.isActive {
-//            hotKey.keyDownHandler = nil
-//        }
-//        print(application.isActive)
-//        if !application.isActive {
-//            print("Handling")
-//            handleNotification()
-//        }
-        handleNotification()
-        
     }
 
     func hideAppControls() {
@@ -453,16 +437,9 @@ struct TabHistoryView: View {
         showMainWindow()
     }
 
-    private func removeDistributedNotificationListener() {
-            if let observer = notificationObserver {
-                DistributedNotificationCenter.default().removeObserver(observer)
-            }
-        }
-
     private func handleNotification() {
         guard let tabs = Store.windows.windows.last?.tabs else { return }
         showOrHideTabsHistoryWindowHotKey.isPaused = true
-        print("showOrHideTabsHistoryWindowHotKey.isPaused = true")
         
         tabIDsWithTitleAndHost = tabs
         searchQuery = ""
@@ -470,12 +447,11 @@ struct TabHistoryView: View {
         filterTabs()
         indexOfTabToSwitchTo = 1
         bringWindowToFront()
-
     }
 
     private func openSafariAndAskToSwitchTabs() {
         showOrHideTabsHistoryWindowHotKey.isPaused = false
-        print("showOrHideTabsHistoryWindowHotKey.isPaused = false")
+
         openSafariAndHideTabSwitcherUI()
         guard !filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
