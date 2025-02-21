@@ -113,33 +113,6 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
-    private func postDistributedNotification() {
-        DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
-    }
-
-    override func messageReceived(withName messageName: String, from page: SFSafariPage, userInfo: [String: Any]?) {
-        guard let command = JScommands(rawValue: messageName) else { return }
-        switch command {
-        case .opttab:
-            Task{
-                let tab = await page.containingTab()
-                if let window = await tab.containingWindow() {
-                    var tabsFromNavigationHistory =
-                        await Store.windows.get(SFWindow: window)?.tabs
-                        ?? Store.windows.windows.last?.tabs
-                        ?? _Window(tabs: Tabs()).tabs
-
-                    let tabs = await window.allTabs()
-                    
-                    tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
-                    await saveWindows(tabs: tabsFromNavigationHistory)
-    
-                    postDistributedNotification()
-                }
-            }
-        }
-    }
-
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
         guard let command = AppCommands(rawValue: withName) else { return }
         switch command {
