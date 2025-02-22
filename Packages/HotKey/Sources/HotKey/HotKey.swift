@@ -17,6 +17,7 @@ public final class HotKey {
 	public var keyUpHandler: Handler?
     public var isPaused = false {
         didSet {
+            print("isPaused: \(isPaused)")
             if isPaused {
                 HotKeysController.unregister(self)
             } else {
