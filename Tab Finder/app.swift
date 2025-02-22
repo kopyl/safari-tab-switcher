@@ -346,15 +346,6 @@ struct TabHistoryView: View {
         window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
     }
 
-    func openSafariAndHideTabSwitcherUI() {
-        NSApp.hide(nil)
-        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
-            NSWorkspace.shared.open(safariURL)
-        } else {
-            print("Safari is not installed or not found.")
-        }
-    }
-
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
             if NavigationKeys(rawValue: event.keyCode) != nil {
@@ -401,6 +392,16 @@ struct TabHistoryView: View {
         }
         return nil
     }
+    
+    func openSafariAndHideTabSwitcherUI() {
+        showOrHideTabsHistoryWindowHotKey.isPaused = false
+        NSApp.hide(nil)
+        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
+            NSWorkspace.shared.open(safariURL)
+        } else {
+            print("Safari is not installed or not found.")
+        }
+    }
 
     func handleNavigationKeyPresses(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
@@ -421,7 +422,6 @@ struct TabHistoryView: View {
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
-            showOrHideTabsHistoryWindowHotKey.isPaused = false
             openSafariAndHideTabSwitcherUI()
         }
     }
@@ -450,8 +450,6 @@ struct TabHistoryView: View {
     }
 
     private func openSafariAndAskToSwitchTabs() {
-        showOrHideTabsHistoryWindowHotKey.isPaused = false
-
         openSafariAndHideTabSwitcherUI()
         guard !filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
