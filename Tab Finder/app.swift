@@ -134,10 +134,26 @@ func showMainWindow() {
     }
     mainWindow.makeKeyAndOrderFront(nil)
     NSApp.activate(ignoringOtherApps: true)
+    
+    mainWindow.hidesOnDeactivate = true
+
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    var showOrHideTabsHistoryWindowHotKey: HotKey?
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidDeactivate), name: NSApplication.didResignActiveNotification, object: nil)
+    }
+
+    @objc func appDidDeactivate(_ notification: Notification) {
+        showOrHideTabsHistoryWindowHotKey?.isPaused = false
+    }
 }
 
 struct TabHistoryView: View {
-    let showOrHideTabsHistoryWindowHotKey = HotKey(key: .tab , modifiers: [.option])
+    
+    var showOrHideTabsHistoryWindowHotKey: HotKey
     
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost = Tabs()
@@ -491,9 +507,16 @@ struct TabHistoryView: View {
 
 @main
 struct MySafariApp: App {
+    let showOrHideTabsHistoryWindowHotKey = HotKey(key: .tab , modifiers: [.option])
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    init() {
+        appDelegate.showOrHideTabsHistoryWindowHotKey = showOrHideTabsHistoryWindowHotKey
+    }
+    
     var body: some Scene {
         WindowGroup {
-            TabHistoryView()
+            TabHistoryView(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
     }
