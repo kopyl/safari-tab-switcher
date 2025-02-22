@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,7 +18,7 @@
 		48B48FE22D2A59630054B680 /* Tab Finder Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 48B48FE12D2A59630054B680 /* Tab Finder Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		48B48FE72D2A59630054B680 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */; };
 		48B48FEE2D2A59630054B680 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */; };
-		48CFFE362D6937AD0076D99C /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = 48CFFE352D6937AD0076D99C /* HotKey */; };
+		48CFFE3A2D696D800076D99C /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = 48CFFE392D696D800076D99C /* HotKey */; };
 		48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
 		48E9EE3F2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
 		48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
@@ -74,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				48CFFE362D6937AD0076D99C /* HotKey in Frameworks */,
+				48CFFE3A2D696D800076D99C /* HotKey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,7 +161,7 @@
 			);
 			name = "Tab Finder";
 			packageProductDependencies = (
-				48CFFE352D6937AD0076D99C /* HotKey */,
+				48CFFE392D696D800076D99C /* HotKey */,
 			);
 			productName = tab_finder;
 			productReference = 48B48FC52D2A59620054B680 /* Tab Finder.app */;
@@ -213,7 +213,7 @@
 			);
 			mainGroup = 48B48FBC2D2A59620054B680;
 			packageReferences = (
-				48CFFE342D6937AD0076D99C /* XCRemoteSwiftPackageReference "HotKey" */,
+				48CFFE382D696D800076D99C /* XCLocalSwiftPackageReference "Packages/HotKey" */,
 			);
 			productRefGroup = 48B48FC62D2A59620054B680 /* Products */;
 			projectDirPath = "";
@@ -594,21 +594,16 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		48CFFE342D6937AD0076D99C /* XCRemoteSwiftPackageReference "HotKey" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/soffes/HotKey";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		48CFFE382D696D800076D99C /* XCLocalSwiftPackageReference "Packages/HotKey" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/HotKey;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		48CFFE352D6937AD0076D99C /* HotKey */ = {
+		48CFFE392D696D800076D99C /* HotKey */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 48CFFE342D6937AD0076D99C /* XCRemoteSwiftPackageReference "HotKey" */;
 			productName = HotKey;
 		};
 /* End XCSwiftPackageProductDependency section */
