@@ -433,10 +433,6 @@ struct TabHistoryView: View {
         return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabs.count)
     }
 
-    private func bringWindowToFront() {
-        showMainWindow()
-    }
-
     private func handleNotification() {
         guard let tabs = Store.windows.windows.last?.tabs else { return }
         showOrHideTabsHistoryWindowHotKey.isPaused = true
@@ -446,7 +442,7 @@ struct TabHistoryView: View {
         searchCursorPosition = 0
         filterTabs()
         indexOfTabToSwitchTo = 1
-        bringWindowToFront()
+        showMainWindow()
     }
 
     private func openSafariAndAskToSwitchTabs() {
