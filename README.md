@@ -18,3 +18,4 @@ Timeline:
 - 11.02.2025: Published on App Store
 - 15.02.2025: Got a first paying user
 - 18.02.2025: [Launched](https://www.producthunt.com/posts/tab-finder) on ProductHunt
+- 21.02.2025: Got first 10 paying users
