@@ -112,11 +112,17 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
 }
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
+    
+    private func askMainAppToTrackGlobalShortcut() {
+        DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
+    }
 
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
         guard let command = AppCommands(rawValue: withName) else { return }
         switch command {
         case .switchtabto:
+            askMainAppToTrackGlobalShortcut()
+
             guard let tabIdString = userInfo?["id"] as? String,
                   let tabId = Int(tabIdString) else { return }
             Task{

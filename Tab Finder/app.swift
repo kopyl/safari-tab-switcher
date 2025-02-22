@@ -141,6 +141,7 @@ struct TabHistoryView: View {
     
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost = Tabs()
+    @State private var notificationFromExtension: NSObjectProtocol?
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
     @State private var searchCursorPosition: Int = 0
@@ -153,8 +154,25 @@ struct TabHistoryView: View {
     
     func setUp(isOnboarded: Bool) {
         if isOnboarded == true {
+            setupDistributedNotificationListener()
             showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleNotification
             setupInAppKeyListener()
+        }
+    }
+    
+    private func setupDistributedNotificationListener() {
+        notificationFromExtension = DistributedNotificationCenter.default().addObserver(
+            forName: notificationName,
+            object: nil,
+            queue: .main
+        ) { notification in
+            showOrHideTabsHistoryWindowHotKey.isPaused = false
+        }
+    }
+    
+    private func removeDistributedNotificationListener() {
+        if let observer = notificationFromExtension {
+            DistributedNotificationCenter.default().removeObserver(observer)
         }
     }
     
@@ -311,6 +329,7 @@ struct TabHistoryView: View {
             showGreetingWindow(isOnboarded: isUserOnboarded)
         }
         .onDisappear {
+            removeDistributedNotificationListener()
             removeInAppKeyListener()
         }
         .task {
