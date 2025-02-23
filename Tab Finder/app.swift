@@ -507,6 +507,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         greetingWindow.makeKeyAndOrderFront(nil)
         NSApp.setActivationPolicy(.regular)
+        hideMainWindow()
         return true
     }
 
