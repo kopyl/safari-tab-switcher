@@ -527,9 +527,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showOrHideTabsHistoryWindowHotKey?.isPaused = false
     }
 
-    @objc func applicationDidUpdate(_ notification: Notification) {
+    @objc func applicationDidUpdate(_ notification: Notification) {	
         if NSApp.keyWindow == nil {
             showOrHideTabsHistoryWindowHotKey?.isPaused = false
+        }
+        else {
+            showOrHideTabsHistoryWindowHotKey?.isPaused = true
         }
 
     }
