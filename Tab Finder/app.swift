@@ -156,6 +156,15 @@ struct TabHistoryView: View {
                 print("Window became active: \(window.title)")
             }
         }
+
+        NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: nil, queue: .main) { notification in
+            if let window = notification.object as? NSWindow {
+                if activeWindow == window {
+                    activeWindow = nil
+                }
+                showOrHideTabsHistoryWindowHotKey.isPaused = false
+            }
+        }
     }
     
     func setUp() {
