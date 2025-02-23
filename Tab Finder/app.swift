@@ -124,7 +124,6 @@ func showMainWindow() {
     NSApp.activate(ignoringOtherApps: true)
     
     mainWindow.hidesOnDeactivate = true
-
 }
 
 struct TabHistoryView: View {
