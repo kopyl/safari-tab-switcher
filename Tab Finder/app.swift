@@ -143,6 +143,20 @@ struct TabHistoryView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @State private var isUserOnboarded: Bool = false
+    @State private var activeWindow: NSWindow?
+    
+    private func observeWindowActivity() {
+        NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { notification in
+            if let window = notification.object as? NSWindow {
+                activeWindow = window
+                
+                if window.title == Copy.Onboarding.title {
+                    isUserOnboarded = false
+                }
+                print("Window became active: \(window.title)")
+            }
+        }
+    }
     
     func setUp() {
         setupDistributedNotificationListener()
@@ -317,6 +331,7 @@ struct TabHistoryView: View {
         .onAppear {
             setUp()
             showGreetingWindow(isOnboarded: $isUserOnboarded)
+            observeWindowActivity()
         }
         .onDisappear {
             removeDistributedNotificationListener()
