@@ -531,6 +531,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if NSApp.keyWindow == nil {
             showOrHideTabsHistoryWindowHotKey?.isPaused = false
         }
+        else if NSApp.keyWindow?.title == Copy.Onboarding.title {
+            showOrHideTabsHistoryWindowHotKey?.isPaused = false
+        }
         else {
             showOrHideTabsHistoryWindowHotKey?.isPaused = true
         }
