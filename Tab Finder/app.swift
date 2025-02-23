@@ -381,6 +381,11 @@ struct TabHistoryView: View {
                 handleNavigationKeyPresses(event: event)
                 return nil
             }
+            
+            if NSEvent.modifierFlags.contains(.command) && event.keyCode == 12 {
+                NSApplication.shared.terminate(nil)
+            }
+            
             return handleTypingKeyPresses(event: event)
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
