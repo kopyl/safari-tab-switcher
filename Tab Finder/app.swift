@@ -44,15 +44,16 @@ struct OnboardingImage: View {
     }
 }
 
-struct GreetingView: View {
-    func startUsingTabFinder() {
-        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
-            return
-        }
-        greetingWindow.orderOut(nil)
-        NSApp.setActivationPolicy(.accessory)
-        Store.isUserOnboarded = true
+func startUsingTabFinder() {
+    guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
+        return
     }
+    greetingWindow.orderOut(nil)
+    NSApp.setActivationPolicy(.accessory)
+}
+
+struct GreetingView: View {
+    @Binding var isUserOnboarded: Bool
     
     var body: some View {
         VStack {
@@ -69,6 +70,7 @@ struct GreetingView: View {
             
             OnboardingButton {
                 startUsingTabFinder()
+                isUserOnboarded = true
             }
             .padding(.bottom, 41)
             .padding(.horizontal, 41)
@@ -77,19 +79,16 @@ struct GreetingView: View {
         .background(.greetingBg)
         .onDisappear {
             startUsingTabFinder()
+            isUserOnboarded = true
         }
     }
 }
 
 var greetingWindow: NSWindow?
 
-func showGreetingWindow(isOnboarded: Bool) {
-    if isOnboarded == true {
-        NSApp.setActivationPolicy(.accessory)
-        return
-    }
+func showGreetingWindow(isOnboarded: Binding<Bool>) {
     
-    let greetingView = NSHostingController(rootView: GreetingView())
+    let greetingView = NSHostingController(rootView: GreetingView(isUserOnboarded: isOnboarded))
     
     let window = NSWindow(
         contentRect: NSRect(x: 0, y: 0, width: 400, height: 200),
@@ -118,17 +117,6 @@ func hideMainWindow() {
 }
 
 func showMainWindow() {
-    let isUserOnboarded = Store.isUserOnboarded
-    if !isUserOnboarded {
-        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
-            return
-        }
-        
-        greetingWindow.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
-        return
-    }
-    
     guard let mainWindow = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
         return
     }
@@ -154,14 +142,12 @@ struct TabHistoryView: View {
     
     @Environment(\.scenePhase) var scenePhase
     
-    @AppStorage(Store.isUserOnboardedKey, store: Store.userDefaults) private var isUserOnboarded: Bool = false
+    @State private var isUserOnboarded: Bool = false
     
-    func setUp(isOnboarded: Bool) {
-        if isOnboarded == true {
-            setupDistributedNotificationListener()
-            showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleNotification
-            setupInAppKeyListener()
-        }
+    func setUp() {
+        setupDistributedNotificationListener()
+        showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleNotification
+        setupInAppKeyListener()
     }
     
     private func setupDistributedNotificationListener() {
@@ -329,8 +315,8 @@ struct TabHistoryView: View {
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
         .onAppear {
-            setUp(isOnboarded: isUserOnboarded)
-            showGreetingWindow(isOnboarded: isUserOnboarded)
+            setUp()
+            showGreetingWindow(isOnboarded: $isUserOnboarded)
         }
         .onDisappear {
             removeDistributedNotificationListener()
@@ -339,9 +325,6 @@ struct TabHistoryView: View {
         .task {
             hideMainWindow()
             hideAppControls()
-        }
-        .onChange(of: isUserOnboarded) { isOnboarded in
-            setUp(isOnboarded: isOnboarded)
         }
         .onChange(of: scenePhase) { phase in
             guard isUserOnboarded == true else { return }
@@ -469,6 +452,7 @@ struct TabHistoryView: View {
         searchCursorPosition = 0
         filterTabs()
         indexOfTabToSwitchTo = 1
+        startUsingTabFinder()
         showMainWindow()
     }
 

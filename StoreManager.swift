@@ -60,7 +60,6 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
-    public static let isUserOnboardedKey = "isUserOnboarded"
 
     static var windows: Windows {
             get {
@@ -73,13 +72,4 @@ struct Store {
                 userDefaults.set(encodedData, forKey: windowsStoreKey)
             }
         }
-    
-    static var isUserOnboarded: Bool {
-        get {
-            return userDefaults.bool(forKey: isUserOnboardedKey)
-        }
-        set {
-            userDefaults.setValue(newValue, forKey: isUserOnboardedKey)
-        }
-    }
 }
