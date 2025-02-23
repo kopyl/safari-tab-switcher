@@ -485,6 +485,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NotificationCenter.default.addObserver(self, selector: #selector(appDidDeactivate), name: NSApplication.didResignActiveNotification, object: nil)
     }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
+            return true
+        }
+        greetingWindow.makeKeyAndOrderFront(nil)
+        NSApp.setActivationPolicy(.regular)
+        return true
+    }
 
     @objc func appDidDeactivate(_ notification: Notification) {
         showOrHideTabsHistoryWindowHotKey?.isPaused = false
