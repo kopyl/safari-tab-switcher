@@ -377,6 +377,7 @@ struct TabHistoryView: View {
     }
 
     func handleKeyRelease(event: NSEvent) {
+        guard isUserOnboarded else { return }
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
     }
@@ -453,6 +454,7 @@ struct TabHistoryView: View {
         filterTabs()
         indexOfTabToSwitchTo = 1
         startUsingTabFinder()
+        isUserOnboarded = true
         showMainWindow()
     }
 
