@@ -153,7 +153,6 @@ struct TabHistoryView: View {
                 if window.title == Copy.Onboarding.title {
                     isUserOnboarded = false
                 }
-                print("Window became active: \(window.title)")
             }
         }
 
