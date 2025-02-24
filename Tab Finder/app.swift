@@ -472,6 +472,10 @@ struct TabHistoryView: View {
     }
 
     private func handleNotification() {
+        guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
+            return
+        }
+        
         guard let tabs = Store.windows.windows.last?.tabs else { return }
         showOrHideTabsHistoryWindowHotKey.isPaused = true
         
@@ -508,9 +512,12 @@ struct TabHistoryView: View {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var showOrHideTabsHistoryWindowHotKey: HotKey?
+    private var activeAppObserver: Any?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         NotificationCenter.default.addObserver(self, selector: #selector(appDidDeactivate), name: NSApplication.didResignActiveNotification, object: nil)
+        
+        setupAppSwitchingObserver()
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -527,7 +534,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showOrHideTabsHistoryWindowHotKey?.isPaused = false
     }
 
-    @objc func applicationDidUpdate(_ notification: Notification) {	
+    @objc func applicationDidUpdate(_ notification: Notification) {
         if NSApp.keyWindow == nil {
             showOrHideTabsHistoryWindowHotKey?.isPaused = false
         }
@@ -539,6 +546,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
     }
+    
+    func setupAppSwitchingObserver() {
+            let workspace = NSWorkspace.shared
+            let notificationCenter = workspace.notificationCenter
+            
+            activeAppObserver = notificationCenter.addObserver(
+                forName: NSWorkspace.didActivateApplicationNotification,
+                object: nil,
+                queue: .main
+            ) { notification in
+                guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+                    return
+                }
+
+                if let bundleIdentifier = app.bundleIdentifier {
+                    if bundleIdentifier == "com.apple.Safari" {
+                        self.showOrHideTabsHistoryWindowHotKey?.isPaused = false
+                    } else {
+                        self.showOrHideTabsHistoryWindowHotKey?.isPaused = true
+                    }
+                }
+            }
+        }
 }
 
 @main
