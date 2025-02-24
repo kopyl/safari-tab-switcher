@@ -548,27 +548,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func setupAppSwitchingObserver() {
-            let workspace = NSWorkspace.shared
-            let notificationCenter = workspace.notificationCenter
-            
-            activeAppObserver = notificationCenter.addObserver(
-                forName: NSWorkspace.didActivateApplicationNotification,
-                object: nil,
-                queue: .main
-            ) { notification in
-                guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
-                    return
-                }
+        let workspace = NSWorkspace.shared
+        let notificationCenter = workspace.notificationCenter
+        
+        activeAppObserver = notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { notification in
+            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+                return
+            }
 
-                if let bundleIdentifier = app.bundleIdentifier {
-                    if bundleIdentifier == "com.apple.Safari" {
-                        self.showOrHideTabsHistoryWindowHotKey?.isPaused = false
-                    } else {
-                        self.showOrHideTabsHistoryWindowHotKey?.isPaused = true
-                    }
+            if let bundleIdentifier = app.bundleIdentifier {
+                if bundleIdentifier == "com.apple.Safari" {
+                    self.showOrHideTabsHistoryWindowHotKey?.isPaused = false
+                } else {
+                    self.showOrHideTabsHistoryWindowHotKey?.isPaused = true
                 }
             }
         }
+    }
 }
 
 @main
