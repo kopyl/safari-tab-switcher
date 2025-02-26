@@ -49,7 +49,7 @@ struct OnboardingImage: View {
 }
 
 func startUsingTabFinder() {
-    guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
+    guard let greetingWindow else {
         return
     }
     greetingWindow.orderOut(nil)
@@ -544,7 +544,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        guard let greetingWindow = NSApp.windows.first(where: {$0.title == Copy.Onboarding.title}) else {
+        guard let greetingWindow else {
             return true
         }
         greetingWindow.makeKeyAndOrderFront(nil)
