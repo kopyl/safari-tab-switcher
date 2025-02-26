@@ -378,6 +378,9 @@ struct TabHistoryView: View {
             showGreetingWindow(appState: appState)
             observeWindowActivity()
         }
+        .task {
+            hideMainWindow()
+        }
         .onDisappear {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
