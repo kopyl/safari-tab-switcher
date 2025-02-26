@@ -167,7 +167,7 @@ struct TabHistoryView: View {
     
     func setUp() {
         setupDistributedNotificationListener()
-        showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleNotification
+        showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleHotKeyPress
         setupInAppKeyListener()
     }
     
@@ -471,7 +471,7 @@ struct TabHistoryView: View {
         return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabs.count)
     }
 
-    private func handleNotification() {
+    private func handleHotKeyPress() {
         guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
             return
         }
