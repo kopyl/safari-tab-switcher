@@ -2,6 +2,9 @@ import SwiftUI
 import SafariServices.SFSafariExtensionManager
 import HotKey
 
+var greetingWindow: NSWindow?
+var tabsWindow: NSWindow?
+
 class AppState: ObservableObject {
     @Published var isUserOnboarded: Bool = false
 }
@@ -88,9 +91,6 @@ struct GreetingView: View {
     }
 }
 
-var greetingWindow: NSWindow?
-var TabsWindow: NSWindow?
-
 func showGreetingWindow(appState: AppState) {
     
     let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
@@ -115,15 +115,12 @@ func showGreetingWindow(appState: AppState) {
 }
 
 func hideMainWindow() {
-    guard let mainWindow = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
-        return
-    }
-    mainWindow.orderOut(nil)
+    tabsWindow?.orderOut(nil)
 }
 
 func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
-    if let window = TabsWindow {
-        window.makeKeyAndOrderFront(nil)
+    if let tabsWindow {
+        tabsWindow.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         return
     }
@@ -160,7 +157,7 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     titlebarBlurView.autoresizingMask = [.width, .minYMargin]
     window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
 
-    TabsWindow = window
+    tabsWindow = window
 }
 
 struct TabHistoryView: View {
