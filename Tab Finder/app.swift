@@ -2,6 +2,10 @@ import SwiftUI
 import SafariServices.SFSafariExtensionManager
 import HotKey
 
+class AppState: ObservableObject {
+    @Published var isUserOnboarded: Bool = false
+}
+
 func formatHost(_ host: String) -> String {
     return host
         .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
@@ -53,7 +57,7 @@ func startUsingTabFinder() {
 }
 
 struct GreetingView: View {
-    @Binding var isUserOnboarded: Bool
+    @ObservedObject var appState: AppState
     
     var body: some View {
         VStack {
@@ -70,7 +74,7 @@ struct GreetingView: View {
             
             OnboardingButton {
                 startUsingTabFinder()
-                isUserOnboarded = true
+                appState.isUserOnboarded = true
             }
             .padding(.bottom, 41)
             .padding(.horizontal, 41)
@@ -79,16 +83,17 @@ struct GreetingView: View {
         .background(.greetingBg)
         .onDisappear {
             startUsingTabFinder()
-            isUserOnboarded = true
+            appState.isUserOnboarded = true
         }
     }
 }
 
 var greetingWindow: NSWindow?
+var TabsWindow: NSWindow?
 
-func showGreetingWindow(isOnboarded: Binding<Bool>) {
+func showGreetingWindow(appState: AppState) {
     
-    let greetingView = NSHostingController(rootView: GreetingView(isUserOnboarded: isOnboarded))
+    let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
     
     let window = NSWindow(
         contentRect: NSRect(x: 0, y: 0, width: 400, height: 200),
@@ -116,14 +121,46 @@ func hideMainWindow() {
     mainWindow.orderOut(nil)
 }
 
-func showMainWindow() {
-    guard let mainWindow = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
+func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
+    if let window = TabsWindow {
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
         return
     }
-    mainWindow.makeKeyAndOrderFront(nil)
-    NSApp.activate(ignoringOtherApps: true)
+
+    let mainView = NSHostingController(
+        rootView: TabHistoryView(
+            showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey,
+            appState: appState
+        )
+    )
     
-    mainWindow.hidesOnDeactivate = true
+    let window = NSWindow(
+        contentRect: NSRect(x: 100, y: 100, width: 800, height: 500),
+        styleMask: [.titled],
+        backing: .buffered,
+        defer: false
+    )
+    
+    window.contentViewController = mainView
+    window.makeKeyAndOrderFront(nil)
+    
+    window.titlebarAppearsTransparent = true
+    
+    window.standardWindowButton(.closeButton)?.isHidden = true
+    window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+    window.standardWindowButton(.zoomButton)?.isHidden = true
+
+    window.setContentSize(NSSize(width: 800, height: 500))
+    window.center()
+    
+    let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
+    let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
+    titlebarBlurView.frame = titlebarFrame
+    titlebarBlurView.autoresizingMask = [.width, .minYMargin]
+    window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
+
+    TabsWindow = window
 }
 
 struct TabHistoryView: View {
@@ -141,7 +178,8 @@ struct TabHistoryView: View {
     
     @Environment(\.scenePhase) var scenePhase
     
-    @State private var isUserOnboarded: Bool = false
+    @ObservedObject var appState: AppState
+    
     @State private var activeWindow: NSWindow?
     
     private func observeWindowActivity() {
@@ -150,7 +188,7 @@ struct TabHistoryView: View {
                 activeWindow = window
                 
                 if window.title == Copy.Onboarding.title {
-                    isUserOnboarded = false
+                    appState.isUserOnboarded = false
                 }
             }
         }
@@ -337,41 +375,18 @@ struct TabHistoryView: View {
 
         .onAppear {
             setUp()
-            showGreetingWindow(isOnboarded: $isUserOnboarded)
+            showGreetingWindow(appState: appState)
             observeWindowActivity()
         }
         .onDisappear {
             removeDistributedNotificationListener()
             removeInAppKeyListener()
         }
-        .task {
-            hideMainWindow()
-            hideAppControls()
-        }
         .onChange(of: scenePhase) { phase in
-            guard isUserOnboarded == true else { return }
+            guard appState.isUserOnboarded == true else { return }
             guard !NSEvent.modifierFlags.contains(.option) else { return }
             openSafariAndAskToSwitchTabs()
         }
-    }
-
-    func hideAppControls() {
-        guard let window = NSApp.windows.first(where: {$0.title != Copy.Onboarding.title}) else {
-            return
-        }
-        
-        window.standardWindowButton(.closeButton)?.isHidden = true
-        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        window.standardWindowButton(.zoomButton)?.isHidden = true
-
-        window.setContentSize(NSSize(width: 800, height: 500))
-        window.center()
-        
-        let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
-        let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
-        titlebarBlurView.frame = titlebarFrame
-        titlebarBlurView.autoresizingMask = [.width, .minYMargin]
-        window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
     }
 
     func setupInAppKeyListener() {
@@ -404,7 +419,7 @@ struct TabHistoryView: View {
     }
 
     func handleKeyRelease(event: NSEvent) {
-        guard isUserOnboarded else { return }
+        guard appState.isUserOnboarded else { return }
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
     }
@@ -485,8 +500,8 @@ struct TabHistoryView: View {
         filterTabs()
         indexOfTabToSwitchTo = 1
         startUsingTabFinder()
-        isUserOnboarded = true
-        showMainWindow()
+        appState.isUserOnboarded = true
+        showMainWindow(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey, appState: appState)
     }
 
     private func openSafariAndAskToSwitchTabs() {
@@ -512,10 +527,15 @@ struct TabHistoryView: View {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var showOrHideTabsHistoryWindowHotKey: HotKey?
+    var appState: AppState?
     private var activeAppObserver: Any?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         NotificationCenter.default.addObserver(self, selector: #selector(appDidDeactivate), name: NSApplication.didResignActiveNotification, object: nil)
+        
+        if let hotKey = showOrHideTabsHistoryWindowHotKey, let state = appState {
+            showMainWindow(showOrHideTabsHistoryWindowHotKey: hotKey, appState: state)
+        }
         
         setupAppSwitchingObserver()
     }
@@ -579,12 +599,10 @@ struct MySafariApp: App {
     
     init() {
         appDelegate.showOrHideTabsHistoryWindowHotKey = showOrHideTabsHistoryWindowHotKey
+        appDelegate.appState = AppState()
     }
     
     var body: some Scene {
-        WindowGroup {
-            TabHistoryView(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey)
-        }
-        .windowStyle(HiddenTitleBarWindowStyle())
+        Settings {}
     }
 }
