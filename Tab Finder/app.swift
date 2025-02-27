@@ -563,6 +563,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         NSApp.setActivationPolicy(.accessory)
+        NSApp.hide(nil)
         return false
     }
     
