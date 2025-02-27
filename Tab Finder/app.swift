@@ -118,6 +118,9 @@ func hideMainWindow() {
     tabsWindow?.orderOut(nil)
 }
 
+/// A custom class is required for cursor in the text field to blink
+///
+/// Either this or .titled style mask is needed
 class TabsWindow: NSWindow {
     override var canBecomeKey: Bool {
         true
