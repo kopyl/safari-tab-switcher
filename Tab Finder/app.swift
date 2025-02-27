@@ -146,6 +146,8 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     window.setContentSize(NSSize(width: 800, height: 500))
     window.center()
     
+    window.hidesOnDeactivate = true
+    
     let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
     let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
     titlebarBlurView.frame = titlebarFrame
