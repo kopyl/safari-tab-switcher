@@ -444,7 +444,7 @@ struct TabHistoryView: View {
     
     func hideTabSwitcherUI() {
         showOrHideTabsHistoryWindowHotKey.isPaused = false
-        NSApp.hide(nil)
+        tabsWindow?.orderOut(nil)
     }
     
     func openSafari() {
