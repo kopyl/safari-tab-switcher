@@ -525,7 +525,7 @@ struct TabHistoryView: View {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var showOrHideTabsHistoryWindowHotKey: HotKey?
     var appState: AppState?
     private var activeAppObserver: Any?
@@ -538,6 +538,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         setupAppSwitchingObserver()
+        setUpNSWindowDelegate()
+    }
+    
+    func setUpNSWindowDelegate() {
+        greetingWindow?.delegate = self
+    }
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        NSApp.setActivationPolicy(.accessory)
+        return false
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
