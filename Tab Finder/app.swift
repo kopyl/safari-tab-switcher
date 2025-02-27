@@ -151,7 +151,7 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     window.contentViewController = mainView
 
     window.backgroundColor = .clear
-    window.contentView?.layer?.cornerRadius = 20
+    window.contentView?.layer?.cornerRadius = 8
     
     window.titlebarAppearsTransparent = true
 
