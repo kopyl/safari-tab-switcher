@@ -582,16 +582,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc func applicationDidUpdate(_ notification: Notification) {
-        if NSApp.keyWindow == nil {
-            showOrHideTabsHistoryWindowHotKey?.isPaused = false
-        }
-        else if NSApp.keyWindow?.title == Copy.Onboarding.title {
-            showOrHideTabsHistoryWindowHotKey?.isPaused = false
-        }
-        else {
+        if NSApp.isActive {
             showOrHideTabsHistoryWindowHotKey?.isPaused = true
         }
-
+        else {
+            showOrHideTabsHistoryWindowHotKey?.isPaused = false
+        }
     }
     
     func setupAppSwitchingObserver() {
