@@ -388,15 +388,33 @@ struct TabHistoryView: View {
             openSafariAndAskToSwitchTabs()
         }
     }
+    
+    func isCommandQPressed(event: NSEvent) -> Bool {
+        if NSEvent.modifierFlags.contains(.command) && event.keyCode == 12 {
+            return true
+        }
+        return false
+    }
+    
+    func isCommandWPressed(event: NSEvent) -> Bool {
+        if NSEvent.modifierFlags.contains(.command) && event.keyCode == 13 {
+            return true
+        }
+        return false
+    }
 
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+            if isCommandWPressed(event: event) {
+                return event
+            }
+            
             if NavigationKeys(rawValue: event.keyCode) != nil {
                 handleNavigationKeyPresses(event: event)
                 return nil
             }
             
-            if NSEvent.modifierFlags.contains(.command) && event.keyCode == 12 {
+            if isCommandQPressed(event: event) {
                 NSApplication.shared.terminate(nil)
             }
             
