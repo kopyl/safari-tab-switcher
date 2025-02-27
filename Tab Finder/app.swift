@@ -140,13 +140,8 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     )
     
     window.contentViewController = mainView
-    window.makeKeyAndOrderFront(nil)
     
     window.titlebarAppearsTransparent = true
-    
-    window.standardWindowButton(.closeButton)?.isHidden = true
-    window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-    window.standardWindowButton(.zoomButton)?.isHidden = true
 
     window.setContentSize(NSSize(width: 800, height: 500))
     window.center()
