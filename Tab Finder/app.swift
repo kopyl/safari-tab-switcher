@@ -118,6 +118,12 @@ func hideMainWindow() {
     tabsWindow?.orderOut(nil)
 }
 
+class TabsWindow: NSWindow {
+    override var canBecomeKey: Bool {
+        true
+    }
+}
+
 func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
     if let tabsWindow {
         tabsWindow.orderFront(nil)
@@ -132,7 +138,7 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
         )
     )
     
-    let window = NSWindow(
+    let window = TabsWindow(
         contentRect: NSRect(x: 100, y: 100, width: 800, height: 500),
         styleMask: [],
         backing: .buffered,
