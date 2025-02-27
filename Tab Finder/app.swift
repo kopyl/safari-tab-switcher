@@ -120,7 +120,7 @@ func hideMainWindow() {
 
 func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
     if let tabsWindow {
-        tabsWindow.makeKeyAndOrderFront(nil)
+        tabsWindow.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         return
     }
@@ -134,12 +134,15 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     
     let window = NSWindow(
         contentRect: NSRect(x: 100, y: 100, width: 800, height: 500),
-        styleMask: [.titled],
+        styleMask: [],
         backing: .buffered,
         defer: false
     )
     
     window.contentViewController = mainView
+
+    window.backgroundColor = .clear
+    window.contentView?.layer?.cornerRadius = 20
     
     window.titlebarAppearsTransparent = true
 
@@ -147,12 +150,6 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
     window.center()
     
     window.hidesOnDeactivate = true
-    
-    let titlebarBlurView = VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow)._makeNSView()
-    let titlebarFrame = NSRect(x: 0, y: window.frame.height - 28, width: window.frame.width, height: 28)
-    titlebarBlurView.frame = titlebarFrame
-    titlebarBlurView.autoresizingMask = [.width, .minYMargin]
-    window.contentView?.superview?.addSubview(titlebarBlurView, positioned: .below, relativeTo: window.contentView)
 
     tabsWindow = window
 }
@@ -297,7 +294,7 @@ struct TabHistoryView: View {
                 )
             }
             .padding(.leading, 20)
-            .padding(.top, -12)
+            .padding(.top, 16)
             .padding(.trailing, 20)
             .padding(.bottom, 26)
 
