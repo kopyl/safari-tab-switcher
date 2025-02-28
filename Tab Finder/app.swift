@@ -89,6 +89,25 @@ struct GreetingView: View {
     }
 }
 
+/// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
+///
+/// Either this or .titled style mask is needed
+class Window: NSWindow {
+    init(isRegualar: Bool = true) {
+        super.init(
+            contentRect: .zero,
+            styleMask: isRegualar ? [.titled, .closable] : [],
+            backing: .buffered,
+            defer: false
+        )
+        self.titlebarAppearsTransparent = true
+    }
+    
+    override var canBecomeKey: Bool {
+        true
+    }
+}
+
 func showGreetingWindow(appState: AppState? = nil) {
     guard let appState else { return }
     
@@ -100,9 +119,10 @@ func showGreetingWindow(appState: AppState? = nil) {
     }
     
     let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
-    greetingWindow = NSWindow(contentViewController: greetingView)
     
-    greetingWindow?.titlebarAppearsTransparent = true
+    greetingWindow = Window()
+    greetingWindow?.contentViewController = greetingView
+    
     greetingWindow?.backgroundColor = .greetingBg
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
@@ -111,15 +131,6 @@ func showGreetingWindow(appState: AppState? = nil) {
 
 func hideMainWindow() {
     tabsWindow?.orderOut(nil)
-}
-
-/// A custom class is required for cursor in the text field to blink
-///
-/// Either this or .titled style mask is needed
-class TabsWindow: NSWindow {
-    override var canBecomeKey: Bool {
-        true
-    }
 }
 
 func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
@@ -136,17 +147,11 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
         )
     )
     
-    tabsWindow = TabsWindow(
-        contentRect: .zero,
-        styleMask: [],
-        backing: .buffered,
-        defer: false
-    )
+    tabsWindow = Window(isRegualar: false)
     
     tabsWindow?.contentViewController = tabsView
     tabsWindow?.backgroundColor = .clear
     tabsWindow?.contentView?.layer?.cornerRadius = 8
-    tabsWindow?.titlebarAppearsTransparent = true
     tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
