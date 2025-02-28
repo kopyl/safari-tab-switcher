@@ -119,6 +119,41 @@ class CustomApplication: NSApplication {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown {
+            if event.modifierFlags.contains(.option) {
+                let newFlags = event.modifierFlags.subtracting(.option)
+                
+                if NavigationKeys(rawValue: event.keyCode) != nil {
+                    super.sendEvent(event)
+                    return
+                }
+                
+                guard let charactersIgnoringModifiers = event.charactersIgnoringModifiers else {
+                    super.sendEvent(event)
+                    return
+                }
+
+                if let newEvent = NSEvent.keyEvent(
+                    with: event.type,
+                    location: event.locationInWindow,
+                    modifierFlags: newFlags,
+                    timestamp: event.timestamp,
+                    windowNumber: event.windowNumber,
+                    context: nil,
+                    characters: charactersIgnoringModifiers,
+                    charactersIgnoringModifiers: charactersIgnoringModifiers,
+                    isARepeat: event.isARepeat,
+                    keyCode: event.keyCode
+                ) {
+                    super.sendEvent(newEvent)
+                    return
+                }
+            }
+        }
+        super.sendEvent(event)
+    }
 }
 
 let delegate = AppDelegate(

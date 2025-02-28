@@ -172,7 +172,6 @@ struct TabHistoryView: View {
     @State private var tabIDsWithTitleAndHost = Tabs()
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
-    @State private var searchCursorPosition: Int = 0
     @State private var filteredTabs: [TabForSearch] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
@@ -255,7 +254,6 @@ struct TabHistoryView: View {
                     .font(.system(size: 22))
                 CustomTextField(
                     text: $searchQuery,
-                    cursorPosition: $searchCursorPosition,
                     placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
                 )
             }
@@ -340,6 +338,9 @@ struct TabHistoryView: View {
         .onDisappear {
             removeInAppKeyListener()
         }
+        .onChange(of: searchQuery) { _ in
+            filterTabs()
+        }
         .onChange(of: scenePhase) { phase in
             guard appState.isUserOnboarded == true else { return }
             guard !NSEvent.modifierFlags.contains(.option) else { return }
@@ -376,7 +377,7 @@ struct TabHistoryView: View {
                 NSApplication.shared.terminate(nil)
             }
             
-            return handleTypingKeyPresses(event: event)
+            return event
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
             handleKeyRelease(event: event)
@@ -398,30 +399,6 @@ struct TabHistoryView: View {
         guard appState.isUserOnboarded else { return }
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
-    }
-    
-    func handleTypingKeyPresses(event: NSEvent) -> NSEvent? {
-        switch TypingKeys(rawValue: event.keyCode) {
-        case .arrowLeft:
-            searchCursorPosition = max(searchCursorPosition-1, -searchQuery.count)
-        case .arrowRight:
-            searchCursorPosition = min(searchCursorPosition+1, 0)
-
-        case .backspace:
-            guard !searchQuery.isEmpty else { return nil }
-            if searchQuery.count + searchCursorPosition > 0 {
-                let indexToRemove = searchQuery.index(searchQuery.endIndex, offsetBy: searchCursorPosition-1)
-                searchQuery.remove(at: indexToRemove)
-            }
-            filterTabs()
-            
-        default:
-            let charToInsert = event.charactersIgnoringModifiers ?? ""
-            let insertionIndex = searchQuery.index(searchQuery.endIndex, offsetBy: searchCursorPosition)
-            searchQuery.insert(contentsOf: charToInsert, at: insertionIndex)
-            filterTabs()
-        }
-        return nil
     }
     
     func hideTabSwitcherUI() {
@@ -476,7 +453,6 @@ struct TabHistoryView: View {
         guard let tabs = Store.windows.windows.last?.tabs else { return }
         tabIDsWithTitleAndHost = tabs
         searchQuery = ""
-        searchCursorPosition = 0
         filterTabs()
         indexOfTabToSwitchTo = 1
         startUsingTabFinder()

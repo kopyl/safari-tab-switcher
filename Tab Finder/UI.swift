@@ -3,7 +3,6 @@ import AppKit
 
 struct CustomTextField: NSViewRepresentable {
     @Binding var text: String
-    @Binding var cursorPosition: Int
     var placeholder: String.LocalizationValue
     var placeholderColor: NSColor = NSColor.gray
     var font: NSFont = NSFont.systemFont(ofSize: 26)
@@ -57,11 +56,6 @@ struct CustomTextField: NSViewRepresentable {
     func updateNSView(_ nsView: NSTextField, context: Context) {
         nsView.stringValue = text
         nsView.placeholderAttributedString = getPlaceholderAttributedString()
-
-        let selectedRange = NSRange(location: text.count + cursorPosition, length: 0)
-
-        guard let editor = nsView.currentEditor() else { return }
-        editor.selectedRange = selectedRange
     }
 }
 
