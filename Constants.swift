@@ -37,4 +37,3 @@ class AssetNames {
         static let right = "onboardingRight"
     }
 }
-
