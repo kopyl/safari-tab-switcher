@@ -2,9 +2,6 @@ import SwiftUI
 import SafariServices.SFSafariExtensionManager
 import HotKey
 
-var greetingWindow: NSWindow?
-var tabsWindow: NSWindow?
-
 func formatHost(_ host: String) -> String {
     return host
         .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
@@ -92,72 +89,8 @@ struct GreetingView: View {
     }
 }
 
-/// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
-///
-/// Either this or .titled style mask is needed
-class Window: NSWindow {
-    init(isRegualar: Bool = true) {
-        super.init(
-            contentRect: .zero,
-            styleMask: isRegualar ? [.titled, .closable] : [],
-            backing: .buffered,
-            defer: false
-        )
-        self.titlebarAppearsTransparent = true
-    }
-    
-    override var canBecomeKey: Bool {
-        true
-    }
-}
-
-func showGreetingWindow() {    
-    if let greetingWindow {
-        appState.isUserOnboarded = false
-        greetingWindow.makeKeyAndOrderFront(nil)
-        NSApp.setActivationPolicy(.regular)
-        return
-    }
-    
-    let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
-    
-    greetingWindow = Window()
-    greetingWindow?.contentViewController = greetingView
-    
-    greetingWindow?.backgroundColor = .greetingBg
-    greetingWindow?.title = Copy.Onboarding.title
-    greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
-    greetingWindow?.center()
-    greetingWindow?.makeKeyAndOrderFront(nil)
-}
-
 func hideMainWindow() {
     tabsWindow?.orderOut(nil)
-}
-
-func showTabsWindow(hotKey: HotKey) {
-    if let tabsWindow {
-        filterTabs()
-        tabsWindow.orderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
-        return
-    }
-
-    let tabsView = NSHostingController(
-        rootView: TabHistoryView(
-            hotKey: hotKey,
-            appState: appState
-        )
-    )
-    
-    tabsWindow = Window(isRegualar: false)
-    
-    tabsWindow?.contentViewController = tabsView
-    tabsWindow?.backgroundColor = .clear
-    tabsWindow?.contentView?.layer?.cornerRadius = 8
-    tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
-    tabsWindow?.center()
-    tabsWindow?.hidesOnDeactivate = true
 }
 
 func filterTabs() {
