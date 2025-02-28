@@ -161,6 +161,7 @@ struct TabHistoryView: View {
     @State private var keyMonitors: [Any] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.colorScheme) var colorScheme
     
     func setUp() {
         setupInAppKeyListener()
@@ -206,7 +207,7 @@ struct TabHistoryView: View {
                                 .font(.system(size: 18))
                                 .foregroundStyle(
                                     id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? .white : .primary.opacity(0.9)
+                                    ? .currentTabFg : .primary.opacity(0.9)
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 
@@ -214,7 +215,7 @@ struct TabHistoryView: View {
                                 .font(.system(size: 13))
                                 .foregroundStyle(
                                     id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? .white : Color.primary
+                                    ? .currentTabFg : Color.primary
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 .opacity(0.65)
@@ -222,9 +223,9 @@ struct TabHistoryView: View {
                                 .lineLimit(1)
                                 .padding(.top, 14).padding(.bottom, 14)
                                 .padding(.leading, 18).padding(.trailing, 18)
-                                .background(.blue.opacity(
+                                .background(.currentTabBg.opacity(
                                     id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? 1 : 0))
+                                    ? colorScheme == .dark ? 0.15 : 0.10 : 0))
                                 .id(id)
                                 .contentShape(Rectangle())
                                 .cornerRadius(6)
