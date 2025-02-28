@@ -53,10 +53,14 @@ func showGreetingWindow() {
 }
 
 func showTabsWindow(hotKey: HotKey) {
-    if let tabsWindow {
+    func show() {
         filterTabs()
-        tabsWindow.orderFront(nil)
+        tabsWindow?.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    if tabsWindow != nil {
+        show()
         return
     }
 
@@ -75,6 +79,7 @@ func showTabsWindow(hotKey: HotKey) {
     tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
+    show()
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
