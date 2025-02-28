@@ -45,7 +45,7 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>12.0</string>
 	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
+	<string>$(PRODUCT_MODULE_NAME).CustomApplication</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>This app requires accessibility access to listen for key presses globally.</string>
 	<key>LSApplicationCategoryType</key>

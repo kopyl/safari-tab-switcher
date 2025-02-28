@@ -25,6 +25,7 @@
 		48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
 		48E9EE422D33E20B007BC086 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE412D33E20B007BC086 /* Math.swift */; };
 		48E9EE432D33E20B007BC086 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE412D33E20B007BC086 /* Math.swift */; };
+		48FEE0F92D71FB3A007704A0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48FEE0F82D71FB3A007704A0 /* main.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder_Extension.entitlements; sourceTree = "<group>"; };
 		48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		48E9EE412D33E20B007BC086 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
+		48FEE0F82D71FB3A007704A0 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			children = (
 				48534A232D333B3D003FF94A /* Info.plist */,
 				4813F8322D2A8D5C0085D120 /* app.swift */,
+				48FEE0F82D71FB3A007704A0 /* main.swift */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
 				4835D5002D40A6C500B775DD /* UI.swift */,
@@ -254,6 +257,7 @@
 			files = (
 				48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */,
 				48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */,
+				48FEE0F92D71FB3A007704A0 /* main.swift in Sources */,
 				4813F8332D2A8D5C0085D120 /* app.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48E9EE422D33E20B007BC086 /* Math.swift in Sources */,
