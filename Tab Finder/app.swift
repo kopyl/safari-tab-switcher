@@ -347,13 +347,6 @@ struct TabHistoryView: View {
             openSafariAndAskToSwitchTabs()
         }
     }
-    
-    func isCommandQPressed(event: NSEvent) -> Bool {
-        if NSEvent.modifierFlags.contains(.command) && event.keyCode == 12 {
-            return true
-        }
-        return false
-    }
 
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
