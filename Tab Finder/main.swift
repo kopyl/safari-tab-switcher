@@ -17,7 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let hotKey = showOrHideTabsHistoryWindowHotKey, let state = appState {
-            showMainWindow(showOrHideTabsHistoryWindowHotKey: hotKey, appState: state)
+            showTabsWindow(showOrHideTabsHistoryWindowHotKey: hotKey, appState: state)
         }
         
         setupAppSwitchingObserver()

@@ -141,7 +141,7 @@ func hideMainWindow() {
     tabsWindow?.orderOut(nil)
 }
 
-func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
+func showTabsWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
     if let tabsWindow {
         tabsWindow.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -434,7 +434,7 @@ struct TabHistoryView: View {
         indexOfTabToSwitchTo = 1
         startUsingTabFinder()
         appState.isUserOnboarded = true
-        showMainWindow(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey, appState: appState)
+        showTabsWindow(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey, appState: appState)
     }
 
     private func openSafariAndAskToSwitchTabs() {
