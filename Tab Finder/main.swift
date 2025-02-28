@@ -2,6 +2,14 @@ import Foundation
 import HotKey
 import AppKit
 
+class AppState: ObservableObject {
+    @Published var isUserOnboarded = false
+    @Published var searchQuery = ""
+    @Published var tabIDsWithTitleAndHost = Tabs()
+    @Published var indexOfTabToSwitchTo = 1
+    @Published var filteredTabs: [TabForSearch] = []
+}
+
 let appState = AppState()
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
@@ -165,14 +173,6 @@ class Application: NSApplication {
         }
         super.sendEvent(event)
     }
-}
-
-class AppState: ObservableObject {
-    @Published var isUserOnboarded = false
-    @Published var searchQuery = ""
-    @Published var tabIDsWithTitleAndHost = Tabs()
-    @Published var indexOfTabToSwitchTo = 1    
-    @Published var filteredTabs: [TabForSearch] = []
 }
 
 let delegate = AppDelegate(appState: appState)
