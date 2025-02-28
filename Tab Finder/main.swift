@@ -72,7 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 }
 
-class CustomApplication: NSApplication {
+class Application: NSApplication {
     private func createMenu() {
         let mainMenu = NSMenu()
         
@@ -161,7 +161,7 @@ let delegate = AppDelegate(
     appState: AppState()
 )
 
-let app = CustomApplication.shared
+let app = Application.shared
 app.delegate = delegate
 
 app.run()
