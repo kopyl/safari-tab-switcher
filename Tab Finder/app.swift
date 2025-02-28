@@ -89,7 +89,16 @@ struct GreetingView: View {
     }
 }
 
-func showGreetingWindow(appState: AppState) {
+func showGreetingWindow(appState: AppState? = nil) {
+    guard let appState else { return }
+    
+    if let greetingWindow {
+        appState.isUserOnboarded = false
+        greetingWindow.makeKeyAndOrderFront(nil)
+        NSApp.setActivationPolicy(.regular)
+        return
+    }
+    
     let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
     greetingWindow = NSWindow(contentViewController: greetingView)
     
@@ -503,12 +512,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        guard let greetingWindow else {
-            return true
-        }
-        greetingWindow.makeKeyAndOrderFront(nil)
-        NSApp.setActivationPolicy(.regular)
-        appState?.isUserOnboarded = false
+        showGreetingWindow(appState: appState)
         hideMainWindow()
         return true
     }
