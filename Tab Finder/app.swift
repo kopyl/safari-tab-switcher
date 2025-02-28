@@ -409,10 +409,16 @@ struct TabHistoryView: View {
 
         case .backspace:
             guard !searchQuery.isEmpty else { return nil }
-            searchQuery.removeLast()
+            if searchQuery.count + searchCursorPosition > 0 {
+                let indexToRemove = searchQuery.index(searchQuery.endIndex, offsetBy: searchCursorPosition-1)
+                searchQuery.remove(at: indexToRemove)
+            }
             filterTabs()
+            
         default:
-            searchQuery.append(event.charactersIgnoringModifiers ?? "")
+            let charToInsert = event.charactersIgnoringModifiers ?? ""
+            let insertionIndex = searchQuery.index(searchQuery.endIndex, offsetBy: searchCursorPosition)
+            searchQuery.insert(contentsOf: charToInsert, at: insertionIndex)
             filterTabs()
         }
         return nil
