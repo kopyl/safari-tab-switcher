@@ -182,41 +182,9 @@ struct TabHistoryView: View {
     
     @State private var activeWindow: NSWindow?
     
-    private func observeWindowActivity() {
-        NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { notification in
-            if let window = notification.object as? NSWindow {
-                activeWindow = window
-                
-                if window.title == Copy.Onboarding.title {
-                    appState.isUserOnboarded = false
-                }
-            }
-        }
-
-        NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: nil, queue: .main) { notification in
-            if let window = notification.object as? NSWindow {
-                if activeWindow == window {
-                    activeWindow = nil
-                }
-                showOrHideTabsHistoryWindowHotKey.isPaused = false
-            }
-        }
-    }
-    
     func setUp() {
-        setupDistributedNotificationListener()
         showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleHotKeyPress
         setupInAppKeyListener()
-    }
-    
-    private func setupDistributedNotificationListener() {
-        notificationFromExtension = DistributedNotificationCenter.default().addObserver(
-            forName: notificationName,
-            object: nil,
-            queue: .main
-        ) { notification in
-            showOrHideTabsHistoryWindowHotKey.isPaused = false
-        }
     }
     
     private func removeDistributedNotificationListener() {
@@ -376,7 +344,6 @@ struct TabHistoryView: View {
         .onAppear {
             setUp()
             showGreetingWindow(appState: appState)
-            observeWindowActivity()
         }
         .task {
             hideMainWindow()
@@ -464,7 +431,6 @@ struct TabHistoryView: View {
     }
     
     func hideTabSwitcherUI() {
-        showOrHideTabsHistoryWindowHotKey.isPaused = false
         NSApp.hide(nil)
         tabsWindow?.orderOut(nil)
     }
@@ -514,8 +480,6 @@ struct TabHistoryView: View {
         }
         
         guard let tabs = Store.windows.windows.last?.tabs else { return }
-        showOrHideTabsHistoryWindowHotKey.isPaused = true
-        
         tabIDsWithTitleAndHost = tabs
         searchQuery = ""
         searchCursorPosition = 0
@@ -553,8 +517,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var activeAppObserver: Any?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidDeactivate), name: NSApplication.didResignActiveNotification, object: nil)
-        
         if let hotKey = showOrHideTabsHistoryWindowHotKey, let state = appState {
             showMainWindow(showOrHideTabsHistoryWindowHotKey: hotKey, appState: state)
         }
@@ -581,19 +543,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         NSApp.setActivationPolicy(.regular)
         hideMainWindow()
         return true
-    }
-
-    @objc func appDidDeactivate(_ notification: Notification) {
-        showOrHideTabsHistoryWindowHotKey?.isPaused = false
-    }
-
-    @objc func applicationDidUpdate(_ notification: Notification) {
-        if NSApp.isActive {
-            showOrHideTabsHistoryWindowHotKey?.isPaused = true
-        }
-        else {
-            showOrHideTabsHistoryWindowHotKey?.isPaused = false
-        }
     }
     
     func setupAppSwitchingObserver() {

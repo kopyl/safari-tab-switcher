@@ -107,29 +107,8 @@ enum AppCommands: String {
     case switchtabto
 }
 
-struct TooltipView: View {
-    var body: some View {
-        VStack {
-            Button("Restart") {
-                askMainAppToTrackGlobalShortcut()
-                SafariExtensionViewController.shared.dismissPopover()
-            }
-        }
-        .frame(width: 100, height: 50)
-    }
-}
-
 class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
-    
-    override func loadView() {
-        let swiftUIView = TooltipView()
-        self.view = NSHostingView(rootView: swiftUIView)
-    }
-}
-
-func askMainAppToTrackGlobalShortcut() {
-    DistributedNotificationCenter.default().postNotificationName(notificationName, object: nil, deliverImmediately: true)
 }
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
@@ -138,8 +117,6 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         guard let command = AppCommands(rawValue: withName) else { return }
         switch command {
         case .switchtabto:
-            askMainAppToTrackGlobalShortcut()
-
             guard let tabIdString = userInfo?["id"] as? String,
                   let tabId = Int(tabIdString) else { return }
             Task{
