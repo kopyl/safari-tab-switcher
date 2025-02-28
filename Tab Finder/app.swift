@@ -121,33 +121,27 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
         return
     }
 
-    let mainView = NSHostingController(
+    let tabsView = NSHostingController(
         rootView: TabHistoryView(
             showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey,
             appState: appState
         )
     )
     
-    let window = TabsWindow(
-        contentRect: NSRect(x: 100, y: 100, width: 800, height: 500),
+    tabsWindow = TabsWindow(
+        contentRect: .zero,
         styleMask: [],
         backing: .buffered,
         defer: false
     )
     
-    window.contentViewController = mainView
-
-    window.backgroundColor = .clear
-    window.contentView?.layer?.cornerRadius = 8
-    
-    window.titlebarAppearsTransparent = true
-
-    window.setContentSize(NSSize(width: 800, height: 500))
-    window.center()
-    
-    window.hidesOnDeactivate = true
-
-    tabsWindow = window
+    tabsWindow?.contentViewController = tabsView
+    tabsWindow?.backgroundColor = .clear
+    tabsWindow?.contentView?.layer?.cornerRadius = 8
+    tabsWindow?.titlebarAppearsTransparent = true
+    tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
+    tabsWindow?.center()
+    tabsWindow?.hidesOnDeactivate = true
 }
 
 struct TabHistoryView: View {
