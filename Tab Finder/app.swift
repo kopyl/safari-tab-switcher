@@ -113,7 +113,7 @@ func showGreetingWindow(appState: AppState? = nil) {
     
     if let greetingWindow {
         appState.isUserOnboarded = false
-        greetingWindow.orderFront(nil)
+        greetingWindow.makeKeyAndOrderFront(nil)
         NSApp.setActivationPolicy(.regular)
         return
     }
