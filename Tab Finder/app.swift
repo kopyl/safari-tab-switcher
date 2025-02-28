@@ -82,8 +82,6 @@ struct GreetingView: View {
             .padding(.bottom, 41)
             .padding(.horizontal, 41)
         }
-        .frame(width: 759, height: 781)
-        .background(.greetingBg)
         .onDisappear {
             startUsingTabFinder()
             appState.isUserOnboarded = true
@@ -92,26 +90,15 @@ struct GreetingView: View {
 }
 
 func showGreetingWindow(appState: AppState) {
-    
     let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
+    greetingWindow = NSWindow(contentViewController: greetingView)
     
-    let window = NSWindow(
-        contentRect: NSRect(x: 0, y: 0, width: 400, height: 200),
-        styleMask: [.titled, .closable, .miniaturizable],
-        backing: .buffered,
-        defer: false
-    )
-    
-    window.titlebarAppearsTransparent = true
-    
-    window.backgroundColor = .greetingBg
-
-    window.contentViewController = greetingView
-    window.title = Copy.Onboarding.title
-    window.center()
-    window.makeKeyAndOrderFront(nil)
-    
-    greetingWindow = window
+    greetingWindow?.titlebarAppearsTransparent = true
+    greetingWindow?.backgroundColor = .greetingBg
+    greetingWindow?.title = Copy.Onboarding.title
+    greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
+    greetingWindow?.center()
+    greetingWindow?.makeKeyAndOrderFront(nil)
 }
 
 func hideMainWindow() {
