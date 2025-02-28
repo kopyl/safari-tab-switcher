@@ -541,6 +541,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         greetingWindow.makeKeyAndOrderFront(nil)
         NSApp.setActivationPolicy(.regular)
+        appState?.isUserOnboarded = false
         hideMainWindow()
         return true
     }
