@@ -1,6 +1,6 @@
 import SwiftUI
-import SafariServices.SFSafariExtensionManager
 import HotKey
+import SafariServices.SFSafariExtensionManager
 
 func formatHost(_ host: String) -> String {
     return host

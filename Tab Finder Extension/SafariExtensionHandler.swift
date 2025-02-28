@@ -1,5 +1,5 @@
-import SafariServices
 import SwiftUI
+import SafariServices
 
 func switchToTab(id: Int, tabs: [SFSafariTab]) async {
     guard tabs.indices.contains(id) else {

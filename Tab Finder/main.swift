@@ -1,5 +1,5 @@
-import HotKey
 import SwiftUI
+import HotKey
 
 let appState = AppState()
 var greetingWindow: NSWindow?
