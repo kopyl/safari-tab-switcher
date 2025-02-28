@@ -151,7 +151,6 @@ func showMainWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
 }
 
 struct TabHistoryView: View {
-    
     var showOrHideTabsHistoryWindowHotKey: HotKey
     
     @State private var indexOfTabToSwitchTo: Int = 1
@@ -159,12 +158,9 @@ struct TabHistoryView: View {
     @State private var keyMonitors: [Any] = []
     @State private var searchQuery: String = ""
     @State private var searchCursorPosition: Int = 0
-    
     @State private var filteredTabs: [TabForSearch] = []
-    
-    @Environment(\.scenePhase) var scenePhase
-    
     @ObservedObject var appState: AppState
+    @Environment(\.scenePhase) var scenePhase
     
     func setUp() {
         showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleHotKeyPress
