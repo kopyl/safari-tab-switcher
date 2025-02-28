@@ -73,11 +73,18 @@ struct GreetingView: View {
             Text(Copy.Onboarding.description)
                 .font(.title3)
                 .padding(.top, 6)
+                .padding(.bottom, 5)
             Spacer()
             
-            OnboardingButton {
-                startUsingTabFinder()
-                appState.isUserOnboarded = true
+            VStack {
+                OnboardingButton {
+                    startUsingTabFinder()
+                    appState.isUserOnboarded = true
+                }
+                .padding(.bottom, 10)
+                Text(Copy.Onboarding.buttonHint)
+                    .font(.system(size: 12))
+                    .opacity(0.6)
             }
             .padding(.bottom, 41)
             .padding(.horizontal, 41)
@@ -520,6 +527,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         hideMainWindow()
         return true
     }
+    
+    func application(_ application: NSApplication, open urls: [URL]) {
+            for url in urls {
+                if url.scheme == "tabfinder" {
+                    showGreetingWindow(appState: appState)
+                }
+            }
+        }
     
     func setupAppSwitchingObserver() {
         let workspace = NSWorkspace.shared

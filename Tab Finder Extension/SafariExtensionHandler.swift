@@ -127,7 +127,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
     }
     
-    override func toolbarItemClicked(in window: SFSafariWindow) { }
+    override func toolbarItemClicked(in window: SFSafariWindow) {
+        let url = URL(string: "tabfinder://")!
+        NSWorkspace.shared.open(url)
+    }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
