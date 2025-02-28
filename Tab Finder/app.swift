@@ -107,7 +107,6 @@ func showGreetingWindow(appState: AppState? = nil) {
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
-    greetingWindow?.makeKeyAndOrderFront(nil)
 }
 
 func hideMainWindow() {
