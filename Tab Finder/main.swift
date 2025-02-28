@@ -112,7 +112,6 @@ class Application: NSApplication {
     
     override init() {
         super.init()
-        
         createMenu()
     }
     
