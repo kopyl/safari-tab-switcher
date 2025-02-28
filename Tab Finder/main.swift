@@ -3,20 +3,20 @@ import HotKey
 import AppKit
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    var showOrHideTabsHistoryWindowHotKey: HotKey
+    var hotKey: HotKey
     var appState: AppState
     private var activeAppObserver: Any?
     
     init(
-        showOrHideTabsHistoryWindowHotKey: HotKey,
+        hotKey: HotKey,
         appState: AppState
     ) {
-        self.showOrHideTabsHistoryWindowHotKey = showOrHideTabsHistoryWindowHotKey
+        self.hotKey = hotKey
         self.appState = appState
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        showTabsWindow(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey, appState: appState)
+        showTabsWindow(hotKey: hotKey, appState: appState)
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
     }
@@ -60,9 +60,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
             if let bundleIdentifier = app.bundleIdentifier {
                 if bundleIdentifier == "com.apple.Safari" {
-                    self.showOrHideTabsHistoryWindowHotKey.isPaused = false
+                    self.hotKey.isPaused = false
                 } else {
-                    self.showOrHideTabsHistoryWindowHotKey.isPaused = true
+                    self.hotKey.isPaused = true
                 }
             }
         }
@@ -153,7 +153,7 @@ class Application: NSApplication {
 }
 
 let delegate = AppDelegate(
-    showOrHideTabsHistoryWindowHotKey: HotKey(key: .tab, modifiers: [.option]),
+    hotKey: HotKey(key: .tab, modifiers: [.option]),
     appState: AppState()
 )
 

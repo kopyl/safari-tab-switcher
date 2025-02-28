@@ -141,7 +141,7 @@ func hideMainWindow() {
     tabsWindow?.orderOut(nil)
 }
 
-func showTabsWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppState) {
+func showTabsWindow(hotKey: HotKey, appState: AppState) {
     if let tabsWindow {
         tabsWindow.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -150,7 +150,7 @@ func showTabsWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
 
     let tabsView = NSHostingController(
         rootView: TabHistoryView(
-            showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey,
+            hotKey: hotKey,
             appState: appState
         )
     )
@@ -166,7 +166,7 @@ func showTabsWindow(showOrHideTabsHistoryWindowHotKey: HotKey, appState: AppStat
 }
 
 struct TabHistoryView: View {
-    var showOrHideTabsHistoryWindowHotKey: HotKey
+    var hotKey: HotKey
     
     @State private var indexOfTabToSwitchTo: Int = 1
     @State private var tabIDsWithTitleAndHost = Tabs()
@@ -177,7 +177,7 @@ struct TabHistoryView: View {
     @Environment(\.scenePhase) var scenePhase
     
     func setUp() {
-        showOrHideTabsHistoryWindowHotKey.keyDownHandler = handleHotKeyPress
+        hotKey.keyDownHandler = handleHotKeyPress
         setupInAppKeyListener()
     }
     
@@ -434,7 +434,7 @@ struct TabHistoryView: View {
         indexOfTabToSwitchTo = 1
         startUsingTabFinder()
         appState.isUserOnboarded = true
-        showTabsWindow(showOrHideTabsHistoryWindowHotKey: showOrHideTabsHistoryWindowHotKey, appState: appState)
+        showTabsWindow(hotKey: hotKey, appState: appState)
     }
 
     private func openSafariAndAskToSwitchTabs() {
