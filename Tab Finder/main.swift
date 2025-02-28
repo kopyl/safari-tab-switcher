@@ -130,7 +130,7 @@ class CustomApplication: NSApplication {
                     return
                 }
                 
-                guard let charactersIgnoringModifiers = event.charactersIgnoringModifiers else {
+                guard let characters = event.charactersIgnoringModifiers else {
                     super.sendEvent(event)
                     return
                 }
@@ -142,8 +142,8 @@ class CustomApplication: NSApplication {
                     timestamp: event.timestamp,
                     windowNumber: event.windowNumber,
                     context: nil,
-                    characters: charactersIgnoringModifiers,
-                    charactersIgnoringModifiers: charactersIgnoringModifiers,
+                    characters: characters,
+                    charactersIgnoringModifiers: characters,
                     isARepeat: event.isARepeat,
                     keyCode: event.keyCode
                 ) {
