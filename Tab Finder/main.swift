@@ -38,10 +38,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        hotKey.keyDownHandler = handleHotKeyPress
         showGreetingWindow()
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
-        hotKey.keyDownHandler = handleHotKeyPress
     }
     
     func setUpNSWindowDelegate() {
