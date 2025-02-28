@@ -5,10 +5,6 @@ import HotKey
 var greetingWindow: NSWindow?
 var tabsWindow: NSWindow?
 
-class AppState: ObservableObject {
-    @Published var isUserOnboarded: Bool = false
-}
-
 func formatHost(_ host: String) -> String {
     return host
         .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
@@ -115,9 +111,7 @@ class Window: NSWindow {
     }
 }
 
-func showGreetingWindow(appState: AppState? = nil) {
-    guard let appState else { return }
-    
+func showGreetingWindow() {    
     if let greetingWindow {
         appState.isUserOnboarded = false
         greetingWindow.makeKeyAndOrderFront(nil)
@@ -141,8 +135,9 @@ func hideMainWindow() {
     tabsWindow?.orderOut(nil)
 }
 
-func showTabsWindow(hotKey: HotKey, appState: AppState) {
+func showTabsWindow(hotKey: HotKey) {
     if let tabsWindow {
+        filterTabs()
         tabsWindow.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         return
@@ -165,95 +160,89 @@ func showTabsWindow(hotKey: HotKey, appState: AppState) {
     tabsWindow?.hidesOnDeactivate = true
 }
 
+func filterTabs() {
+    appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed().map{TabForSearch(tab: $0)}
+    guard !appState.searchQuery.isEmpty else { return }
+    
+    let _searchQuery = appState.searchQuery.lowercased()
+    
+    let _filteredTabs = appState.filteredTabs.filter {
+        $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
+        $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
+    }
+    
+    let weightedResults = _filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
+        var tab = tab
+        let host = tab.host
+        
+        tab.searchRating = 0
+        
+        var scoreMultiplier = 10
+        
+        for hostPartIndex in tab.hostParts.indices {
+            scoreMultiplier -= hostPartIndex
+            
+            if scoreMultiplier < 1 {
+                scoreMultiplier = 1
+            }
+            
+            let hostPart = tab.hostParts[hostPartIndex]
+            
+            if hostPart == "No title" {
+                continue
+            }
+            
+            if hostPart.starts(with: _searchQuery) {
+                tab.searchRating += 5*scoreMultiplier
+            }
+            else if hostPart.localizedCaseInsensitiveContains(appState.searchQuery) {
+                tab.searchRating += 2
+            }
+        }
+        
+        if tab.searchRating == 0 {
+            if host.localizedCaseInsensitiveContains(appState.searchQuery) {
+                tab.searchRating += 1
+            }
+        }
+
+        if tab.domainZone.localizedCaseInsensitiveContains(appState.searchQuery) {
+            tab.searchRating += 1
+        }
+        
+        if tab.title.starts(with: _searchQuery) {
+            tab.searchRating += 4
+        }
+        else if tab.title.localizedCaseInsensitiveContains(appState.searchQuery) {
+            tab.searchRating += 1
+        }
+
+        return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
+    }
+    
+    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
+}
+
 struct TabHistoryView: View {
     var hotKey: HotKey
-    
-    @State private var indexOfTabToSwitchTo: Int = 1
-    @State private var tabIDsWithTitleAndHost = Tabs()
     @State private var keyMonitors: [Any] = []
-    @State private var searchQuery: String = ""
-    @State private var filteredTabs: [TabForSearch] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
     
     func setUp() {
-        hotKey.keyDownHandler = handleHotKeyPress
         setupInAppKeyListener()
-    }
-    
-    func filterTabs() {
-        filteredTabs = tabIDsWithTitleAndHost.reversed().map{TabForSearch(tab: $0)}
-        guard !searchQuery.isEmpty else { return }
-        
-        let _searchQuery = searchQuery.lowercased()
-        
-        let _filteredTabs = filteredTabs.filter {
-            $0.host.localizedCaseInsensitiveContains(searchQuery) ||
-            $0.title.localizedCaseInsensitiveContains(searchQuery)
-        }
-        
-        let weightedResults = _filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
-            var tab = tab
-            let host = tab.host
-            
-            tab.searchRating = 0
-            
-            var scoreMultiplier = 10
-            
-            for hostPartIndex in tab.hostParts.indices {
-                scoreMultiplier -= hostPartIndex
-                
-                if scoreMultiplier < 1 {
-                    scoreMultiplier = 1
-                }
-                
-                let hostPart = tab.hostParts[hostPartIndex]
-                
-                if hostPart == "No title" {
-                    continue
-                }
-                
-                if hostPart.starts(with: _searchQuery) {
-                    tab.searchRating += 5*scoreMultiplier
-                }
-                else if hostPart.localizedCaseInsensitiveContains(searchQuery) {
-                    tab.searchRating += 2
-                }
-            }
-            
-            if tab.searchRating == 0 {
-                if host.localizedCaseInsensitiveContains(searchQuery) {
-                    tab.searchRating += 1
-                }
-            }
-
-            if tab.domainZone.localizedCaseInsensitiveContains(searchQuery) {
-                tab.searchRating += 1
-            }
-            
-            if tab.title.starts(with: _searchQuery) {
-                tab.searchRating += 4
-            }
-            else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
-                tab.searchRating += 1
-            }
-
-            return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
-        }
-        
-        filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
     }
 
     var body: some View {
         VStack(spacing: -5) {
-            let tabsCount = tabIDsWithTitleAndHost.count
+            let tabsCount = appState.tabIDsWithTitleAndHost.count
             HStack(spacing: 15){
                 Image(systemName: "magnifyingglass")
                     .symbolRenderingMode(.monochrome)
                     .foregroundStyle(.gray)
                     .font(.system(size: 22))
                 CustomTextField(
-                    text: $searchQuery,
+                    text: $appState.searchQuery,
                     placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
                 )
             }
@@ -262,18 +251,18 @@ struct TabHistoryView: View {
             .padding(.trailing, 20)
             .padding(.bottom, 26)
 
-            .onChange(of: searchQuery) { query in
+            .onChange(of: appState.searchQuery) { query in
                 if query.isEmpty {
-                    indexOfTabToSwitchTo = 1
+                    appState.indexOfTabToSwitchTo = 1
                 } else {
-                    indexOfTabToSwitchTo = 0
+                    appState.indexOfTabToSwitchTo = 0
                 }
             }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 0) {
-                        ForEach(filteredTabs.indices, id: \.self) { id in
-                            let tab = filteredTabs[id]
+                        ForEach(appState.filteredTabs.indices, id: \.self) { id in
+                            let tab = appState.filteredTabs[id]
                             let pageTitle = tab.title
                             let pageHost = tab.host
                             let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -283,7 +272,7 @@ struct TabHistoryView: View {
                                 Text(pageHostFormatted)
                                 .font(.system(size: 18))
                                 .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
                                     ? .white : .primary.opacity(0.9)
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -291,7 +280,7 @@ struct TabHistoryView: View {
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 13))
                                 .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
                                     ? .white : Color.primary
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -301,7 +290,7 @@ struct TabHistoryView: View {
                                 .padding(.top, 14).padding(.bottom, 14)
                                 .padding(.leading, 18).padding(.trailing, 18)
                                 .background(.blue.opacity(
-                                    id == calculateTabToSwitchIndex(indexOfTabToSwitchTo)
+                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
                                     ? 1 : 0))
                                 .id(id)
                                 .contentShape(Rectangle())
@@ -311,7 +300,7 @@ struct TabHistoryView: View {
                                 .padding(4)
                             
                                 .onTapGesture {
-                                    indexOfTabToSwitchTo = id
+                                    appState.indexOfTabToSwitchTo = id
                                     openSafariAndAskToSwitchTabs()
                                 }
                         }
@@ -319,7 +308,7 @@ struct TabHistoryView: View {
                     .padding(.top, 5)
                     .frame(minWidth: 800)
                 }
-                .onChange(of: indexOfTabToSwitchTo) { newIndex in
+                .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
                     withAnimation {
                         proxy.scrollTo(calculateTabToSwitchIndex(newIndex), anchor: .bottom)
                     }
@@ -330,15 +319,11 @@ struct TabHistoryView: View {
 
         .onAppear {
             setUp()
-            showGreetingWindow(appState: appState)
-        }
-        .task {
-            hideMainWindow()
         }
         .onDisappear {
             removeInAppKeyListener()
         }
-        .onChange(of: searchQuery) { _ in
+        .onChange(of: appState.searchQuery) { _ in
             filterTabs()
         }
         .onChange(of: scenePhase) { phase in
@@ -394,20 +379,20 @@ struct TabHistoryView: View {
 
     func handleNavigationKeyPresses(event: NSEvent) {
         guard event.modifierFlags.contains(.option) else { return }
-        guard !tabIDsWithTitleAndHost.isEmpty else { return }
+        guard !appState.tabIDsWithTitleAndHost.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
 
         switch key {
         case .arrowUp, .backTick:
-            indexOfTabToSwitchTo -= 1
+            appState.indexOfTabToSwitchTo -= 1
         case .tab:
             if event.modifierFlags.contains(.shift) {
-                indexOfTabToSwitchTo -= 1
+                appState.indexOfTabToSwitchTo -= 1
             } else {
-                indexOfTabToSwitchTo += 1
+                appState.indexOfTabToSwitchTo += 1
             }
         case .arrowDown:
-            indexOfTabToSwitchTo += 1
+            appState.indexOfTabToSwitchTo += 1
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
@@ -416,36 +401,21 @@ struct TabHistoryView: View {
     }
 
     func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        if filteredTabs.isEmpty {
+        if appState.filteredTabs.isEmpty {
             return 0
         }
-        return pythonTrueModulo(indexOfTabToSwitchTo, filteredTabs.count)
-    }
-
-    private func handleHotKeyPress() {
-        guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
-            return
-        }
-        
-        guard let tabs = Store.windows.windows.last?.tabs else { return }
-        tabIDsWithTitleAndHost = tabs
-        searchQuery = ""
-        filterTabs()
-        indexOfTabToSwitchTo = 1
-        startUsingTabFinder()
-        appState.isUserOnboarded = true
-        showTabsWindow(hotKey: hotKey, appState: appState)
+        return pythonTrueModulo(indexOfTabToSwitchTo, appState.filteredTabs.count)
     }
 
     private func openSafariAndAskToSwitchTabs() {
         hideTabSwitcherUI()
         openSafari()
-        guard !filteredTabs.isEmpty else { return }
+        guard !appState.filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
     }
 
     func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = filteredTabs[calculateTabToSwitchIndex(indexOfTabToSwitchTo)]
+        let indexOfTabToSwitchToInSafari = appState.filteredTabs[calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)]
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",

@@ -2,23 +2,38 @@ import Foundation
 import HotKey
 import AppKit
 
+let appState = AppState()
+
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var hotKey: HotKey
     var appState: AppState
     private var activeAppObserver: Any?
     
     init(
-        hotKey: HotKey,
         appState: AppState
     ) {
-        self.hotKey = hotKey
+        self.hotKey = HotKey(key: .tab, modifiers: [.option])
         self.appState = appState
     }
     
+    private func handleHotKeyPress() {
+        guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
+            return
+        }
+        guard let tabs = Store.windows.windows.last?.tabs else { return }
+        appState.tabIDsWithTitleAndHost = tabs
+        appState.searchQuery = ""
+        appState.indexOfTabToSwitchTo = 1
+        startUsingTabFinder()
+        appState.isUserOnboarded = true
+        showTabsWindow(hotKey: hotKey)
+    }
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
-        showTabsWindow(hotKey: hotKey, appState: appState)
+        showGreetingWindow()
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
+        hotKey.keyDownHandler = handleHotKeyPress
     }
     
     func setUpNSWindowDelegate() {
@@ -32,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showGreetingWindow(appState: appState)
+        showGreetingWindow()
         hideMainWindow()
         return true
     }
@@ -40,7 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func application(_ application: NSApplication, open urls: [URL]) {
             for url in urls {
                 if url.scheme == "tabfinder" {
-                    showGreetingWindow(appState: appState)
+                    showGreetingWindow()
                 }
             }
         }
@@ -152,10 +167,15 @@ class Application: NSApplication {
     }
 }
 
-let delegate = AppDelegate(
-    hotKey: HotKey(key: .tab, modifiers: [.option]),
-    appState: AppState()
-)
+class AppState: ObservableObject {
+    @Published var isUserOnboarded = false
+    @Published var searchQuery = ""
+    @Published var tabIDsWithTitleAndHost = Tabs()
+    @Published var indexOfTabToSwitchTo = 1    
+    @Published var filteredTabs: [TabForSearch] = []
+}
+
+let delegate = AppDelegate(appState: appState)
 
 let app = Application.shared
 app.delegate = delegate
