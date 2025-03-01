@@ -156,12 +156,24 @@ struct GreetingView: View {
     }
 }
 
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
 struct TabHistoryView: View {
     var hotKey: HotKey
     @State private var keyMonitors: [Any] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) var colorScheme
+    @State private var scrollViewHeight: CGFloat = 0
+    @State private var scrollViewContentHeight: CGFloat = 0
+    @State private var itemPositions: [Int: CGRect] = [:]
+    @State private var isUserNearEdge: Bool = false
+    @State private var lastScrollPosition: CGFloat = 0
     
     func setUp() {
         setupInAppKeyListener()
@@ -192,34 +204,47 @@ struct TabHistoryView: View {
                     appState.indexOfTabToSwitchTo = 0
                 }
             }
-            ScrollViewReader { proxy in
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 0) {
-                        ForEach(appState.filteredTabs.indices, id: \.self) { id in
-                            let tab = appState.filteredTabs[id]
-                            let pageTitle = tab.title
-                            let pageHost = tab.host
-                            let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let pageHostFormatted = formatHost(pageHost)
+            
+            GeometryReader { scrollViewGeometry in
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical) {
+                        GeometryReader { contentGeometry in
+                            Color.clear
+                                .onAppear {
+                                    scrollViewContentHeight = contentGeometry.size.height
+                                }
+                                .onChange(of: contentGeometry.size.height) { newHeight in
+                                    scrollViewContentHeight = newHeight
+                                }
+                        }
+                        .frame(height: 0)
+                        
+                        LazyVStack(spacing: 0) {
+                            ForEach(appState.filteredTabs.indices, id: \.self) { id in
+                                let tab = appState.filteredTabs[id]
+                                let pageTitle = tab.title
+                                let pageHost = tab.host
+                                let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let pageHostFormatted = formatHost(pageHost)
 
-                            HStack(alignment: .center) {
-                                Text(pageHostFormatted)
-                                .font(.system(size: 18))
-                                .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? .currentTabFg : .primary.opacity(0.9)
-                                )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                
-                                Text(pageTitleFormatted)
-                                .font(.system(size: 13))
-                                .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? .currentTabFg : Color.primary
-                                )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                .opacity(0.65)
-                            }
+                                HStack(alignment: .center) {
+                                    Text(pageHostFormatted)
+                                    .font(.system(size: 18))
+                                    .foregroundStyle(
+                                        id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                        ? .currentTabFg : .primary.opacity(0.9)
+                                    )
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text(pageTitleFormatted)
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(
+                                        id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                        ? .currentTabFg : Color.primary
+                                    )
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    .opacity(0.65)
+                                }
                                 .lineLimit(1)
                                 .padding(.top, 14).padding(.bottom, 14)
                                 .padding(.leading, 18).padding(.trailing, 18)
@@ -229,28 +254,75 @@ struct TabHistoryView: View {
                                 .id(id)
                                 .contentShape(Rectangle())
                                 .cornerRadius(6)
-                            
-                                .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, maxWidth: .infinity)
+                                .frame(minWidth: 0, maxWidth: .infinity)
                                 .padding(4)
-                            
                                 .onTapGesture {
                                     appState.indexOfTabToSwitchTo = id
                                     openSafariAndAskToSwitchTabs()
                                 }
+                                .background(
+                                    GeometryReader { itemGeometry in
+                                        Color.clear
+                                            .onAppear {
+                                                let frame = itemGeometry.frame(in: .named("scrollView"))
+                                                itemPositions[id] = frame
+                                            }
+                                            .onChange(of: itemGeometry.frame(in: .named("scrollView"))) { newFrame in
+                                                itemPositions[id] = newFrame
+                                            }
+                                    }
+                                )
+                            }
                         }
+                        .padding(.top, 5)
+                        .frame(minWidth: 800)
                     }
-                    .padding(.top, 5)
-                    .frame(minWidth: 800)
-                }
-                .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
-                    withAnimation {
-                        proxy.scrollTo(calculateTabToSwitchIndex(newIndex), anchor: .bottom)
+                    .coordinateSpace(name: "scrollView")
+                    .onAppear {
+                        scrollViewHeight = scrollViewGeometry.size.height
+                    }
+                    .onChange(of: scrollViewGeometry.size.height) { newHeight in
+                        scrollViewHeight = newHeight
+                    }
+                    .background(
+                        GeometryReader { scrollGeo in
+                            let offset = scrollGeo.frame(in: .named("scrollView")).minY
+                            return Color.clear.preference(key: ScrollOffsetPreferenceKey.self, value: offset)
+                        }
+                    )
+                    .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
+                        let selectedIndex = calculateTabToSwitchIndex(newIndex)
+                        
+                        if let selectedItemFrame = itemPositions[selectedIndex] {
+                            let isItemVisible = isItemFullyVisible(selectedItemFrame)
+                            
+                            if !isItemVisible {
+                                withAnimation {
+                                    let scrollAnchor = determineScrollAnchor(for: selectedItemFrame)
+                                    if scrollAnchor != .center {
+                                        proxy.scrollTo(selectedIndex, anchor: scrollAnchor)
+                                    }
+                                }
+                            }
+                        } else {
+                            withAnimation {
+                                proxy.scrollTo(selectedIndex, anchor: .bottom)
+                            }
+                        }
                     }
                 }
             }
         }
+        .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offset in
+            if lastScrollPosition != offset {
+                let topEdgeReached = offset >= 0
+                let bottomEdgeReached = (scrollViewContentHeight - scrollViewHeight - abs(offset)) <= 20
+                
+                isUserNearEdge = topEdgeReached || bottomEdgeReached
+                lastScrollPosition = offset
+            }
+        }
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
-
         .onAppear {
             setUp()
         }
@@ -265,6 +337,28 @@ struct TabHistoryView: View {
             guard !NSEvent.modifierFlags.contains(.option) else { return }
             openSafariAndAskToSwitchTabs()
         }
+    }
+    
+    private func isItemFullyVisible(_ itemFrame: CGRect) -> Bool {
+        return itemFrame.minY >= 0 && itemFrame.maxY <= scrollViewHeight
+    }
+    
+    private func determineScrollAnchor(for itemFrame: CGRect) -> UnitPoint {
+        if isUserNearEdge {
+            if lastScrollPosition >= 0 {
+                return .top
+            } else if (scrollViewContentHeight - scrollViewHeight - abs(lastScrollPosition)) <= 20 {
+                return .bottom
+            }
+        }
+        
+        if itemFrame.minY < 0 {
+            return .top
+        } else if itemFrame.maxY > scrollViewHeight {
+            return .bottom
+        }
+        
+        return .center
     }
 
     func setupInAppKeyListener() {
