@@ -432,7 +432,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Tab Finder Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -469,7 +469,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Tab Finder Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
