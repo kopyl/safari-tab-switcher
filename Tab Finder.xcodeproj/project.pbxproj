@@ -134,17 +134,9 @@
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
-				48B48FEA2D2A59630054B680 /* Resources */,
-			);
-			path = "Tab Finder Extension";
-			sourceTree = "<group>";
-		};
-		48B48FEA2D2A59630054B680 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
 				48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */,
 			);
-			path = Resources;
+			path = "Tab Finder Extension";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
