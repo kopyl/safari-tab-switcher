@@ -93,12 +93,7 @@ func showSettingsWindow() {
     
     let settingsView = NSHostingController(rootView: SettingsView())
     
-    settingsWindow = NSWindow(
-        contentRect: .zero,
-        styleMask: [.titled, .closable],
-        backing: .buffered,
-        defer: false
-        )
+    settingsWindow = Window()
         
     settingsWindow?.contentViewController = settingsView
     
