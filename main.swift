@@ -82,6 +82,10 @@ func showTabsWindow(hotKey: HotKey) {
     show()
 }
 
+func hideMainWindow() {
+    tabsWindow?.orderOut(nil)
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var hotKey: HotKey
     var appState: AppState

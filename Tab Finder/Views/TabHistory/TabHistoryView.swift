@@ -1,6 +1,6 @@
 import SwiftUI
-import HotKey
 import SafariServices.SFSafariExtensionManager
+import HotKey
 
 func formatHost(_ host: String) -> String {
     return host
@@ -29,31 +29,6 @@ struct TabForSearch {
         hostParts.removeLast()
         hostParts = hostParts.reversed()
     }
-}
-
-struct OnboardingImage: View {
-    var name: String
-    
-    var body: some View {
-        if let onboardingImageLeft = NSImage(named: name) {
-            Image(nsImage: onboardingImageLeft)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 458)
-        }
-    }
-}
-
-func startUsingTabFinder() {
-    guard let greetingWindow else {
-        return
-    }
-    greetingWindow.orderOut(nil)
-    NSApp.setActivationPolicy(.accessory)
-}
-
-func hideMainWindow() {
-    tabsWindow?.orderOut(nil)
 }
 
 func filterTabs() {
@@ -117,43 +92,6 @@ func filterTabs() {
     }
     
     appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
-}
-
-struct GreetingView: View {
-    @ObservedObject var appState: AppState
-    
-    var body: some View {
-        VStack {
-            HStack(spacing: 33) {
-                OnboardingImage(name: AssetNames.Onboarding.left)
-                OnboardingImage(name: AssetNames.Onboarding.right)
-            }
-            .padding(.top, 41)
-            Spacer()
-            Text(Copy.Onboarding.description)
-                .font(.title3)
-                .padding(.top, 6)
-                .padding(.bottom, 5)
-            Spacer()
-            
-            VStack {
-                OnboardingButton {
-                    startUsingTabFinder()
-                    appState.isUserOnboarded = true
-                }
-                .padding(.bottom, 10)
-                Text(Copy.Onboarding.buttonHint)
-                    .font(.system(size: 12))
-                    .opacity(0.6)
-            }
-            .padding(.bottom, 41)
-            .padding(.horizontal, 41)
-        }
-        .onDisappear {
-            startUsingTabFinder()
-            appState.isUserOnboarded = true
-        }
-    }
 }
 
 struct TabHistoryView: View {
