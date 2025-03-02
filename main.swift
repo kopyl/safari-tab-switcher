@@ -90,9 +90,21 @@ func createTabsWindow(andShow: Bool? = nil) {
     tabsWindow?.identifier = tabsWindowID
 }
 
+var pendingDispatchWorkItem: DispatchWorkItem?
 func showTabsWindow() {
     filterTabs()
     tabsWindow?.orderFront(nil)
+    
+    if !Store.isTabsSwitcherNeededToStayOpen {
+        tabsWindow?.contentView?.alphaValue = 0
+        pendingDispatchWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            tabsWindow?.contentView?.alphaValue = 1
+        }
+        pendingDispatchWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
+    }
+    
     NSApp.activate(ignoringOtherApps: true)
 }
 

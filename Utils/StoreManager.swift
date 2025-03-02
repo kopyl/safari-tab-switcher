@@ -73,4 +73,8 @@ struct Store {
                 userDefaults.set(encodedData, forKey: windowsStoreKey)
             }
         }
+    
+    static var isTabsSwitcherNeededToStayOpen: Bool {
+        userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+    }
 }
