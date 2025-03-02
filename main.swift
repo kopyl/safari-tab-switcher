@@ -96,6 +96,10 @@ func showTabsWindow() {
     NSApp.activate(ignoringOtherApps: true)
 }
 
+func hideTabsWindow() {
+    tabsWindow?.orderOut(nil)
+}
+
 func showSettingsWindow() {
     if let settingsWindow {
         settingsWindow.makeKeyAndOrderFront(nil)
@@ -114,10 +118,6 @@ func showSettingsWindow() {
     
     let controller = NSWindowController(window: settingsWindow)
     controller.showWindow(nil)
-}
-
-func hideTabsWindow() {
-    tabsWindow?.orderOut(nil)
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
