@@ -161,40 +161,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
 class Application: NSApplication {
     private func createMenu() {
-        let mainMenu = NSMenu()
-        
+        self.mainMenu = NSMenu()
+
         let appMenuItem = NSMenuItem()
-        mainMenu.addItem(appMenuItem)
-        
+        self.mainMenu?.addItem(appMenuItem)
         let appMenu = NSMenu()
         appMenuItem.submenu = appMenu
-        
+        appMenu.addItem(NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
+           action: #selector(terminate(_:)),
+           keyEquivalent: "q")
+        )
 
-        let aboutMenuItem = NSMenuItem(title: "About \(ProcessInfo.processInfo.processName)",
-              action: #selector(orderFrontStandardAboutPanel(_:)),
-              keyEquivalent: "")
-        appMenu.addItem(aboutMenuItem)
-        
-        appMenu.addItem(NSMenuItem.separator())
-        
-        let quitMenuItem = NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
-             action: #selector(terminate(_:)),
-             keyEquivalent: "q")
-        appMenu.addItem(quitMenuItem)
-        
         let windowMenuItem = NSMenuItem()
-        mainMenu.addItem(windowMenuItem)
-        
+        self.mainMenu?.addItem(windowMenuItem)
         let windowMenu = NSMenu(title: "Window")
         windowMenuItem.submenu = windowMenu
-        
-        let closeMenuItem = NSMenuItem(title: "Close Window",
-           action: #selector(NSWindow.performClose(_:)),
-           keyEquivalent: "w")
-        
-        windowMenu.addItem(closeMenuItem)
-        
-        self.mainMenu = mainMenu
+        windowMenu.addItem(NSMenuItem(title: "Close Window",
+          action: #selector(NSWindow.performClose(_:)),
+          keyEquivalent: "w")
+        )
     }
     
     override init() {
