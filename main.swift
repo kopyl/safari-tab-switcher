@@ -87,7 +87,6 @@ func showTabsWindow(hotKey: HotKey) {
 func showSettingsWindow() {
     if let settingsWindow {
         settingsWindow.makeKeyAndOrderFront(nil)
-        NSApp.setActivationPolicy(.regular)
         return
     }
     
