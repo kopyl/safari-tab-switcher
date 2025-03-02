@@ -1,10 +1,7 @@
 import SwiftUI
 
 func startUsingTabFinder() {
-    guard let greetingWindow else {
-        return
-    }
-    greetingWindow.orderOut(nil)
+    greetingWindow?.orderOut(nil)
     settingsWindow?.orderOut(nil)
     NSApp.setActivationPolicy(.accessory)
 }
