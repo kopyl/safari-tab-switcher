@@ -171,15 +171,15 @@ class Application: NSApplication {
         
 
         let aboutMenuItem = NSMenuItem(title: "About \(ProcessInfo.processInfo.processName)",
-                                      action: #selector(orderFrontStandardAboutPanel(_:)),
-                                      keyEquivalent: "")
+              action: #selector(orderFrontStandardAboutPanel(_:)),
+              keyEquivalent: "")
         appMenu.addItem(aboutMenuItem)
         
         appMenu.addItem(NSMenuItem.separator())
         
         let quitMenuItem = NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
-                                     action: #selector(terminate(_:)),
-                                     keyEquivalent: "q")
+             action: #selector(terminate(_:)),
+             keyEquivalent: "q")
         appMenu.addItem(quitMenuItem)
         
         let windowMenuItem = NSMenuItem()
