@@ -105,7 +105,6 @@ func showSettingsWindow() {
     settingsWindow?.title = "Settings"
     settingsWindow?.setContentSize(NSSize(width: 300, height: 150))
     settingsWindow?.center()
-    settingsWindow?.makeKeyAndOrderFront(nil)
     
     let controller = NSWindowController(window: settingsWindow)
     controller.showWindow(nil)
