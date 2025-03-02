@@ -83,7 +83,7 @@ func showTabsWindow(hotKey: HotKey) {
     show()
 }
 
-func hideMainWindow() {
+func hideTabsWindow() {
     tabsWindow?.orderOut(nil)
 }
 
@@ -131,7 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         showGreetingWindow()
-        hideMainWindow()
+        hideTabsWindow()
         return true
     }
     
