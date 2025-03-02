@@ -105,10 +105,6 @@ struct TabHistoryView: View {
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
         store: Store.userDefaults
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
-    
-    func setUp() {
-        setupInAppKeyListener()
-    }
 
     var body: some View {
         VStack(spacing: -5) {
@@ -195,7 +191,7 @@ struct TabHistoryView: View {
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
         .onAppear {
-            setUp()
+            setupInAppKeyListener()
         }
         .onDisappear {
             removeInAppKeyListener()
