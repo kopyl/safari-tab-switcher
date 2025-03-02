@@ -127,9 +127,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         }
     }
     
-    override func toolbarItemClicked(in window: SFSafariWindow) {
-        let url = URL(string: "tabfinder://")!
-        NSWorkspace.shared.open(url)
+    override func toolbarItemClicked(in window: SFSafariWindow) { 
+        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "kopyl.tab-finder") {
+            NSWorkspace.shared.open(safariURL)
+        }
     }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {

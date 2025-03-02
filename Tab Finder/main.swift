@@ -130,14 +130,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return true
     }
     
-    func application(_ application: NSApplication, open urls: [URL]) {
-            for url in urls {
-                if url.scheme == "tabfinder" {
-                    showGreetingWindow()
-                }
-            }
-        }
-    
     func setupAppSwitchingObserver() {
         let workspace = NSWorkspace.shared
         let notificationCenter = workspace.notificationCenter
