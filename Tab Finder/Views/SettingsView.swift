@@ -1,8 +1,26 @@
 import SwiftUI
 
+let description = """
+When enabled, the tabs panel won't disappear when you release the Option key.
+To switch to a tab, just press Return or select the tab with your mouse.
+"""
+
 struct SettingsView: View {
+    @AppStorage(
+        Store.isKeepTabsSwitcherNeededToStayOpenStoreKey,
+        store: Store.userDefaults
+    ) private var isKeepTabsSwitcherNeededToStayOpenStoreKey: Bool = false
+    
     var body: some View {
-        Text("Settings placeholder")
-        .frame(width: 300, height: 150)
+        VStack(alignment: .leading) {
+            Form {
+                Toggle("Keep tab switcher open", isOn: $isKeepTabsSwitcherNeededToStayOpenStoreKey)
+            }
+            Spacer()
+            Text(description)
+                .opacity(0.7)
+        }
+        .frame(width: 300, height: 150, alignment: .topLeading)
+        .padding(20)
     }
 }
