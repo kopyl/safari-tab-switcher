@@ -2,6 +2,7 @@ import SwiftUI
 import HotKey
 
 let appState = AppState()
+
 var greetingWindow: NSWindow?
 var tabsWindow: NSWindow?
 
