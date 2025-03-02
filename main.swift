@@ -15,7 +15,7 @@ func handleHotKeyPress() {
     appState.indexOfTabToSwitchTo = 1
     startUsingTabFinder()
     appState.isUserOnboarded = true
-    renderTabsWindow(andShow: true)
+    showTabsWindow()
 }
 
 var greetingWindow: NSWindow?
@@ -49,18 +49,8 @@ class Window: NSWindow {
     }
 }
 
-func renderGreetingWindow(andShow: Bool? = false) {
-    func show() {
-        guard andShow != nil else { return }
-        appState.isUserOnboarded = false
-        greetingWindow?.makeKeyAndOrderFront(nil)
-        NSApp.setActivationPolicy(.regular)
-    }
-    
-    if greetingWindow != nil {
-        show()
-        return
-    }
+func createGreetingWindow() {
+    greetingWindow = Window()
     
     let greetingView = NSHostingController(
         rootView: GreetingView(
@@ -68,38 +58,28 @@ func renderGreetingWindow(andShow: Bool? = false) {
         )
     )
     
-    greetingWindow = Window()
-    
     greetingWindow?.contentViewController = greetingView
     greetingWindow?.backgroundColor = .greetingBg
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
-    
-    show()
 }
 
-func renderTabsWindow(andShow: Bool? = nil) {
-    func show() {
-        guard andShow != nil else { return }
-        filterTabs()
-        tabsWindow?.orderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
-    }
-    
-    if tabsWindow != nil {
-        show()
-        return
-    }
+func showGreetingWindow() {
+    appState.isUserOnboarded = false
+    greetingWindow?.makeKeyAndOrderFront(nil)
+    NSApp.setActivationPolicy(.regular)
+}
 
+func createTabsWindow(andShow: Bool? = nil) {
+    tabsWindow = Window(isRegualar: false)
+    
     let tabsView = NSHostingController(
         rootView: TabHistoryView(
             hotKey: hotKey,
             appState: appState
         )
     )
-    
-    tabsWindow = Window(isRegualar: false)
     
     tabsWindow?.contentViewController = tabsView
     tabsWindow?.backgroundColor = .clear
@@ -108,8 +88,12 @@ func renderTabsWindow(andShow: Bool? = nil) {
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
     tabsWindow?.identifier = tabsWindowID
-    
-    show()
+}
+
+func showTabsWindow() {
+    filterTabs()
+    tabsWindow?.orderFront(nil)
+    NSApp.activate(ignoringOtherApps: true)
 }
 
 func showSettingsWindow() {
@@ -147,8 +131,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        renderGreetingWindow()
-        renderTabsWindow()
+        createGreetingWindow()
+        showGreetingWindow()
+        createTabsWindow()
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
     }
@@ -164,7 +149,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        renderGreetingWindow(andShow: true)
+        showGreetingWindow()
         hideTabsWindow()
         return true
     }
