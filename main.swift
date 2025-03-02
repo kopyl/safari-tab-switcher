@@ -82,7 +82,11 @@ func showTabsWindow(hotKey: HotKey) {
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
     tabsWindow?.identifier = tabsWindowID
-    show()
+
+    /// Without DispatchQueue.main.async text search field is not the focused the first time the app launches
+    DispatchQueue.main.async {
+        show()
+    }
 }
 
 func showSettingsWindow() {
