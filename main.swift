@@ -3,6 +3,21 @@ import HotKey
 
 let appState = AppState()
 
+let hotKey = HotKey(key: .tab, modifiers: [.option], keyDownHandler: handleHotKeyPress)
+
+func handleHotKeyPress() {
+    guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
+        return
+    }
+    guard let tabs = Store.windows.windows.last?.tabs else { return }
+    appState.tabIDsWithTitleAndHost = tabs
+    appState.searchQuery = ""
+    appState.indexOfTabToSwitchTo = 1
+    startUsingTabFinder()
+    appState.isUserOnboarded = true
+    renderTabsWindow(andShow: true)
+}
+
 var greetingWindow: NSWindow?
 var tabsWindow: NSWindow?
 var settingsWindow: NSWindow?
@@ -35,26 +50,36 @@ class Window: NSWindow {
 }
 
 func renderGreetingWindow(andShow: Bool? = false) {
-    if let greetingWindow, let andShow {
+    func show() {
+        guard andShow != nil else { return }
         appState.isUserOnboarded = false
-        greetingWindow.makeKeyAndOrderFront(nil)
+        greetingWindow?.makeKeyAndOrderFront(nil)
         NSApp.setActivationPolicy(.regular)
+    }
+    
+    if greetingWindow != nil {
+        show()
         return
     }
     
-    let greetingView = NSHostingController(rootView: GreetingView(appState: appState))
+    let greetingView = NSHostingController(
+        rootView: GreetingView(
+            appState: appState
+        )
+    )
     
     greetingWindow = Window()
-    greetingWindow?.contentViewController = greetingView
     
+    greetingWindow?.contentViewController = greetingView
     greetingWindow?.backgroundColor = .greetingBg
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
-    greetingWindow?.makeKeyAndOrderFront(nil)
+    
+    show()
 }
 
-func renderTabsWindow(hotKey: HotKey, andShow: Bool? = nil) {
+func renderTabsWindow(andShow: Bool? = nil) {
     func show() {
         guard andShow != nil else { return }
         filterTabs()
@@ -112,34 +137,18 @@ func hideTabsWindow() {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    var hotKey: HotKey
     var appState: AppState
     private var activeAppObserver: Any?
     
     init(
         appState: AppState
     ) {
-        self.hotKey = HotKey(key: .tab, modifiers: [.option])
         self.appState = appState
     }
     
-    private func handleHotKeyPress() {
-        guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
-            return
-        }
-        guard let tabs = Store.windows.windows.last?.tabs else { return }
-        appState.tabIDsWithTitleAndHost = tabs
-        appState.searchQuery = ""
-        appState.indexOfTabToSwitchTo = 1
-        startUsingTabFinder()
-        appState.isUserOnboarded = true
-        renderTabsWindow(hotKey: hotKey, andShow: true)
-    }
-    
     func applicationDidFinishLaunching(_ notification: Notification) {
-        hotKey.keyDownHandler = handleHotKeyPress
-        renderGreetingWindow(andShow: true)
-        renderTabsWindow(hotKey: hotKey)
+        renderGreetingWindow()
+        renderTabsWindow()
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
     }
@@ -155,7 +164,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        renderGreetingWindow()
+        renderGreetingWindow(andShow: true)
         hideTabsWindow()
         return true
     }
@@ -175,9 +184,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
             if let bundleIdentifier = app.bundleIdentifier {
                 if bundleIdentifier == "com.apple.Safari" {
-                    self.hotKey.isPaused = false
+                    hotKey.isPaused = false
                 } else {
-                    self.hotKey.isPaused = true
+                    hotKey.isPaused = true
                 }
             }
         }
