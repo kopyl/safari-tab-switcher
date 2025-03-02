@@ -208,6 +208,7 @@ struct TabHistoryView: View {
 
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
+            guard NSApp.keyWindow?.identifier == tabsWindowID else { return event }
             if NavigationKeys(rawValue: event.keyCode) != nil {
                 handleNavigationKeyPresses(event: event)
                 return nil

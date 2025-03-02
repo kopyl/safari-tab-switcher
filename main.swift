@@ -81,6 +81,7 @@ func showTabsWindow(hotKey: HotKey) {
     tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
+    tabsWindow?.identifier = tabsWindowID
     show()
 }
 
