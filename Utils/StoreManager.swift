@@ -60,7 +60,7 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
-    public static let isKeepTabsSwitcherNeededToStayOpenStoreKey = "isKeepTabsSwitcherNeededToStayOpen"
+    public static let isTabsSwitcherNeededToStayOpenStoreKey = "isTabsSwitcherNeededToStayOpen"
 
     static var windows: Windows {
             get {

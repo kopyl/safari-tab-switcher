@@ -101,6 +101,11 @@ struct TabHistoryView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) var colorScheme
     
+    @AppStorage(
+        Store.isTabsSwitcherNeededToStayOpenStoreKey,
+        store: Store.userDefaults
+    ) private var isTabsSwitcherNeededToStayOpen: Bool = false
+    
     func setUp() {
         setupInAppKeyListener()
     }
@@ -231,6 +236,7 @@ struct TabHistoryView: View {
 
     func handleKeyRelease(event: NSEvent) {
         guard appState.isUserOnboarded else { return }
+        guard isTabsSwitcherNeededToStayOpen == false else { return }
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
     }
@@ -250,7 +256,7 @@ struct TabHistoryView: View {
     }
 
     func handleNavigationKeyPresses(event: NSEvent) {
-        guard event.modifierFlags.contains(.option) else { return }
+        guard event.modifierFlags.contains(.option) || isTabsSwitcherNeededToStayOpen else { return }
         guard !appState.tabIDsWithTitleAndHost.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
 

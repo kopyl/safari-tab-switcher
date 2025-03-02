@@ -7,14 +7,14 @@ To switch to a tab, just press Return or select the tab with your mouse.
 
 struct SettingsView: View {
     @AppStorage(
-        Store.isKeepTabsSwitcherNeededToStayOpenStoreKey,
+        Store.isTabsSwitcherNeededToStayOpenStoreKey,
         store: Store.userDefaults
-    ) private var isKeepTabsSwitcherNeededToStayOpenStoreKey: Bool = false
+    ) private var isTabsSwitcherNeededToStayOpen: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
             Form {
-                Toggle("Keep tab switcher open", isOn: $isKeepTabsSwitcherNeededToStayOpenStoreKey)
+                Toggle("Keep tab switcher open", isOn: $isTabsSwitcherNeededToStayOpen)
             }
             Spacer()
             Text(description)
