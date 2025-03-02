@@ -34,8 +34,8 @@ class Window: NSWindow {
     }
 }
 
-func showGreetingWindow() {
-    if let greetingWindow {
+func renderGreetingWindow(andShow: Bool? = false) {
+    if let greetingWindow, let andShow {
         appState.isUserOnboarded = false
         greetingWindow.makeKeyAndOrderFront(nil)
         NSApp.setActivationPolicy(.regular)
@@ -54,8 +54,9 @@ func showGreetingWindow() {
     greetingWindow?.makeKeyAndOrderFront(nil)
 }
 
-func showTabsWindow(hotKey: HotKey) {
+func renderTabsWindow(hotKey: HotKey, andShow: Bool? = nil) {
     func show() {
+        guard andShow != nil else { return }
         filterTabs()
         tabsWindow?.orderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -82,11 +83,8 @@ func showTabsWindow(hotKey: HotKey) {
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
     tabsWindow?.identifier = tabsWindowID
-
-    /// Without DispatchQueue.main.async text search field is not the focused the first time the app launches
-    DispatchQueue.main.async {
-        show()
-    }
+    
+    show()
 }
 
 func showSettingsWindow() {
@@ -135,12 +133,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         appState.indexOfTabToSwitchTo = 1
         startUsingTabFinder()
         appState.isUserOnboarded = true
-        showTabsWindow(hotKey: hotKey)
+        renderTabsWindow(hotKey: hotKey, andShow: true)
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         hotKey.keyDownHandler = handleHotKeyPress
-        showGreetingWindow()
+        renderGreetingWindow(andShow: true)
+        renderTabsWindow(hotKey: hotKey)
         setupAppSwitchingObserver()
         setUpNSWindowDelegate()
     }
@@ -156,7 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showGreetingWindow()
+        renderGreetingWindow()
         hideTabsWindow()
         return true
     }
