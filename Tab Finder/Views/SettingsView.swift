@@ -15,6 +15,8 @@ struct SettingsView: View {
         VStack(alignment: .leading) {
             Form {
                 Toggle("Keep tab switcher open", isOn: $isTabsSwitcherNeededToStayOpen)
+                    .focusable()
+                    .keyboardShortcut(.space, modifiers: [])
             }
             Spacer()
             Text(description)
