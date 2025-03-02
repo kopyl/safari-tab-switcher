@@ -139,8 +139,8 @@
 		48F9D6BD2D74E0A200DEE99E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				48F9D6C32D74E29C00DEE99E /* TabHistory */,
 				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
+				48F9D6C32D74E29C00DEE99E /* TabHistory */,
 			);
 			path = Views;
 			sourceTree = "<group>";
