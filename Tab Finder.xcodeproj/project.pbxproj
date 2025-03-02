@@ -25,6 +25,7 @@
 		48E9EE422D33E20B007BC086 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE412D33E20B007BC086 /* Math.swift */; };
 		48F9D6BF2D74E0D800DEE99E /* TabHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */; };
 		48F9D6C22D74E1C400DEE99E /* GreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6C12D74E1C200DEE99E /* GreetingView.swift */; };
+		48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6C52D74E38B00DEE99E /* SettingsView.swift */; };
 		48FEE0F92D71FB3A007704A0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48FEE0F82D71FB3A007704A0 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 		48E9EE412D33E20B007BC086 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabHistoryView.swift; sourceTree = "<group>"; };
 		48F9D6C12D74E1C200DEE99E /* GreetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingView.swift; sourceTree = "<group>"; };
+		48F9D6C52D74E38B00DEE99E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		48FEE0F82D71FB3A007704A0 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
+				48F9D6C52D74E38B00DEE99E /* SettingsView.swift */,
 				48F9D6C32D74E29C00DEE99E /* TabHistory */,
 			);
 			path = Views;
@@ -278,6 +281,7 @@
 				48FEE0F92D71FB3A007704A0 /* main.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48F9D6BF2D74E0D800DEE99E /* TabHistoryView.swift in Sources */,
+				48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */,
 				48E9EE422D33E20B007BC086 /* Math.swift in Sources */,
 				4835D5012D40A6C500B775DD /* UI.swift in Sources */,
 				48F9D6C22D74E1C400DEE99E /* GreetingView.swift in Sources */,

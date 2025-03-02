@@ -5,6 +5,7 @@ func startUsingTabFinder() {
         return
     }
     greetingWindow.orderOut(nil)
+    settingsWindow?.orderOut(nil)
     NSApp.setActivationPolicy(.accessory)
 }
 

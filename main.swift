@@ -5,6 +5,7 @@ let appState = AppState()
 
 var greetingWindow: NSWindow?
 var tabsWindow: NSWindow?
+var settingsWindow: NSWindow?
 
 class AppState: ObservableObject {
     @Published var isUserOnboarded = false
@@ -81,6 +82,32 @@ func showTabsWindow(hotKey: HotKey) {
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
     show()
+}
+
+func showSettingsWindow() {
+    if let settingsWindow {
+        settingsWindow.makeKeyAndOrderFront(nil)
+        NSApp.setActivationPolicy(.regular)
+        return
+    }
+    
+    let settingsView = NSHostingController(rootView: SettingsView())
+    
+    settingsWindow = NSWindow(
+        contentRect: .zero,
+        styleMask: [.titled, .closable],
+        backing: .buffered,
+        defer: false
+        )
+        
+    settingsWindow?.contentViewController = settingsView
+    
+    settingsWindow?.title = "Settings"
+    settingsWindow?.center()
+    settingsWindow?.makeKeyAndOrderFront(nil)
+    
+    let controller = NSWindowController(window: settingsWindow)
+    controller.showWindow(nil)
 }
 
 func hideTabsWindow() {
@@ -171,6 +198,10 @@ class Application: NSApplication {
            action: #selector(terminate(_:)),
            keyEquivalent: "q")
         )
+        appMenu.addItem(NSMenuItem(title: "Settings",
+           action: #selector(openSettingsWindow),
+           keyEquivalent: ",")
+        )
 
         let windowMenuItem = NSMenuItem()
         self.mainMenu?.addItem(windowMenuItem)
@@ -180,6 +211,10 @@ class Application: NSApplication {
           action: #selector(NSWindow.performClose(_:)),
           keyEquivalent: "w")
         )
+    }
+    
+    @objc func openSettingsWindow() {
+        showSettingsWindow()
     }
     
     override init() {
