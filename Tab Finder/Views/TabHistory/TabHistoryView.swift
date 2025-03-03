@@ -248,8 +248,6 @@ struct TabHistoryView: View {
         hideTabSwitcherUI()
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
             NSWorkspace.shared.open(safariURL)
-        } else {
-            print("Safari is not installed or not found.")
         }
     }
 
