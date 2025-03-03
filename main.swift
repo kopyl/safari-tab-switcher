@@ -71,7 +71,7 @@ func showGreetingWindow() {
     NSApp.setActivationPolicy(.regular)
 }
 
-func createTabsWindow(andShow: Bool? = nil) {
+func createTabsWindow() {
     tabsWindow = Window(isRegualar: false)
     
     let tabsView = NSHostingController(
