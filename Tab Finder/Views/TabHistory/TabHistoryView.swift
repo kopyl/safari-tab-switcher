@@ -99,7 +99,6 @@ struct TabHistoryView: View {
     @State private var keyMonitors: [Any] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.colorScheme) var colorScheme
     
     @AppStorage(
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
@@ -162,9 +161,11 @@ struct TabHistoryView: View {
                                 .lineLimit(1)
                                 .padding(.top, 14).padding(.bottom, 14)
                                 .padding(.leading, 18).padding(.trailing, 18)
-                                .background(.currentTabBg.opacity(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
-                                    ? colorScheme == .dark ? 0.15 : 0.10 : 0))
+                                .background(
+                                    .currentTabBg.opacity(
+                                        id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                        ? 1 : 0)
+                                )
                                 .id(id)
                                 .contentShape(Rectangle())
                                 .cornerRadius(6)
