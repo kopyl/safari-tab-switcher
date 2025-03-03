@@ -110,7 +110,6 @@ struct TabHistoryView: View {
             let tabsCount = appState.tabIDsWithTitleAndHost.count
             HStack(spacing: 15){
                 Image(systemName: "magnifyingglass")
-                    .symbolRenderingMode(.monochrome)
                     .foregroundStyle(.gray)
                     .font(.system(size: 22))
                 CustomTextField(
