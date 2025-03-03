@@ -123,11 +123,7 @@ struct TabHistoryView: View {
             .padding(.bottom, 26)
 
             .onChange(of: appState.searchQuery) { query in
-                if query.isEmpty {
-                    appState.indexOfTabToSwitchTo = 1
-                } else {
-                    appState.indexOfTabToSwitchTo = 0
-                }
+                appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
             }
             ScrollViewReader { proxy in
                 ScrollView(.vertical) {
