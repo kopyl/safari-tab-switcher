@@ -16,7 +16,6 @@ struct TabForSearch {
     var domainZone: String.SubSequence = ""
     var searchRating: Int = 0
     
-    
     init(tab: Tab){
         id = tab.id
         title = tab.title
