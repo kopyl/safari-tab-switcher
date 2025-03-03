@@ -178,7 +178,6 @@ struct TabHistoryView: View {
                                 }
                         }
                     }
-                    .frame(minWidth: 800)
                 }
                 .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
                     withAnimation {
