@@ -84,6 +84,10 @@ func createTabsWindow() {
     tabsWindow?.contentViewController = tabsView
     tabsWindow?.backgroundColor = .clear
     tabsWindow?.contentView?.layer?.cornerRadius = 8
+    
+    /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
+    tabsWindow?.contentView?.layer?.masksToBounds = true
+    
     tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
