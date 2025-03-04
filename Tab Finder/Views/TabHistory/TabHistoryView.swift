@@ -105,7 +105,7 @@ struct TabHistoryView: View {
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
 
     var body: some View {
-        VStack(spacing: -5) {
+        VStack {
             let tabsCount = appState.tabIDsWithTitleAndHost.count
             HStack(spacing: 15){
                 Image(systemName: "magnifyingglass")
@@ -115,11 +115,19 @@ struct TabHistoryView: View {
                     text: $appState.searchQuery,
                     placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
                 )
+                Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
+                    .foregroundStyle(.gray)
+                    .font(.system(size: 22))
+                    .frame(width: 69, height: 72)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isTabsSwitcherNeededToStayOpen.toggle()
+                        if !isTabsSwitcherNeededToStayOpen {
+                            hideTabSwitcherUI()
+                        }
+                    }
             }
             .padding(.leading, 20)
-            .padding(.top, 16)
-            .padding(.trailing, 20)
-            .padding(.bottom, 26)
 
             .onChange(of: appState.searchQuery) { query in
                 appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
