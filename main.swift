@@ -28,6 +28,7 @@ class AppState: ObservableObject {
     @Published var tabIDsWithTitleAndHost = Tabs()
     @Published var indexOfTabToSwitchTo = 1
     @Published var filteredTabs: [TabForSearch] = []
+    @Published var isTabsSwitcherNeededToStayOpen = false
 }
 
 /// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
@@ -237,14 +238,26 @@ class Application: NSApplication {
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown {
             if event.modifierFlags.contains(.option) {
-                let newFlags = event.modifierFlags.subtracting(.option)
+                
+                var newFlags: NSEvent.ModifierFlags
+                if appState.isTabsSwitcherNeededToStayOpen {
+                    newFlags = event.modifierFlags
+                }
+                else {
+                    newFlags = event.modifierFlags.subtracting(.option)
+                }
                 
                 if NavigationKeys(rawValue: event.keyCode) != nil {
                     super.sendEvent(event)
                     return
                 }
                 
-                guard let characters = event.charactersIgnoringModifiers else {
+                guard let charactersIgnoringModifiers = event.charactersIgnoringModifiers else {
+                    super.sendEvent(event)
+                    return
+                }
+                
+                guard let characters = event.characters else {
                     super.sendEvent(event)
                     return
                 }
@@ -256,8 +269,8 @@ class Application: NSApplication {
                     timestamp: event.timestamp,
                     windowNumber: event.windowNumber,
                     context: nil,
-                    characters: characters,
-                    charactersIgnoringModifiers: characters,
+                    characters: appState.isTabsSwitcherNeededToStayOpen ? characters : charactersIgnoringModifiers,
+                    charactersIgnoringModifiers: charactersIgnoringModifiers,
                     isARepeat: event.isARepeat,
                     keyCode: event.keyCode
                 ) {

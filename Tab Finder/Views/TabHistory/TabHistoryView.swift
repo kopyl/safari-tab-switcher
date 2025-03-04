@@ -193,6 +193,7 @@ struct TabHistoryView: View {
 
         .onAppear {
             setupInAppKeyListener()
+            appState.isTabsSwitcherNeededToStayOpen = isTabsSwitcherNeededToStayOpen
         }
         .onDisappear {
             removeInAppKeyListener()
@@ -204,6 +205,9 @@ struct TabHistoryView: View {
             guard appState.isUserOnboarded == true else { return }
             guard !NSEvent.modifierFlags.contains(.option) else { return }
             openSafariAndAskToSwitchTabs()
+        }
+        .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
+            appState.isTabsSwitcherNeededToStayOpen = newValue
         }
     }
 
