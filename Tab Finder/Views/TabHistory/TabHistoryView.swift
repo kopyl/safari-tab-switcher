@@ -217,6 +217,7 @@ struct TabHistoryView: View {
             return event
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
+            guard NSApp.keyWindow?.identifier == tabsWindowID else { return event }
             handleKeyRelease(event: event)
             return event
         }
