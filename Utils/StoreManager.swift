@@ -7,7 +7,7 @@ struct _Window: Codable {
     
     init(tabs: Tabs) {
         self.tabs = tabs
-        self.combinedID = "-" + tabs.sorted{$0.id > $1.id}.map{$0.title}.joined()
+        self.combinedID = "-" + tabs.sorted{$0.id > $1.id}.map(\.title).joined()
     }
     
     enum CodingKeys: String, CodingKey {

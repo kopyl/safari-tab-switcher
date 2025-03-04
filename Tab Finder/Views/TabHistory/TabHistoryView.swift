@@ -90,7 +90,7 @@ func filterTabs() {
         return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
     }
     
-    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map { $0.tab }
+    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map(\.tab)
 }
 
 struct TabHistoryView: View {

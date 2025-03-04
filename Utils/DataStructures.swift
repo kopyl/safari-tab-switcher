@@ -12,7 +12,7 @@ struct Windows: Sequence {
             append(window)
         }
 
-        self.windowCombinedIDs = Set(windows.map{$0.combinedID})
+        self.windowCombinedIDs = Set(windows.map(\.combinedID))
     }
     
     mutating func append(_ window: _Window) {
