@@ -18,14 +18,14 @@ struct TabForSearch {
     
     init(tab: Tab){
         id = tab.id
-        title = tab.title
-        host = tab.host == "" && title == "" ? "No title" : tab.host
+        title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
 
         hostParts = host.split(separator: ".")
-        hostParts = hostParts.filter { $0 != "www" }
         domainZone = hostParts.last ?? ""
         guard !hostParts.isEmpty else { return }
-        hostParts.removeLast()
+        hostParts.removeLast()  /// need to change it for domain zones like com.ua?
+        print(hostParts)
         hostParts = hostParts.reversed()
     }
 }
@@ -135,13 +135,9 @@ struct TabHistoryView: View {
                     LazyVStack(spacing: 0) {
                         ForEach(appState.filteredTabs.indices, id: \.self) { id in
                             let tab = appState.filteredTabs[id]
-                            let pageTitle = tab.title
-                            let pageHost = tab.host
-                            let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let pageHostFormatted = formatHost(pageHost)
 
                             HStack(alignment: .center) {
-                                Text(pageHostFormatted)
+                                Text(tab.host)
                                 .font(.system(size: 18))
                                 .foregroundStyle(
                                     id == appState.indexOfTabToSwitchTo
@@ -149,7 +145,7 @@ struct TabHistoryView: View {
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 
-                                Text(pageTitleFormatted)
+                                Text(tab.title)
                                 .font(.system(size: 13))
                                 .foregroundStyle(
                                     id == appState.indexOfTabToSwitchTo
