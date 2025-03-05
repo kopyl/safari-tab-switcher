@@ -10,7 +10,6 @@
 		4835D5012D40A6C500B775DD /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4835D5002D40A6C500B775DD /* UI.swift */; };
 		4849CB5E2D4889F4000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		4849CB602D488A96000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
-		4891FEF92D77E9AD0021F311 /* Safari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4891FEF82D77E9AB0021F311 /* Safari.swift */; };
 		48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A033D82D2DC75600BB6F8C /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
@@ -58,7 +57,6 @@
 		4835D5002D40A6C500B775DD /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		48534A232D333B3D003FF94A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4891FEF82D77E9AB0021F311 /* Safari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Safari.swift; sourceTree = "<group>"; };
 		48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		48A033D72D2DC75600BB6F8C /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
 		48B48FC52D2A59620054B680 /* Tab Finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tab Finder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,7 +151,6 @@
 		48F9D6C32D74E29C00DEE99E /* TabHistory */ = {
 			isa = PBXGroup;
 			children = (
-				4891FEF82D77E9AB0021F311 /* Safari.swift */,
 				48E9EE412D33E20B007BC086 /* Math.swift */,
 				48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */,
 			);
@@ -282,7 +279,6 @@
 				48E9EE3E2D33C3B8007BC086 /* StoreManager.swift in Sources */,
 				48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */,
 				48FEE0F92D71FB3A007704A0 /* main.swift in Sources */,
-				4891FEF92D77E9AD0021F311 /* Safari.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48F9D6BF2D74E0D800DEE99E /* TabHistoryView.swift in Sources */,
 				48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */,
