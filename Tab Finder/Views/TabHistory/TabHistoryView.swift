@@ -1,5 +1,4 @@
 import SwiftUI
-import SafariServices.SFSafariExtensionManager
 import HotKey
 
 func formatHost(_ host: String) -> String {
@@ -93,6 +92,48 @@ func filterTabs() {
     appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map(\.tab)
 }
 
+struct TabRowView: View {
+    let id: Int
+    @ObservedObject var state = appState
+    
+    var body: some View {
+        let tab = state.filteredTabs[id]
+        let pageTitle = tab.title
+        let pageHost = tab.host
+        let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        let pageHostFormatted = formatHost(pageHost)
+        let isCurrentTab = id == state.indexOfTabToSwitchTo
+        
+        HStack(alignment: .center) {
+            Text(pageHostFormatted)
+                .font(.system(size: 18))
+                .foregroundStyle(isCurrentTab ? .currentTabFg : .primary.opacity(0.9))
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+            
+            Text(pageTitleFormatted)
+                .font(.system(size: 13))
+                .foregroundStyle(isCurrentTab ? .currentTabFg : Color.primary)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                .opacity(0.65)
+        }
+        .lineLimit(1)
+        .padding(.top, 14).padding(.bottom, 14)
+        .padding(.leading, 18).padding(.trailing, 18)
+        .background(
+            .currentTabBg.opacity(
+                isCurrentTab ? 1 : 0)
+        )
+        .contentShape(Rectangle())
+        .cornerRadius(6)
+        .frame(minWidth: 0, maxWidth: .infinity)
+        .padding(4)
+        .onTapGesture {
+            state.indexOfTabToSwitchTo = id
+            openSafariAndAskToSwitchTabs()
+        }
+    }
+}
+
 struct TabHistoryView: View {
     var hotKey: HotKey
     @State private var keyMonitors: [Any] = []
@@ -134,49 +175,7 @@ struct TabHistoryView: View {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 0) {
                         ForEach(appState.filteredTabs.indices, id: \.self) { id in
-                            let tab = appState.filteredTabs[id]
-                            let pageTitle = tab.title
-                            let pageHost = tab.host
-                            let pageTitleFormatted = pageTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let pageHostFormatted = formatHost(pageHost)
-
-                            HStack(alignment: .center) {
-                                Text(pageHostFormatted)
-                                .font(.system(size: 18))
-                                .foregroundStyle(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : .primary.opacity(0.9)
-                                )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                
-                                Text(pageTitleFormatted)
-                                .font(.system(size: 13))
-                                .foregroundStyle(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : Color.primary
-                                )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                .opacity(0.65)
-                            }
-                            .lineLimit(1)
-                            .padding(.top, 14).padding(.bottom, 14)
-                            .padding(.leading, 18).padding(.trailing, 18)
-                            .background(
-                                .currentTabBg.opacity(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? 1 : 0)
-                            )
-                            .id(id)
-                            .contentShape(Rectangle())
-                            .cornerRadius(6)
-                        
-                            .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, maxWidth: .infinity)
-                            .padding(4)
-                        
-                            .onTapGesture {
-                                appState.indexOfTabToSwitchTo = id
-                                openSafariAndAskToSwitchTabs()
-                            }
+                            TabRowView(id: id)
                         }
                     }
                 }
@@ -243,17 +242,6 @@ struct TabHistoryView: View {
         openSafariAndAskToSwitchTabs()
     }
     
-    func hideTabSwitcherUI() {
-        NSApp.hide(nil)
-        tabsWindow?.orderOut(nil)
-    }
-    
-    func openSafari() {
-        hideTabSwitcherUI()
-        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
-            NSWorkspace.shared.open(safariURL)
-        }
-    }
 
     func handleNavigationKeyPresses(event: NSEvent) {
         guard event.modifierFlags.contains(.option) || isTabsSwitcherNeededToStayOpen else { return }
@@ -275,26 +263,6 @@ struct TabHistoryView: View {
             openSafariAndAskToSwitchTabs()
         case .escape:
             hideTabSwitcherUI()
-        }
-    }
-
-    private func openSafariAndAskToSwitchTabs() {
-        hideTabSwitcherUI()
-        openSafari()
-        guard !appState.filteredTabs.isEmpty else { return }
-        Task{ await switchTabs() }
-    }
-
-    func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
-        do {
-            try await SFSafariApplication.dispatchMessage(
-                withName: "switchtabto",
-                toExtensionWithIdentifier: extensionBundleIdentifier,
-                userInfo: ["id": String(indexOfTabToSwitchToInSafari.id)]
-            )
-        } catch let error {
-            log("Dispatching message to the extension resulted in an error: \(error)")
         }
     }
 }
