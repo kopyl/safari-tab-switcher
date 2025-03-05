@@ -25,7 +25,6 @@ struct TabForSearch {
         domainZone = hostParts.last ?? ""
         guard !hostParts.isEmpty else { return }
         hostParts.removeLast()  /// need to change it for domain zones like com.ua?
-        print(hostParts)
         hostParts = hostParts.reversed()
     }
 }
