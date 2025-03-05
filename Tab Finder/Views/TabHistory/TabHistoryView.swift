@@ -144,7 +144,7 @@ struct TabHistoryView: View {
                                 Text(pageHostFormatted)
                                 .font(.system(size: 18))
                                 .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                    id == appState.indexOfTabToSwitchTo
                                     ? .currentTabFg : .primary.opacity(0.9)
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -152,7 +152,7 @@ struct TabHistoryView: View {
                                 Text(pageTitleFormatted)
                                 .font(.system(size: 13))
                                 .foregroundStyle(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                    id == appState.indexOfTabToSwitchTo
                                     ? .currentTabFg : Color.primary
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -163,7 +163,7 @@ struct TabHistoryView: View {
                             .padding(.leading, 18).padding(.trailing, 18)
                             .background(
                                 .currentTabBg.opacity(
-                                    id == calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)
+                                    id == appState.indexOfTabToSwitchTo
                                     ? 1 : 0)
                             )
                             .id(id)
@@ -192,7 +192,7 @@ struct TabHistoryView: View {
             }
             .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
                 withAnimation {
-                    proxy.scrollTo(calculateTabToSwitchIndex(newIndex), anchor: .bottom)
+                    proxy.scrollTo(appState.indexOfTabToSwitchTo, anchor: .bottom)
                 }
             }
             .onChange(of: appState.searchQuery) { query in
@@ -278,13 +278,6 @@ struct TabHistoryView: View {
         }
     }
 
-    func calculateTabToSwitchIndex(_ indexOfTabToSwitchTo: Int) -> Int {
-        if appState.filteredTabs.isEmpty {
-            return 0
-        }
-        return pythonTrueModulo(indexOfTabToSwitchTo, appState.filteredTabs.count)
-    }
-
     private func openSafariAndAskToSwitchTabs() {
         hideTabSwitcherUI()
         openSafari()
@@ -293,7 +286,7 @@ struct TabHistoryView: View {
     }
 
     func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = appState.filteredTabs[calculateTabToSwitchIndex(appState.indexOfTabToSwitchTo)]
+        let indexOfTabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
         do {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",

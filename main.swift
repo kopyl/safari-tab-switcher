@@ -12,6 +12,7 @@ func handleHotKeyPress() {
     guard let tabs = Store.windows.windows.last?.tabs else { return }
     appState.tabIDsWithTitleAndHost = tabs
     appState.searchQuery = ""
+    filterTabs()
     appState.indexOfTabToSwitchTo = 1
     startUsingTabFinder()
     appState.isUserOnboarded = true
@@ -26,9 +27,20 @@ class AppState: ObservableObject {
     @Published var isUserOnboarded = false
     @Published var searchQuery = ""
     @Published var tabIDsWithTitleAndHost = Tabs()
-    @Published var indexOfTabToSwitchTo = 1
     @Published var filteredTabs: [TabForSearch] = []
     @Published var isTabsSwitcherNeededToStayOpen = false
+    
+    @Published private var _indexOfTabToSwitchTo = -1
+    var indexOfTabToSwitchTo: Int {
+        get { _indexOfTabToSwitchTo }
+        set {
+            if filteredTabs.isEmpty {
+                _indexOfTabToSwitchTo = 0
+            } else {
+                _indexOfTabToSwitchTo = pythonTrueModulo(newValue, filteredTabs.count)
+            }
+        }
+    }
 }
 
 /// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
