@@ -109,7 +109,6 @@ func createTabsWindow() {
 
 var pendingDispatchWorkItem: DispatchWorkItem?
 func showTabsWindow() {
-    filterTabs()
     tabsWindow?.orderFront(nil)
     
     if !Store.isTabsSwitcherNeededToStayOpen {
