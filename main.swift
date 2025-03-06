@@ -2,8 +2,10 @@ import SwiftUI
 import HotKey
 
 let appState = AppState()
-
 let hotKey = HotKey(key: .tab, modifiers: [.option], keyDownHandler: handleHotKeyPress)
+let delegate = AppDelegate(appState: appState)
+let greetingWindowDelegate = GreetingWindowDelegate()
+var pendingDispatchWorkItem: DispatchWorkItem?
 
 func handleHotKeyPress() {
     guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
@@ -76,6 +78,8 @@ func createGreetingWindow() {
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
+
+    greetingWindow?.delegate = greetingWindowDelegate
 }
 
 func showGreetingWindow() {
@@ -106,8 +110,6 @@ func createTabsWindow() {
     tabsWindow?.hidesOnDeactivate = true
     tabsWindow?.identifier = tabsWindowID
 }
-
-var pendingDispatchWorkItem: DispatchWorkItem?
 
 func showTabsWindow() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
@@ -175,7 +177,6 @@ class GreetingWindowDelegate: NSObject, NSWindowDelegate {
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
     private var activeAppObserver: Any?
-    private var greetingWindowDelegate: GreetingWindowDelegate?
     
     init(
         appState: AppState
@@ -188,9 +189,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showGreetingWindow()
         createTabsWindow()
         setupAppSwitchingObserver()
-        
-        greetingWindowDelegate = GreetingWindowDelegate()
-        greetingWindow?.delegate = greetingWindowDelegate
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -310,8 +308,6 @@ class Application: NSApplication {
         super.sendEvent(event)
     }
 }
-
-let delegate = AppDelegate(appState: appState)
 
 let app = Application.shared
 app.delegate = delegate
