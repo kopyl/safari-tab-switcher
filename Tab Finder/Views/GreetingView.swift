@@ -39,7 +39,6 @@ struct GreetingView: View {
             VStack {
                 OnboardingButton {
                     startUsingTabFinder()
-                    appState.isUserOnboarded = true
                 }
                 .padding(.bottom, 10)
                 Text(Copy.Onboarding.buttonHint)
@@ -51,7 +50,6 @@ struct GreetingView: View {
         }
         .onDisappear {
             startUsingTabFinder()
-            appState.isUserOnboarded = true
         }
     }
 }

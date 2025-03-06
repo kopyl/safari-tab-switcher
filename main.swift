@@ -16,7 +16,6 @@ func handleHotKeyPress() {
     filterTabs()
     appState.indexOfTabToSwitchTo = 1
     startUsingTabFinder()
-    appState.isUserOnboarded = true
     showTabsWindow()
 }
 
@@ -25,7 +24,6 @@ var tabsWindow: NSWindow?
 var settingsWindow: NSWindow?
 
 class AppState: ObservableObject {
-    @Published var isUserOnboarded = false
     @Published var searchQuery = ""
     @Published var tabIDsWithTitleAndHost = Tabs()
     @Published var filteredTabs: [TabForSearch] = []
@@ -83,7 +81,6 @@ func createGreetingWindow() {
 }
 
 func showGreetingWindow() {
-    appState.isUserOnboarded = false
     greetingWindow?.makeKeyAndOrderFront(nil)
     NSApp.setActivationPolicy(.regular)
 }

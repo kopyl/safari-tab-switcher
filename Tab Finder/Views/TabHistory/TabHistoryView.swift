@@ -195,7 +195,6 @@ struct TabHistoryView: View {
                 appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
             }
             .onChange(of: scenePhase) { phase in
-                guard appState.isUserOnboarded == true else { return }
                 guard !NSEvent.modifierFlags.contains(.option) else { return }
                 openSafariAndAskToSwitchTabs()
             }
@@ -232,7 +231,6 @@ struct TabHistoryView: View {
     }
 
     func handleKeyRelease(event: NSEvent) {
-        guard appState.isUserOnboarded else { return }
         guard isTabsSwitcherNeededToStayOpen == false else { return }
         guard !event.modifierFlags.contains(.option) else { return }
         openSafariAndAskToSwitchTabs()
