@@ -244,7 +244,6 @@ struct TabHistoryView: View {
     }
     
     func openSafari() {
-        hideTabSwitcherUI()
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
             NSWorkspace.shared.open(safariURL)
         }
