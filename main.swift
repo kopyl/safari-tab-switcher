@@ -109,7 +109,7 @@ func createTabsWindow() {
 
 var pendingDispatchWorkItem: DispatchWorkItem?
 func showTabsWindow() {
-    tabsWindow?.orderFront(nil)
+    tabsWindow?.makeKeyAndOrderFront(nil)
     
     if !Store.isTabsSwitcherNeededToStayOpen {
         tabsWindow?.contentView?.alphaValue = 0
