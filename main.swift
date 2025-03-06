@@ -157,7 +157,7 @@ func showSettingsWindow() {
     settingsWindow?.contentViewController = settingsView
     
     settingsWindow?.title = "Settings"
-    settingsWindow?.setContentSize(NSSize(width: 300, height: 150))
+    settingsWindow?.setContentSize(NSSize(width: 562, height: 155))
     settingsWindow?.center()
     
     /// NSWindowController wrapping fixes app breaking on window close -> app reopen
