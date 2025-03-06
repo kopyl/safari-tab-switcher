@@ -4,7 +4,6 @@ import HotKey
 let appState = AppState()
 let hotKey = HotKey(key: .tab, modifiers: [.option], keyDownHandler: handleHotKeyPress)
 let delegate = AppDelegate(appState: appState)
-let greetingWindowDelegate = GreetingWindowDelegate()
 var pendingDispatchWorkItem: DispatchWorkItem?
 
 func handleHotKeyPress() {
@@ -79,7 +78,8 @@ func createGreetingWindow() {
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
 
-    greetingWindow?.delegate = greetingWindowDelegate
+    /// NSWindowController wrapping fixes app breaking on window close -> app reopen
+    let _ = NSWindowController(window: greetingWindow)
 }
 
 func showGreetingWindow() {
@@ -161,17 +161,9 @@ func showSettingsWindow() {
     settingsWindow?.setContentSize(NSSize(width: 300, height: 150))
     settingsWindow?.center()
     
+    /// NSWindowController wrapping fixes app breaking on window close -> app reopen
     let controller = NSWindowController(window: settingsWindow)
     controller.showWindow(nil)
-}
-
-class GreetingWindowDelegate: NSObject, NSWindowDelegate {
-    
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        NSApp.setActivationPolicy(.accessory)
-        NSApp.hide(nil)
-        return false
-    }
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
