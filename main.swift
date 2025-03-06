@@ -163,9 +163,19 @@ func showSettingsWindow() {
     controller.showWindow(nil)
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+class GreetingWindowDelegate: NSObject, NSWindowDelegate {
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        NSApp.setActivationPolicy(.accessory)
+        NSApp.hide(nil)
+        return false
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
     private var activeAppObserver: Any?
+    private var greetingWindowDelegate: GreetingWindowDelegate?
     
     init(
         appState: AppState
@@ -178,17 +188,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         showGreetingWindow()
         createTabsWindow()
         setupAppSwitchingObserver()
-        setUpNSWindowDelegate()
-    }
-    
-    func setUpNSWindowDelegate() {
-        greetingWindow?.delegate = self
-    }
-    
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        NSApp.setActivationPolicy(.accessory)
-        NSApp.hide(nil)
-        return false
+        
+        greetingWindowDelegate = GreetingWindowDelegate()
+        greetingWindow?.delegate = greetingWindowDelegate
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
