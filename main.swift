@@ -115,6 +115,7 @@ func showTabsWindow() {
     /// On a fresh macOS 13.0 the app prefectly works with a full-screen Safari without .canJoinAllSpaces and moving
     /// .floating level setting from window init to window display, but Sava had issues without them
     /// Maybe only ony thing helped – either moving .floating level setting here or addding .canJoinAllSpaces. to the collectionBehavior
+    /// For me on macOS 15.x everything works with onlyt setting fullScreenPrimary. Sava haven't tried it yet
     tabsWindow?.level = .floating
     tabsWindow?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
     
