@@ -108,6 +108,7 @@ func createTabsWindow() {
 }
 
 var pendingDispatchWorkItem: DispatchWorkItem?
+
 func showTabsWindow() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
     /// collectionBehavior needs to be set on every time this function calls for the tabs window to be displayed in a Safari's full screen mode.
