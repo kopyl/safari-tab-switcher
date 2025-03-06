@@ -132,6 +132,8 @@ func showTabsWindow() {
     }
     
     DispatchQueue.main.async {
+        /// Activating the window with a DispatchQueue gets rid of the blinking
+        /// Reference commit SHA: 680c206401d25960b9eb5a7f6fd900f439fd0af3
         NSApp.activate(ignoringOtherApps: true)
     }
     
