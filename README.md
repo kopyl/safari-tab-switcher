@@ -1,4 +1,4 @@
-# Safari tab switcher extension with option+tab
+# Safari tab switcher extension with option+tab for macOS 12.0-15.3.1+
 
 aka command+tab but for Safari
 
