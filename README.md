@@ -4,6 +4,17 @@ aka command+tab but for Safari
 
 [<img src="https://github.com/user-attachments/assets/4e81b325-0446-4b92-8141-aaaee9e41bec">](https://apps.apple.com/us/app/tab-finder/id6741719894)
 
+### Motivation:
+Switching between apps with command+tab is my favorite way of navigating between apps.
+One day i realized that it would tremendously simplify web navigation if such a way would exist in Safari.
+
+There are similar apps, but i decided to make my own, which unlike of other similar extensions would
+- Be open-source;
+- Be written entirely in Swift;
+- Be easy to set up and use;
+- Have convenient search;
+- Have a beautiful design.
+
 ### Here is a video demo on how it works:
 ![Video demo](https://github.com/user-attachments/assets/476b1a15-19a0-4568-9631-95c52e0066c0)
 
