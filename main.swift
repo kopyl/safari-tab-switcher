@@ -129,7 +129,10 @@ func showTabsWindow() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
     }
     
-    NSApp.activate(ignoringOtherApps: true)
+    DispatchQueue.main.async {
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
 }
 
 func hideTabsWindow() {
