@@ -104,7 +104,6 @@ func createTabsWindow() {
     tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
     tabsWindow?.center()
     tabsWindow?.hidesOnDeactivate = true
-    tabsWindow?.level = .floating
     tabsWindow?.identifier = tabsWindowID
 }
 
@@ -112,7 +111,8 @@ var pendingDispatchWorkItem: DispatchWorkItem?
 func showTabsWindow() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
     /// collectionBehavior needs to be set on every time this function calls for the tabs window to be displayed in a Safari's full screen mode.
-    tabsWindow?.collectionBehavior = [.fullScreenPrimary]
+    tabsWindow?.level = .floating
+    tabsWindow?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
     
     tabsWindow?.makeKeyAndOrderFront(nil)
     
