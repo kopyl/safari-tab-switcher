@@ -107,7 +107,7 @@ struct TabHistoryView: View {
         ScrollViewReader { proxy in
             VStack {
                 let tabsCount = appState.tabIDsWithTitleAndHost.count
-                HStack(spacing: 15){
+                HStack(spacing: 10){
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(.gray)
                         .font(.system(size: 22))
@@ -128,7 +128,7 @@ struct TabHistoryView: View {
                             }
                         }
                 }
-                .padding(.leading, 20)
+                .padding(.leading, 24)
 
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 0) {
@@ -155,7 +155,7 @@ struct TabHistoryView: View {
                             }
                             .lineLimit(1)
                             .padding(.top, 14).padding(.bottom, 14)
-                            .padding(.leading, 18).padding(.trailing, 18)
+                            .padding(.leading, 21).padding(.trailing, 21)
                             .background(
                                 .currentTabBg.opacity(
                                     id == appState.indexOfTabToSwitchTo
