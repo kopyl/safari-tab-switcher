@@ -111,6 +111,9 @@ var pendingDispatchWorkItem: DispatchWorkItem?
 func showTabsWindow() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
     /// collectionBehavior needs to be set on every time this function calls for the tabs window to be displayed in a Safari's full screen mode.
+    /// On a fresh macOS 13.0 the app prefectly works with a full-screen Safari without .canJoinAllSpaces and moving
+    /// .floating level setting from window init to window display, but Sava had issues without them
+    /// Maybe only ony thing helped – either moving .floating level setting here or addding .canJoinAllSpaces. to the collectionBehavior
     tabsWindow?.level = .floating
     tabsWindow?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
     
