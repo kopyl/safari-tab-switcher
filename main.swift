@@ -46,14 +46,18 @@ class AppState: ObservableObject {
 ///
 /// Either this or .titled style mask is needed
 class Window: NSWindow {
-    init(isRegualar: Bool = true) {
+    init(view: some View, styleMask: NSWindow.StyleMask = [.titled, .closable]) {
         super.init(
             contentRect: .zero,
-            styleMask: isRegualar ? [.titled, .closable] : [],
+            styleMask: styleMask,
             backing: .buffered,
             defer: false
         )
         self.titlebarAppearsTransparent = true
+        self.contentViewController = NSHostingController(rootView: view)
+        
+        /// NSWindowController wrapping fixes app breaking on window close -> app reopen
+        let _ = NSWindowController(window: self)
     }
     
     override var canBecomeKey: Bool {
@@ -62,22 +66,14 @@ class Window: NSWindow {
 }
 
 func createGreetingWindow() {
-    greetingWindow = Window()
+    greetingWindow = Window(view: GreetingView(
+        appState: appState
+    ))
     
-    let greetingView = NSHostingController(
-        rootView: GreetingView(
-            appState: appState
-        )
-    )
-    
-    greetingWindow?.contentViewController = greetingView
     greetingWindow?.backgroundColor = .greetingBg
     greetingWindow?.title = Copy.Onboarding.title
     greetingWindow?.setContentSize(NSSize(width: 759, height: 781))
     greetingWindow?.center()
-
-    /// NSWindowController wrapping fixes app breaking on window close -> app reopen
-    let _ = NSWindowController(window: greetingWindow)
 }
 
 func showGreetingWindow() {
@@ -86,16 +82,14 @@ func showGreetingWindow() {
 }
 
 func createTabsWindow() {
-    tabsWindow = Window(isRegualar: false)
-    
-    let tabsView = NSHostingController(
-        rootView: TabHistoryView(
+    tabsWindow = Window(
+        view: TabHistoryView(
             hotKey: hotKey,
             appState: appState
-        )
+        ),
+        styleMask: []
     )
     
-    tabsWindow?.contentViewController = tabsView
     tabsWindow?.backgroundColor = .clear
     tabsWindow?.contentView?.layer?.cornerRadius = 8
     
@@ -147,19 +141,12 @@ func showSettingsWindow() {
         return
     }
     
-    let settingsView = NSHostingController(rootView: SettingsView())
-    
-    settingsWindow = Window()
-        
-    settingsWindow?.contentViewController = settingsView
+    settingsWindow = Window(view: SettingsView())
     
     settingsWindow?.title = "Settings"
     settingsWindow?.setContentSize(NSSize(width: 562, height: 155))
     settingsWindow?.center()
-    
-    /// NSWindowController wrapping fixes app breaking on window close -> app reopen
-    let controller = NSWindowController(window: settingsWindow)
-    controller.showWindow(nil)
+    settingsWindow?.makeKeyAndOrderFront(nil)
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
