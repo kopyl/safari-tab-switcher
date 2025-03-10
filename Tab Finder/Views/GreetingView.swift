@@ -40,6 +40,7 @@ struct GreetingView: View {
                 OnboardingButton {
                     startUsingTabFinder()
                 }
+                .keyboardShortcut(.return, modifiers: [])
                 .padding(.bottom, 10)
                 Text(Copy.Onboarding.buttonHint)
                     .font(.system(size: 12))
