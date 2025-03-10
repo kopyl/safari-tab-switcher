@@ -20,8 +20,6 @@ enum TypingKeys: UInt16 {
     case backspace = 51
 }
 
-let notificationName = Notification.Name("com.tabfinder.example.notification")
-
 let appGroup = "9QNMAN8CT6.tabfinder.sharedgroup"
 
 class Copy {
