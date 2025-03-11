@@ -13,9 +13,10 @@ KeyboardShortcuts.onKeyDown(for: .openTabsList) {
     handleHotKeyPress()
 }
 
-func isUserHoldingShortcutModifiers(event: NSEvent) -> Bool {
+func isUserHoldingShortcutModifiers(event: NSEvent? = nil) -> Bool {
     guard let shortcut = KeyboardShortcuts.Name.openTabsList.shortcut else { return false }
-    return event.modifierFlags.contains(shortcut.modifiers)
+    let modifiersToCheck = event?.modifierFlags ?? NSEvent.modifierFlags
+    return modifiersToCheck.contains(shortcut.modifiers)
 }
 
 func handleHotKeyPress() {

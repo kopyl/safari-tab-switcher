@@ -129,7 +129,8 @@ struct TabHistoryView: View {
                         .onTapGesture {
                             isTabsSwitcherNeededToStayOpen.toggle()
                             if !isTabsSwitcherNeededToStayOpen {
-                                guard !isUserHoldingShortcutModifiers(event: NSEvent()) else { return }
+                                print(NSEvent.modifierFlags, NSEvent().modifierFlags)
+                                guard !isUserHoldingShortcutModifiers() else { return }
                                 hideTabSwitcherUI()
                             }
                         }
@@ -201,7 +202,7 @@ struct TabHistoryView: View {
                 appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
             }
             .onChange(of: scenePhase) { phase in
-                guard !isUserHoldingShortcutModifiers(event: NSEvent()) else { return }
+                guard !isUserHoldingShortcutModifiers() else { return }
                 openSafariAndAskToSwitchTabs()
             }
             .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
