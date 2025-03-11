@@ -95,6 +95,14 @@ struct TabHistoryView: View {
     @State private var keyMonitors: [Any] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.colorScheme) private var colorScheme
+    
+    var greyInDarkAppearance: Color = .white.opacity(0.4)
+    var greyInLightAppearance: Color = .black.opacity(0.4)
+    
+    var grey: Color {
+        colorScheme == .dark ? greyInDarkAppearance : greyInLightAppearance
+    }
     
     @AppStorage(
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
@@ -107,14 +115,14 @@ struct TabHistoryView: View {
                 let tabsCount = appState.tabIDsWithTitleAndHost.count
                 HStack(spacing: 10){
                     Image(systemName: "magnifyingglass")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(grey)
                         .font(.system(size: 22))
                     CustomTextField(
                         text: $appState.searchQuery,
                         placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
                     )
                     Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(grey)
                         .font(.system(size: 22))
                         .frame(width: 69, height: 72)
                         .contentShape(Rectangle())
