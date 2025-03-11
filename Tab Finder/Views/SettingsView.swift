@@ -23,7 +23,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 120) {
             Toggle(isOn: !$isTabsSwitcherNeededToStayOpen) {
                 HStack {
-                    Text("Close tabs list when Option key is released")
+                    Text("Close tabs list when the shortcut is released")
                         .opacity(0.8)
                         .font(.system(size: 15))
                     Spacer()
