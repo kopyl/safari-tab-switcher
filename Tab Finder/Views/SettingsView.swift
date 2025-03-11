@@ -47,6 +47,9 @@ struct SettingsView: View {
     var shortcutModifiers =
     KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
     
+    @ObservedObject var appState: AppState
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 120) {
             Toggle(isOn: !$isTabsSwitcherNeededToStayOpen) {
@@ -64,19 +67,31 @@ struct SettingsView: View {
             .tint(.white)
             .keyboardShortcut(.space, modifiers: [])
             .toggleStyle(.switch)
-            
-            KeyboardShortcuts.Recorder(
-                for: .openTabsList,
-                onChange: { shortcut in
-                    shortcutModifiers = shortcut?.modifiers.symbolRepresentation
-                }
-            ) {
-                HStack {
-                    Text("Shortcut for opening tabs list")
-                        .opacity(0.8)
-                        .font(.system(size: 15))
-                    Spacer()
-                }
+            HStack {
+                Text(
+                    isFocused ?
+                    "Press your desired shortcut to open tabs list"
+                    :
+                    "Shortcut for opening tabs list"
+                )
+                    .opacity(0.8)
+                    .font(.system(size: 15))
+                Spacer()
+                KeyboardShortcuts.Recorder(for: .openTabsList)
+                    .focused($isFocused)
+                    .onChange(of: isFocused) { newValue in
+                        appState.isShortcutRecorderNeedsToBeFocused = newValue
+                    }
+                    .onChange(of: appState.isShortcutRecorderNeedsToBeFocused) { newValue in
+                        DispatchQueue.main.async {
+                            isFocused = newValue
+                        }
+                    }
+                    .onAppear {
+                        DispatchQueue.main.async {
+                            isFocused = appState.isShortcutRecorderNeedsToBeFocused
+                        }
+                    }
             }
         }
         .padding(.top, 42)

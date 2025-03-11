@@ -40,6 +40,7 @@ class AppState: ObservableObject {
     @Published var tabIDsWithTitleAndHost = Tabs()
     @Published var filteredTabs: [TabForSearch] = []
     @Published var isTabsSwitcherNeededToStayOpen = false
+    @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
@@ -152,7 +153,7 @@ func showSettingsWindow() {
         return
     }
     
-    settingsWindow = Window(view: SettingsView())
+    settingsWindow = Window(view: SettingsView(appState: appState))
     
     settingsWindow?.title = "Settings"
     settingsWindow?.setContentSize(NSSize(width: 562, height: 155))

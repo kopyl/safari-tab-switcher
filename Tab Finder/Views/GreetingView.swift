@@ -39,6 +39,7 @@ struct GreetingView: View {
             VStack {
                 HStack {
                     StyledButton(.secondary, Copy.Onboarding.configureShortcutButton) {
+                        appState.isShortcutRecorderNeedsToBeFocused = true
                         showSettingsWindow()
                     }
                     StyledButton(.primary, Copy.Onboarding.hideThisWindowButton) {
