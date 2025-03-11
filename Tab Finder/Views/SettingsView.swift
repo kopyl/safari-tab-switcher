@@ -83,7 +83,7 @@ struct SettingsView: View {
                         appState.isShortcutRecorderNeedsToBeFocused = $0
                     }
                     .onChange(of: appState.isShortcutRecorderNeedsToBeFocused) { newValue in
-                        DispatchQueue.main.async {
+                        Task {
                             isFocused = newValue
                         }
                     }
