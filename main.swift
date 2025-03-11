@@ -233,6 +233,47 @@ class Application: NSApplication {
           action: #selector(NSWindow.performClose(_:)),
           keyEquivalent: "w")
         )
+        
+        let helpMenuItem = NSMenuItem()
+        self.mainMenu?.addItem(helpMenuItem)
+        let helpMenu = NSMenu(title: "Help")
+        helpMenuItem.submenu = helpMenu
+        helpMenu.addItem(
+            NSMenuItem(title: "Email support",
+                       action: #selector(contactByEmail),
+                       keyEquivalent: ""
+                      )
+        )
+        helpMenu.addItem(
+            NSMenuItem(title: "Telegram support",
+                       action: #selector(contactByTelegram),
+                       keyEquivalent: ""
+                      )
+        )
+    }
+    
+    @objc func contactByEmail() {
+        let email = "kopyloleh@gmail.com"
+        let subject = "Tab Finder Support"
+        let body = "Hello, I'm writing regarding Tab Finder..."
+
+        let subjectEncoded = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let bodyEncoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let mailtoURL = "mailto:\(email)?subject=\(subjectEncoded)&body=\(bodyEncoded)"
+        
+        guard let url = URL(string: mailtoURL) else { return }
+        NSWorkspace.shared.open(url)
+    }
+    
+    @objc func contactByTelegram() {
+        let telegramWebURL = URL(string: "https://t.me/kopyl")!
+        let telegramAppURL = URL(string: "tg://resolve?domain=kopyl")!
+
+        if NSWorkspace.shared.urlForApplication(toOpen: telegramAppURL) != nil {
+            NSWorkspace.shared.open(telegramAppURL)
+        } else {
+            NSWorkspace.shared.open(telegramWebURL)
+        }
     }
     
     @objc func openSettingsWindow() {

@@ -52,5 +52,9 @@
 	<string>public.app-category.productivity</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tg</string>
+	</array>
 </dict>
 </plist>
