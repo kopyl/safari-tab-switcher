@@ -238,43 +238,32 @@ class Application: NSApplication {
         self.mainMenu?.addItem(helpMenuItem)
         let helpMenu = NSMenu(title: "Help")
         helpMenuItem.submenu = helpMenu
-        helpMenu.addItem(
-            NSMenuItem(title: "Email support",
-                       action: #selector(contactByEmail),
-                       keyEquivalent: ""
-                      )
-        )
-        helpMenu.addItem(
-            NSMenuItem(title: "Telegram support",
-                       action: #selector(contactByTelegram),
-                       keyEquivalent: ""
-                      )
-        )
+
+        addSupportMenuItem(to: helpMenu, title: "Email", webAppURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
+        addSupportMenuItem(to: helpMenu, title: "Telegram", webAppURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
+        addSupportMenuItem(to: helpMenu, title: "Discord", webAppURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        addSupportMenuItem(to: helpMenu, title: "iMessage", appURL: "sms:+380507308141")
+        addSupportMenuItem(to: helpMenu, title: "+380507308141", appURL: "facetime:+380507308141")
     }
     
-    @objc func contactByEmail() {
-        let email = "kopyloleh@gmail.com"
-        let subject = "Tab Finder Support"
-        let body = "Hello, I'm writing regarding Tab Finder..."
-
-        let subjectEncoded = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let bodyEncoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let mailtoURL = "mailto:\(email)?subject=\(subjectEncoded)&body=\(bodyEncoded)"
-        
-        guard let url = URL(string: mailtoURL) else { return }
-        NSWorkspace.shared.open(url)
-    }
-    
-    @objc func contactByTelegram() {
-        let telegramWebURL = URL(string: "https://t.me/kopyl")!
-        let telegramAppURL = URL(string: "tg://resolve?domain=kopyl")!
-
-        if NSWorkspace.shared.urlForApplication(toOpen: telegramAppURL) != nil {
-            NSWorkspace.shared.open(telegramAppURL)
-        } else {
-            NSWorkspace.shared.open(telegramWebURL)
+    private func addSupportMenuItem(to menu: NSMenu, title: String, webAppURL: String? = nil, appURL: String? = nil) {
+            let menuItem = NSMenuItem(title: title, action: #selector(openSupportLink(_:)), keyEquivalent: "")
+            menuItem.representedObject = [ "webAppURL": webAppURL as Any, "appURL": appURL as Any ]
+            menu.addItem(menuItem)
         }
-    }
+
+        @objc private func openSupportLink(_ sender: NSMenuItem) {
+            guard let info = sender.representedObject as? [String: Any] else { return }
+
+            if let appURLString = info["appURL"] as? String, let appURL = URL(string: appURLString),
+               NSWorkspace.shared.urlForApplication(toOpen: appURL) != nil {
+                NSWorkspace.shared.open(appURL)
+            } else {
+                guard let webURLString = info["webAppURL"] as? String else { return }
+                guard let webURL = URL(string: webURLString) else { return }
+                NSWorkspace.shared.open(webURL)
+            }
+        }
     
     @objc func openSettingsWindow() {
         showSettingsWindow()
