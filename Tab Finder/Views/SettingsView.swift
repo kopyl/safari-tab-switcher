@@ -47,7 +47,7 @@ struct SettingsView: View {
             }
         }
         .padding(.top, 42)
-        .padding(.bottom, 63)
+        .padding(.bottom, 54)
         .padding(.horizontal, 30)
     }
 }
