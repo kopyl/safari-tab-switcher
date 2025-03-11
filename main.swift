@@ -236,7 +236,7 @@ class Application: NSApplication {
         
         let helpMenuItem = NSMenuItem()
         self.mainMenu?.addItem(helpMenuItem)
-        let helpMenu = NSMenu(title: "Help")
+        let helpMenu = NSMenu(title: "Support")
         helpMenuItem.submenu = helpMenu
 
         addSupportMenuItem(to: helpMenu, title: "Email", webAppURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
