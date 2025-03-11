@@ -20,7 +20,7 @@ struct SettingsView: View {
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 120) {
             Toggle(isOn: !$isTabsSwitcherNeededToStayOpen) {
                 HStack {
                     Text("Close tabs list when Option key is released")
@@ -37,8 +37,13 @@ struct SettingsView: View {
             .keyboardShortcut(.space, modifiers: [])
             .toggleStyle(.switch)
             
-            Form {
-                KeyboardShortcuts.Recorder("", name: .openTabsList)
+            KeyboardShortcuts.Recorder(for: .openTabsList) {
+                HStack {
+                    Text("Shortcut")
+                        .opacity(0.8)
+                        .font(.system(size: 15))
+                    Spacer()
+                }
             }
         }
         .padding(.top, 42)
