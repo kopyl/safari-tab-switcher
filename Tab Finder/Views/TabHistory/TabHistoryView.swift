@@ -129,7 +129,6 @@ struct TabHistoryView: View {
                         .onTapGesture {
                             isTabsSwitcherNeededToStayOpen.toggle()
                             if !isTabsSwitcherNeededToStayOpen {
-                                print(NSEvent.modifierFlags, NSEvent().modifierFlags)
                                 guard !isUserHoldingShortcutModifiers() else { return }
                                 hideTabSwitcherUI()
                             }
