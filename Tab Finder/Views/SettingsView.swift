@@ -79,18 +79,16 @@ struct SettingsView: View {
                 Spacer()
                 KeyboardShortcuts.Recorder(for: .openTabsList)
                     .focused($isFocused)
-                    .onChange(of: isFocused) { newValue in
-                        appState.isShortcutRecorderNeedsToBeFocused = newValue
+                    .onChange(of: isFocused) {
+                        appState.isShortcutRecorderNeedsToBeFocused = $0
                     }
                     .onChange(of: appState.isShortcutRecorderNeedsToBeFocused) { newValue in
                         DispatchQueue.main.async {
                             isFocused = newValue
                         }
                     }
-                    .onAppear {
-                        DispatchQueue.main.async {
-                            isFocused = appState.isShortcutRecorderNeedsToBeFocused
-                        }
+                    .task {
+                        isFocused = appState.isShortcutRecorderNeedsToBeFocused
                     }
             }
         }
