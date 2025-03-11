@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		480202122D8060CB00979EEC /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 480202112D8060CB00979EEC /* KeyboardShortcuts */; };
 		4835D5012D40A6C500B775DD /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4835D5002D40A6C500B775DD /* UI.swift */; };
 		4849CB5E2D4889F4000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		4849CB602D488A96000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
@@ -82,6 +83,7 @@
 			files = (
 				48CFFE3F2D69930B0076D99C /* HotKey in Frameworks */,
 				48CFFE3A2D696D800076D99C /* HotKey in Frameworks */,
+				480202122D8060CB00979EEC /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +191,7 @@
 			packageProductDependencies = (
 				48CFFE392D696D800076D99C /* HotKey */,
 				48CFFE3E2D69930B0076D99C /* HotKey */,
+				480202112D8060CB00979EEC /* KeyboardShortcuts */,
 			);
 			productName = tab_finder;
 			productReference = 48B48FC52D2A59620054B680 /* Tab Finder.app */;
@@ -241,6 +244,7 @@
 			mainGroup = 48B48FBC2D2A59620054B680;
 			packageReferences = (
 				48CFFE3D2D69930B0076D99C /* XCLocalSwiftPackageReference "Packages/HotKey" */,
+				480202102D8060CB00979EEC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 			);
 			productRefGroup = 48B48FC62D2A59620054B680 /* Products */;
 			projectDirPath = "";
@@ -634,7 +638,23 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		480202102D8060CB00979EEC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		480202112D8060CB00979EEC /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 480202102D8060CB00979EEC /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
 		48CFFE392D696D800076D99C /* HotKey */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HotKey;

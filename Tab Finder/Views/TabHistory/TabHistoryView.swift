@@ -1,6 +1,5 @@
 import SwiftUI
 import SafariServices.SFSafariExtensionManager
-import HotKey
 
 func formatHost(_ host: String) -> String {
     return host
@@ -93,7 +92,6 @@ func filterTabs() {
 }
 
 struct TabHistoryView: View {
-    var hotKey: HotKey
     @State private var keyMonitors: [Any] = []
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) var scenePhase
@@ -123,7 +121,7 @@ struct TabHistoryView: View {
                         .onTapGesture {
                             isTabsSwitcherNeededToStayOpen.toggle()
                             if !isTabsSwitcherNeededToStayOpen {
-                                guard !NSEvent.modifierFlags.contains(.option) else { return }
+                                guard !isUserHoldingShortcutModifiers(event: NSEvent()) else { return }
                                 hideTabSwitcherUI()
                             }
                         }
@@ -195,7 +193,7 @@ struct TabHistoryView: View {
                 appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
             }
             .onChange(of: scenePhase) { phase in
-                guard !NSEvent.modifierFlags.contains(.option) else { return }
+                guard !isUserHoldingShortcutModifiers(event: NSEvent()) else { return }
                 openSafariAndAskToSwitchTabs()
             }
             .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
@@ -232,7 +230,7 @@ struct TabHistoryView: View {
 
     func handleKeyRelease(event: NSEvent) {
         guard isTabsSwitcherNeededToStayOpen == false else { return }
-        guard !event.modifierFlags.contains(.option) else { return }
+        guard !isUserHoldingShortcutModifiers(event: event) else { return }
         openSafariAndAskToSwitchTabs()
     }
     
@@ -248,7 +246,7 @@ struct TabHistoryView: View {
     }
 
     func handleNavigationKeyPresses(event: NSEvent) {
-        guard event.modifierFlags.contains(.option) || isTabsSwitcherNeededToStayOpen else { return }
+        guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
         guard !appState.tabIDsWithTitleAndHost.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
 

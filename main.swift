@@ -1,10 +1,22 @@
 import SwiftUI
-import HotKey
+import KeyboardShortcuts
 
 let appState = AppState()
-let hotKey = HotKey(key: .tab, modifiers: [.option], keyDownHandler: handleHotKeyPress)
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
+
+extension KeyboardShortcuts.Name {
+    static let openTabsList = Self("openTabsList", default: .init(.tab, modifiers: [.option]))
+}
+
+KeyboardShortcuts.onKeyDown(for: .openTabsList) {
+    handleHotKeyPress()
+}
+
+func isUserHoldingShortcutModifiers(event: NSEvent) -> Bool {
+    guard let shortcut = KeyboardShortcuts.Name.openTabsList.shortcut else { return false }
+    return event.modifierFlags.contains(shortcut.modifiers)
+}
 
 func handleHotKeyPress() {
     guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
@@ -84,7 +96,6 @@ func showGreetingWindow() {
 func createTabsWindow() {
     tabsWindow = Window(
         view: TabHistoryView(
-            hotKey: hotKey,
             appState: appState
         ),
         styleMask: []
@@ -147,6 +158,7 @@ func showSettingsWindow() {
     settingsWindow?.setContentSize(NSSize(width: 562, height: 155))
     settingsWindow?.center()
     settingsWindow?.makeKeyAndOrderFront(nil)
+    settingsWindow?.identifier = settingsWindowID
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -187,9 +199,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             if let bundleIdentifier = app.bundleIdentifier {
                 if bundleIdentifier == "com.apple.Safari" {
-                    hotKey.isPaused = false
+                    KeyboardShortcuts.isEnabled = true
                 } else {
-                    hotKey.isPaused = true
+                    KeyboardShortcuts.isEnabled = false
                 }
             }
         }
@@ -238,14 +250,19 @@ class Application: NSApplication {
     
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown {
-            if event.modifierFlags.contains(.option) {
+            if NSApp.mainWindow?.identifier == settingsWindowID {
+                super.sendEvent(event)
+                return
+            }
+            
+            if isUserHoldingShortcutModifiers(event: event) {
                 
                 var newFlags: NSEvent.ModifierFlags
                 if appState.isTabsSwitcherNeededToStayOpen {
                     newFlags = event.modifierFlags
                 }
                 else {
-                    newFlags = event.modifierFlags.subtracting(.option)
+                    newFlags = event.modifierFlags.subtracting(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers ?? [])
                 }
                 
                 if NavigationKeys(rawValue: event.keyCode) != nil {

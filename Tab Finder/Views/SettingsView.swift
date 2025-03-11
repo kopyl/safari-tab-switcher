@@ -1,4 +1,5 @@
 import SwiftUI
+import KeyboardShortcuts
 
 let description = """
 When enabled, the tabs panel won't disappear when you release the Option key.
@@ -35,6 +36,10 @@ struct SettingsView: View {
             .tint(.white)
             .keyboardShortcut(.space, modifiers: [])
             .toggleStyle(.switch)
+            
+            Form {
+                KeyboardShortcuts.Recorder("", name: .openTabsList)
+            }
         }
         .padding(.top, 42)
         .padding(.bottom, 63)
