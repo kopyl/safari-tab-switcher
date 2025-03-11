@@ -39,7 +39,7 @@ struct SettingsView: View {
             
             KeyboardShortcuts.Recorder(for: .openTabsList) {
                 HStack {
-                    Text("Shortcut")
+                    Text("Shortcut for opening tabs list")
                         .opacity(0.8)
                         .font(.system(size: 15))
                     Spacer()
