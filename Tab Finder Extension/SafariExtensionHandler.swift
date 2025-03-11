@@ -99,10 +99,6 @@ func saveWindows(tabs: Tabs) async {
     Store.windows = windows
 }
 
-enum JScommands: String {
-    case opttab
-}
-
 enum AppCommands: String {
     case switchtabto
 }
