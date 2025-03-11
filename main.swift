@@ -158,7 +158,6 @@ func showSettingsWindow() {
     settingsWindow?.setContentSize(NSSize(width: 562, height: 155))
     settingsWindow?.center()
     settingsWindow?.makeKeyAndOrderFront(nil)
-    settingsWindow?.identifier = settingsWindowID
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -250,7 +249,7 @@ class Application: NSApplication {
     
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown {
-            if NSApp.mainWindow?.identifier == settingsWindowID {
+            if NSApp.keyWindow?.identifier != tabsWindowID {
                 super.sendEvent(event)
                 return
             }
