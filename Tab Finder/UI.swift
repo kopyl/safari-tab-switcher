@@ -78,34 +78,56 @@ struct VisualEffectBlur: NSViewRepresentable {
     func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
 
-struct OnboardingButtonStyle: ButtonStyle {
-    var foregroundColor = Color.white
-    var backgroundColor = Color.blue
-    var pressedColor = Color.black
+struct CustomButtonStyle: ButtonStyle {
+    var foregroundColor: Color
+    var backgroundColor: Color
+    var pressedColor: Color
 
-  func makeBody(configuration: Self.Configuration) -> some View {
-    configuration.label
-          .frame(maxWidth: .infinity)
-      .font(.system(size: 16))
-      .padding(.vertical, 14)
-      .padding(.horizontal, 20)
-      .foregroundColor(foregroundColor)
-      .background(configuration.isPressed ? pressedColor : backgroundColor)
-      .cornerRadius(7)
-  }
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(maxWidth: .infinity)
+            .font(.system(size: 16))
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
+            .foregroundColor(foregroundColor)
+            .background(configuration.isPressed ? pressedColor : backgroundColor)
+            .cornerRadius(7)
+    }
 }
 
-struct OnboardingButton: View {
-    var startUsingTabFinder: () -> Void
-    
-    init(startUsingTabFinder: @escaping () -> Void ) {
-        self.startUsingTabFinder = startUsingTabFinder
+extension ButtonStyle where Self == CustomButtonStyle {
+    static var primary: CustomButtonStyle {
+        CustomButtonStyle(
+            foregroundColor: .white,
+            backgroundColor: .blue,
+            pressedColor: .black
+        )
     }
-    
+
+    static var secondary: CustomButtonStyle {
+        CustomButtonStyle(
+            foregroundColor: .blue,
+            backgroundColor: .blue.opacity(0.06),
+            pressedColor: .black
+        )
+    }
+}
+
+struct StyledButton<S: ButtonStyle>: View {
+    var title: String
+    var style: S
+    var action: () -> Void
+
+    init(_ style: S, _ title: String, action: @escaping () -> Void) {
+        self.title = title
+        self.style = style
+        self.action = action
+    }
+
     var body: some View {
-        Button(Copy.Onboarding.button) {
-            startUsingTabFinder()
+        Button(action: action) {
+            Text(title)
         }
-        .buttonStyle(OnboardingButtonStyle())
+        .buttonStyle(style)
     }
 }

@@ -37,8 +37,13 @@ struct GreetingView: View {
             Spacer()
             
             VStack {
-                OnboardingButton {
-                    startUsingTabFinder()
+                HStack {
+                    StyledButton(.secondary, Copy.Onboarding.configureShortcutButton) {
+                        showSettingsWindow()
+                    }
+                    StyledButton(.primary, Copy.Onboarding.hideThisWindowButton) {
+                        startUsingTabFinder()
+                    }
                 }
                 .keyboardShortcut(.return, modifiers: [])
                 .padding(.bottom, 10)
