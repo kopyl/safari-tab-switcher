@@ -44,8 +44,8 @@ struct GreetingView: View {
                     StyledButton(.primary, Copy.Onboarding.hideThisWindowButton) {
                         startUsingTabFinder()
                     }
+                    .keyboardShortcut(.return, modifiers: [])
                 }
-                .keyboardShortcut(.return, modifiers: [])
                 .padding(.bottom, 10)
                 Text(Copy.Onboarding.buttonHint)
                     .font(.system(size: 12))
