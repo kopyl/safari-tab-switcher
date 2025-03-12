@@ -26,11 +26,14 @@ class TabsPanelVisibilityObserver: NSObject {
 
 NotificationCenter.default.addObserver(
     forName: NSWindow.didResignKeyNotification,
-    object: nil,
+    object: tabsPanel,
     queue: .main
-) { _ in
+) { notification in
+    guard notification.object as? NSObject == tabsPanel else { return }
+    guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
     hideTabsPanel()
 }
+
 
 NotificationCenter.default.addObserver(
     forName: NSWorkspace.didActivateApplicationNotification,
