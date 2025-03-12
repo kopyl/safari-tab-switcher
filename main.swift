@@ -183,6 +183,7 @@ func showTabsPanel() {
         pendingDispatchWorkItem?.cancel()
         let workItem = DispatchWorkItem {
             tabsPanel?.contentView?.alphaValue = 1
+            KeyboardShortcuts.isEnabled = false
         }
         pendingDispatchWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
@@ -190,7 +191,23 @@ func showTabsPanel() {
 }
 
 func hideTabsPanel() {
-    tabsPanel?.orderOut(nil)
+    let animationDuration = 0.25
+    
+    NSAnimationContext.runAnimationGroup({ context in
+        context.duration = animationDuration
+        tabsPanel?.animator().contentView?.alphaValue = 0
+        
+        KeyboardShortcuts.isEnabled = true
+        
+        pendingDispatchWorkItem?.cancel()
+        
+        let workItem = DispatchWorkItem {
+            tabsPanel?.orderOut(nil)
+            tabsPanel?.animator().contentView?.alphaValue = 1
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: workItem)
+        pendingDispatchWorkItem = workItem
+    })
 }
 
 func showSettingsWindow() {
