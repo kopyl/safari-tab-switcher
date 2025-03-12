@@ -1,8 +1,20 @@
-# Safari tab switcher extension with option+tab for macOS 12.0-15.3.1+
+# Safari tab switcher extension with option+tab (customizable shortcut) for macOS 12.0+
 
 aka command+tab but for Safari
 
 [<img src="https://github.com/user-attachments/assets/4e81b325-0446-4b92-8141-aaaee9e41bec">](https://apps.apple.com/us/app/tab-finder/id6741719894)
+
+### Features:
+- Switching tab history navigation with Option+Tab (or set your own shortcut);
+- Tab search;
+- Customizable shortcut;
+- Dark mode, light mode;
+- Does not ask for permission to read "webpage content". Permission to access "browsing history" is only used to display tab titles;
+- Written entirely in Swift. Not a single line of JS;
+- Works even when tabs are loading and on empty and history pages;
+- Open source. Which means 100% transparency;
+- Gorgeous design;
+- Almost native experience;
 
 ### Motivation:
 Switching between apps with command+tab is my favorite way of navigating between apps.
