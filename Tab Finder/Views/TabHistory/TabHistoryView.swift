@@ -130,7 +130,7 @@ struct TabHistoryView: View {
                             isTabsSwitcherNeededToStayOpen.toggle()
                             if !isTabsSwitcherNeededToStayOpen {
                                 guard !isUserHoldingShortcutModifiers() else { return }
-                                hideTabSwitcherUI()
+                                hideTabsPanel()
                             }
                         }
                 }
@@ -242,11 +242,6 @@ struct TabHistoryView: View {
         openSafariAndAskToSwitchTabs()
     }
     
-    func hideTabSwitcherUI() {
-        NSApp.hide(nil)
-        tabsPanel?.orderOut(nil)
-    }
-    
     func openSafari() {
         if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
             NSWorkspace.shared.open(safariURL)
@@ -272,12 +267,12 @@ struct TabHistoryView: View {
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
-            hideTabSwitcherUI()
+            hideTabsPanel()
         }
     }
 
     private func openSafariAndAskToSwitchTabs() {
-        hideTabSwitcherUI()
+        hideTabsPanel()
         openSafari()
         guard !appState.filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
