@@ -31,7 +31,7 @@ NotificationCenter.default.addObserver(
 ) { notification in
     guard notification.object as? NSObject == tabsPanel else { return }
     guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
-    hideTabsPanel()
+    hideTabsPanelWithoutFadeOutAnimation()
 }
 
 
@@ -211,6 +211,10 @@ func hideTabsPanel() {
         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: workItem)
         pendingDispatchWorkItem = workItem
     })
+}
+
+func hideTabsPanelWithoutFadeOutAnimation() {
+    tabsPanel?.orderOut(nil)
 }
 
 func showSettingsWindow() {

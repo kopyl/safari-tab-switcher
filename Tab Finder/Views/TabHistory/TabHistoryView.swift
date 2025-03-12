@@ -267,7 +267,7 @@ struct TabHistoryView: View {
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
-            hideTabsPanel()
+            hideTabsPanelWithoutFadeOutAnimation()
         }
     }
 
