@@ -14,13 +14,7 @@ class TabsPanelVisibilityObserver: NSObject {
         super.init()
         observation = panel.observe(\.isVisible, options: [.new]) { _, change in
             if let isVisible = change.newValue {
-                
-                if isVisible {
-                    KeyboardShortcuts.isEnabled = false
-                }
-                else {
-                    KeyboardShortcuts.isEnabled = true
-                }
+                KeyboardShortcuts.isEnabled = !isVisible
             }
         }
     }
@@ -30,10 +24,23 @@ class TabsPanelVisibilityObserver: NSObject {
     }
 }
 
-NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification,
-    object: tabsPanel,
-    queue: .main) { _ in
-        hideTabsPanel()
+NotificationCenter.default.addObserver(
+    forName: NSWindow.didResignKeyNotification,
+    object: nil,
+    queue: .main
+) { _ in
+    hideTabsPanel()
+}
+
+NotificationCenter.default.addObserver(
+    forName: NSWorkspace.didActivateApplicationNotification,
+    object: nil,
+    queue: .main
+) { notification in
+    guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+        return
+    }
+    KeyboardShortcuts.isEnabled = app.bundleIdentifier == "com.apple.Safari"
 }
 
 extension KeyboardShortcuts.Name {
@@ -215,8 +222,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         createGreetingWindow()
         showGreetingWindow()
         createTabsPanel()
-        setupAppSwitchingObserver()
-        
         panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
     }
     
@@ -224,29 +229,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showGreetingWindow()
         hideTabsPanel()
         return true
-    }
-    
-    func setupAppSwitchingObserver() {
-        let workspace = NSWorkspace.shared
-        let notificationCenter = workspace.notificationCenter
-        
-        activeAppObserver = notificationCenter.addObserver(
-            forName: NSWorkspace.didActivateApplicationNotification,
-            object: nil,
-            queue: .main
-        ) { notification in
-            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
-                return
-            }
-
-            if let bundleIdentifier = app.bundleIdentifier {
-                if bundleIdentifier == "com.apple.Safari" {
-                    KeyboardShortcuts.isEnabled = true
-                } else {
-                    KeyboardShortcuts.isEnabled = false
-                }
-            }
-        }
     }
 }
 
