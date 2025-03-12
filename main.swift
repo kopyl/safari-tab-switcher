@@ -5,6 +5,37 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
+class TabsPanelVisibilityObserver: NSObject {
+    private var panel: NSPanel
+    private var observation: NSKeyValueObservation?
+
+    init(panel: NSPanel) {
+        self.panel = panel
+        super.init()
+        observation = panel.observe(\.isVisible, options: [.new]) { _, change in
+            if let isVisible = change.newValue {
+                
+                if isVisible {
+                    KeyboardShortcuts.isEnabled = false
+                }
+                else {
+                    KeyboardShortcuts.isEnabled = true
+                }
+            }
+        }
+    }
+
+    deinit {
+        observation?.invalidate()
+    }
+}
+
+NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification,
+    object: tabsPanel,
+    queue: .main) { _ in
+        hideTabsPanel()
+}
+
 extension KeyboardShortcuts.Name {
     static let openTabsList = Self("openTabsList", default: .init(.tab, modifiers: [.option]))
 }
@@ -29,11 +60,11 @@ func handleHotKeyPress() {
     filterTabs()
     appState.indexOfTabToSwitchTo = 1
     startUsingTabFinder()
-    showTabsWindow()
+    showTabsPanel()
 }
 
 var greetingWindow: NSWindow?
-var tabsWindow: NSWindow?
+var tabsPanel: NSPanel?
 var settingsWindow: NSWindow?
 
 class AppState: ObservableObject {
@@ -56,9 +87,6 @@ class AppState: ObservableObject {
     }
 }
 
-/// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
-///
-/// Either this or .titled style mask is needed
 class Window: NSWindow {
     init(view: some View, styleMask: NSWindow.StyleMask = [.titled, .closable]) {
         super.init(
@@ -73,9 +101,25 @@ class Window: NSWindow {
         /// NSWindowController wrapping fixes app breaking on window close -> app reopen
         let _ = NSWindowController(window: self)
     }
+}
+
+/// A custom class with canBecomeKey overridden to true is required for cursor in the text field to blink
+///
+/// Either this or .titled style mask is needed
+class Panel: NSPanel {
+    init(view: some View, styleMask: NSWindow.StyleMask = [.nonactivatingPanel]) {
+        super.init(
+            contentRect: .zero,
+            styleMask: styleMask,
+            backing: .buffered,
+            defer: false
+        )
+        self.titlebarAppearsTransparent = true
+        self.contentViewController = NSHostingController(rootView: view)
+    }
     
     override var canBecomeKey: Bool {
-        true
+        return true
     }
 }
 
@@ -95,57 +139,51 @@ func showGreetingWindow() {
     NSApp.setActivationPolicy(.regular)
 }
 
-func createTabsWindow() {
-    tabsWindow = Window(
+func createTabsPanel() {
+    tabsPanel = Panel(
         view: TabHistoryView(
             appState: appState
-        ),
-        styleMask: []
+        )
     )
     
-    tabsWindow?.backgroundColor = .clear
-    tabsWindow?.contentView?.layer?.cornerRadius = 8
+    tabsPanel?.backgroundColor = .clear
+    tabsPanel?.contentView?.layer?.cornerRadius = 8
     
     /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
-    tabsWindow?.contentView?.layer?.masksToBounds = true
+    tabsPanel?.contentView?.layer?.masksToBounds = true
     
-    tabsWindow?.setContentSize(NSSize(width: 800, height: 500))
-    tabsWindow?.center()
-    tabsWindow?.hidesOnDeactivate = true
-    tabsWindow?.identifier = tabsWindowID
+    tabsPanel?.setContentSize(NSSize(width: 800, height: 500))
+    tabsPanel?.center()
+    tabsPanel?.identifier = tabsPanelID
+    
+    tabsPanel?.hasShadow = false
 }
 
-func showTabsWindow() {
+func showTabsPanel() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
     /// collectionBehavior needs to be set on every time this function calls for the tabs window to be displayed in a Safari's full screen mode.
     /// On a fresh macOS 13.0 the app prefectly works with a full-screen Safari without .canJoinAllSpaces and moving
     /// .floating level setting from window init to window display, but Sava had issues without them
     /// Maybe only ony thing helped – either moving .floating level setting here or addding .canJoinAllSpaces. to the collectionBehavior
     /// For me on macOS 15.x everything works with onlyt setting fullScreenPrimary. Sava haven't tried it yet
-    tabsWindow?.level = .floating
-    tabsWindow?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
+    tabsPanel?.level = .floating
+    tabsPanel?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
     
-    tabsWindow?.makeKeyAndOrderFront(nil)
+    tabsPanel?.makeKeyAndOrderFront(nil)
     
     if !Store.isTabsSwitcherNeededToStayOpen {
-        tabsWindow?.contentView?.alphaValue = 0
+        tabsPanel?.contentView?.alphaValue = 0
         pendingDispatchWorkItem?.cancel()
         let workItem = DispatchWorkItem {
-            tabsWindow?.contentView?.alphaValue = 1
+            tabsPanel?.contentView?.alphaValue = 1
         }
         pendingDispatchWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
     }
-    
-    DispatchQueue.main.async {
-        /// Activating the window with a DispatchQueue gets rid of the blinking
-        /// Reference commit SHA: 680c206401d25960b9eb5a7f6fd900f439fd0af3
-        NSApp.activate(ignoringOtherApps: true)
-    }
 }
 
-func hideTabsWindow() {
-    tabsWindow?.orderOut(nil)
+func hideTabsPanel() {
+    tabsPanel?.orderOut(nil)
 }
 
 func showSettingsWindow() {
@@ -165,6 +203,7 @@ func showSettingsWindow() {
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
     private var activeAppObserver: Any?
+    var panelObserver: TabsPanelVisibilityObserver?
     
     init(
         appState: AppState
@@ -175,13 +214,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         createGreetingWindow()
         showGreetingWindow()
-        createTabsWindow()
+        createTabsPanel()
         setupAppSwitchingObserver()
+        
+        panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         showGreetingWindow()
-        hideTabsWindow()
+        hideTabsPanel()
         return true
     }
     
@@ -284,7 +325,7 @@ class Application: NSApplication {
             return super.sendEvent(event)
         }
 
-        guard NSApp.keyWindow?.identifier == tabsWindowID else {
+        guard NSApp.keyWindow?.identifier == tabsPanelID else {
             return super.sendEvent(event)
         }
 

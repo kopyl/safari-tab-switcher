@@ -3,7 +3,7 @@ import SwiftUI
 
 let bundleID = Bundle.main.bundleIdentifier ?? ""
 let extensionBundleIdentifier = "\(bundleID).Extension"
-let tabsWindowID = NSUserInterfaceItemIdentifier("tabsWindow")
+let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 
 enum NavigationKeys: UInt16 {
     case `return` = 36

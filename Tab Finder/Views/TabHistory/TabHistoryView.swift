@@ -212,7 +212,7 @@ struct TabHistoryView: View {
 
     func setupInAppKeyListener() {
         let keyDownMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { event in
-            guard NSApp.keyWindow?.identifier == tabsWindowID else { return event }
+            guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
             if NavigationKeys(rawValue: event.keyCode) != nil {
                 handleNavigationKeyPresses(event: event)
                 return nil
@@ -220,7 +220,7 @@ struct TabHistoryView: View {
             return event
         }
         let keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyUp, .flagsChanged]) { event in
-            guard NSApp.keyWindow?.identifier == tabsWindowID else { return event }
+            guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
             handleKeyRelease(event: event)
             return event
         }
@@ -244,7 +244,7 @@ struct TabHistoryView: View {
     
     func hideTabSwitcherUI() {
         NSApp.hide(nil)
-        tabsWindow?.orderOut(nil)
+        tabsPanel?.orderOut(nil)
     }
     
     func openSafari() {
