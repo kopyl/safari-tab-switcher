@@ -257,6 +257,15 @@ class Application: NSApplication {
           action: #selector(NSWindow.performClose(_:)),
           keyEquivalent: "w")
         )
+
+        windowMenu.addItem(.separator())
+        let openGreetingWindowMenuItem = NSMenuItem(
+            title: "Welcome to Tab Finder",
+            action: #selector(openGreetingWindow),
+            keyEquivalent: "1"
+        )
+        openGreetingWindowMenuItem.keyEquivalentModifierMask = [.command, .option]
+        windowMenu.addItem(openGreetingWindowMenuItem)
         
         let helpMenuItem = NSMenuItem()
         self.mainMenu?.addItem(helpMenuItem)
@@ -291,6 +300,10 @@ class Application: NSApplication {
     
     @objc func openSettingsWindow() {
         showSettingsWindow()
+    }
+    
+    @objc func openGreetingWindow() {
+        showGreetingWindow()
     }
     
     override init() {
