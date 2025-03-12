@@ -266,6 +266,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         KeyboardShortcuts.isEnabled = true
                     } else {
                         KeyboardShortcuts.isEnabled = false
+                        hideTabsPanel()
                     }
                 }
             }
