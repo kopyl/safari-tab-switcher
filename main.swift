@@ -280,54 +280,46 @@ class Application: NSApplication {
     }
     
     override func sendEvent(_ event: NSEvent) {
-        if event.type == .keyDown {
-            if NSApp.keyWindow?.identifier != tabsWindowID {
-                super.sendEvent(event)
-                return
-            }
-            
-            if isUserHoldingShortcutModifiers(event: event) {
-                
-                var newFlags: NSEvent.ModifierFlags
-                if appState.isTabsSwitcherNeededToStayOpen {
-                    newFlags = event.modifierFlags
-                }
-                else {
-                    newFlags = event.modifierFlags.subtracting(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers ?? [])
-                }
-                
-                if NavigationKeys(rawValue: event.keyCode) != nil {
-                    super.sendEvent(event)
-                    return
-                }
-                
-                guard let charactersIgnoringModifiers = event.charactersIgnoringModifiers else {
-                    super.sendEvent(event)
-                    return
-                }
-                
-                guard let characters = event.characters else {
-                    super.sendEvent(event)
-                    return
-                }
-
-                if let newEvent = NSEvent.keyEvent(
-                    with: event.type,
-                    location: event.locationInWindow,
-                    modifierFlags: newFlags,
-                    timestamp: event.timestamp,
-                    windowNumber: event.windowNumber,
-                    context: nil,
-                    characters: appState.isTabsSwitcherNeededToStayOpen ? characters : charactersIgnoringModifiers,
-                    charactersIgnoringModifiers: charactersIgnoringModifiers,
-                    isARepeat: event.isARepeat,
-                    keyCode: event.keyCode
-                ) {
-                    super.sendEvent(newEvent)
-                    return
-                }
-            }
+        guard event.type == .keyDown else {
+            return super.sendEvent(event)
         }
+
+        guard NSApp.keyWindow?.identifier == tabsWindowID else {
+            return super.sendEvent(event)
+        }
+
+        guard isUserHoldingShortcutModifiers(event: event) else {
+            return super.sendEvent(event)
+        }
+
+        let newFlags = appState.isTabsSwitcherNeededToStayOpen
+            ? event.modifierFlags
+            : event.modifierFlags.subtracting(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers ?? [])
+
+        if NavigationKeys(rawValue: event.keyCode) != nil {
+            return super.sendEvent(event)
+        }
+
+        guard let charactersIgnoringModifiers = event.charactersIgnoringModifiers,
+              let characters = event.characters else {
+            return super.sendEvent(event)
+        }
+
+        if let newEvent = NSEvent.keyEvent(
+            with: event.type,
+            location: event.locationInWindow,
+            modifierFlags: newFlags,
+            timestamp: event.timestamp,
+            windowNumber: event.windowNumber,
+            context: nil,
+            characters: appState.isTabsSwitcherNeededToStayOpen ? characters : charactersIgnoringModifiers,
+            charactersIgnoringModifiers: charactersIgnoringModifiers,
+            isARepeat: event.isARepeat,
+            keyCode: event.keyCode
+        ) {
+            return super.sendEvent(newEvent)
+        }
+
         super.sendEvent(event)
     }
 }
