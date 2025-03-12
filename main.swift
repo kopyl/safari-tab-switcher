@@ -24,6 +24,23 @@ class TabsPanelVisibilityObserver: NSObject {
     }
 }
 
+NSWorkspace.shared.notificationCenter.addObserver(
+    forName: NSWorkspace.didActivateApplicationNotification,
+    object: nil,
+    queue: .main
+) { notification in
+    guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+        return
+    }
+    if app.bundleIdentifier == "com.apple.Safari" {
+        KeyboardShortcuts.isEnabled = true
+    }
+    else {
+        hideTabsPanel()
+    }
+}
+
+
 NotificationCenter.default.addObserver(
     forName: NSWindow.didResignKeyNotification,
     object: tabsPanel,
@@ -235,7 +252,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showGreetingWindow()
         createTabsPanel()
         panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
-        setupAppSwitchingObserver()
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -247,30 +263,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }
-    
-    func setupAppSwitchingObserver() {
-            let workspace = NSWorkspace.shared
-            let notificationCenter = workspace.notificationCenter
-            
-            activeAppObserver = notificationCenter.addObserver(
-                forName: NSWorkspace.didActivateApplicationNotification,
-                object: nil,
-                queue: .main
-            ) { notification in
-                guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
-                    return
-                }
-
-                if let bundleIdentifier = app.bundleIdentifier {
-                    if bundleIdentifier == "com.apple.Safari" {
-                        KeyboardShortcuts.isEnabled = true
-                    } else {
-                        KeyboardShortcuts.isEnabled = false
-                        hideTabsPanel()
-                    }
-                }
-            }
-        }
 }
 
 class Application: NSApplication {
