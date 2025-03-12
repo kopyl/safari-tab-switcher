@@ -130,7 +130,7 @@ struct TabHistoryView: View {
                             isTabsSwitcherNeededToStayOpen.toggle()
                             if !isTabsSwitcherNeededToStayOpen {
                                 guard !isUserHoldingShortcutModifiers() else { return }
-                                hideTabsPanel()
+                                tabsPanel?.resignKey()
                             }
                         }
                 }
@@ -267,12 +267,12 @@ struct TabHistoryView: View {
         case .return:
             openSafariAndAskToSwitchTabs()
         case .escape:
-            hideTabsPanel()
+            tabsPanel?.resignKey()
         }
     }
 
     private func openSafariAndAskToSwitchTabs() {
-        hideTabsPanel()
+        tabsPanel?.resignKey()
         openSafari()
         guard !appState.filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
