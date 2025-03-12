@@ -38,11 +38,12 @@ struct GreetingView: View {
             
             VStack {
                 HStack {
-                    StyledButton(.secondary, Copy.Onboarding.configureShortcutButton) {
+                    StyledButton(.secondary, Copy.Onboarding.configureShortcutButton, icon: "space") {
                         appState.isShortcutRecorderNeedsToBeFocused = true
                         showSettingsWindow()
                     }
-                    StyledButton(.primary, Copy.Onboarding.hideThisWindowButton) {
+                    .keyboardShortcut(.space, modifiers: [])
+                    StyledButton(.primary, Copy.Onboarding.hideThisWindowButton, icon: "return") {
                         startUsingTabFinder()
                     }
                     .keyboardShortcut(.return, modifiers: [])

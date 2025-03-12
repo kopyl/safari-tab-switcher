@@ -254,6 +254,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         tabsPanel?.resignKey()
         return true
     }
+    
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        return true
+    }
 }
 
 class Application: NSApplication {
