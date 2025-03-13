@@ -238,7 +238,6 @@ func showSettingsWindow() {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
-    private var activeAppObserver: Any?
     var panelObserver: TabsPanelVisibilityObserver?
     
     init(
