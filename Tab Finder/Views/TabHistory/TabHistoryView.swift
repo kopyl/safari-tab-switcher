@@ -261,7 +261,7 @@ struct TabHistoryView: View {
         case .return:
             HideTabsPanelAndSwitchTabs()
         case .escape:
-            hideTabsPanelWithoutFadeOutAnimation()
+            hideTabsPanel(withoutAnimation: true)
         }
     }
 

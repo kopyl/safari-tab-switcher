@@ -5,25 +5,6 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
-class TabsPanelVisibilityObserver: NSObject {
-    private var panel: NSPanel
-    private var observation: NSKeyValueObservation?
-
-    init(panel: NSPanel) {
-        self.panel = panel
-        super.init()
-        observation = panel.observe(\.isVisible, options: [.new]) { _, change in
-            if let isVisible = change.newValue {
-                KeyboardShortcuts.isEnabled = !isVisible
-            }
-        }
-    }
-
-    deinit {
-        observation?.invalidate()
-    }
-}
-
 NSWorkspace.shared.notificationCenter.addObserver(
     forName: NSWorkspace.didActivateApplicationNotification,
     object: nil,
@@ -48,7 +29,7 @@ NotificationCenter.default.addObserver(
 ) { notification in
     guard notification.object as? NSObject == tabsPanel else { return }
     guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
-    hideTabsPanelWithoutFadeOutAnimation()
+    hideTabsPanel(withoutAnimation: true)
 }
 
 extension KeyboardShortcuts.Name {
@@ -198,8 +179,8 @@ func showTabsPanel() {
     }
 }
 
-func hideTabsPanel() {
-    let animationDuration = 0.25
+func hideTabsPanel(withoutAnimation: Bool = false) {
+    let animationDuration = withoutAnimation ? 0 : 0.25
     
     NSAnimationContext.runAnimationGroup({ context in
         context.duration = animationDuration
@@ -218,10 +199,6 @@ func hideTabsPanel() {
     })
 }
 
-func hideTabsPanelWithoutFadeOutAnimation() {
-    tabsPanel?.orderOut(nil)
-}
-
 func showSettingsWindow() {
     if let settingsWindow {
         settingsWindow.makeKeyAndOrderFront(nil)
@@ -238,7 +215,6 @@ func showSettingsWindow() {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
-    var panelObserver: TabsPanelVisibilityObserver?
     
     init(
         appState: AppState
@@ -250,7 +226,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         createGreetingWindow()
         showGreetingWindow()
         createTabsPanel()
-        panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
