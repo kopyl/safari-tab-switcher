@@ -176,7 +176,7 @@ struct TabHistoryView: View {
                         
                             .onTapGesture {
                                 appState.indexOfTabToSwitchTo = id
-                                openSafariAndAskToSwitchTabs()
+                                HideTabsPanelAndSwitchTabs()
                             }
                         }
                     }
@@ -202,7 +202,7 @@ struct TabHistoryView: View {
             }
             .onChange(of: scenePhase) { phase in
                 guard !isUserHoldingShortcutModifiers() else { return }
-                openSafariAndAskToSwitchTabs()
+                HideTabsPanelAndSwitchTabs()
             }
             .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
                 appState.isTabsSwitcherNeededToStayOpen = newValue
@@ -239,13 +239,7 @@ struct TabHistoryView: View {
     func handleKeyRelease(event: NSEvent) {
         guard isTabsSwitcherNeededToStayOpen == false else { return }
         guard !isUserHoldingShortcutModifiers(event: event) else { return }
-        openSafariAndAskToSwitchTabs()
-    }
-    
-    func openSafari() {
-        if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
-            NSWorkspace.shared.open(safariURL)
-        }
+        HideTabsPanelAndSwitchTabs()
     }
 
     func handleNavigationKeyPresses(event: NSEvent) {
@@ -265,15 +259,14 @@ struct TabHistoryView: View {
         case .arrowDown:
             appState.indexOfTabToSwitchTo += 1
         case .return:
-            openSafariAndAskToSwitchTabs()
+            HideTabsPanelAndSwitchTabs()
         case .escape:
             hideTabsPanelWithoutFadeOutAnimation()
         }
     }
 
-    private func openSafariAndAskToSwitchTabs() {
+    private func HideTabsPanelAndSwitchTabs() {
         hideTabsPanel()
-        openSafari()
         guard !appState.filteredTabs.isEmpty else { return }
         Task{ await switchTabs() }
     }
