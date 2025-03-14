@@ -28,7 +28,7 @@ There are similar apps, but i decided to make my own, which unlike of other simi
 - Have a beautiful design.
 
 ### Here is a video demo on how it works:
-![Video demo](https://github.com/user-attachments/assets/476b1a15-19a0-4568-9631-95c52e0066c0)
+![Video demo](https://github.com/user-attachments/assets/cfafc9f3-a29c-49b9-ad7c-31b4f181b8cb)
 
 Currently the app was purchased by 10 users.
 I'm happily working on new updates for them.
@@ -42,4 +42,4 @@ Timeline:
 - 15.02.2025: Got a first paying user
 - 18.02.2025: [Launched](https://www.producthunt.com/posts/tab-finder) on ProductHunt
 - 21.02.2025: Got first 10 paying users
-- 13.03.2025: Increased price from $1.99 to $9.99
+- 13.03.2025: Increased price from $1.99 to $9.99. So far the app got sold 13 times, refunded 1 time and got downloaded for free (via a promo code) 6 times.
