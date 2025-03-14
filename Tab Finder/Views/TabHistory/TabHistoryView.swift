@@ -1,31 +1,17 @@
 import SwiftUI
 import SafariServices.SFSafariExtensionManager
 
-func formatHost(_ host: String) -> String {
-    return host
-        .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-}
-
-struct TabForSearch {
-    var id: Int
-    var title: String
-    var host: String
-    var hostParts: [String.SubSequence] = []
-    var domainZone: String.SubSequence = ""
-    var searchRating: Int = 0
+func addSpecificTabToHistory(tab: TabForSearch) {
+    var windows = Store.windows
+    guard var tabsMutated = windows.windows.last?.tabs else { return }
     
-    init(tab: Tab){
-        id = tab.id
-        title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
+    let tabIDsWithTitleAndHost = Tab(tab: tab)
 
-        hostParts = host.split(separator: ".")
-        domainZone = hostParts.last ?? ""
-        guard !hostParts.isEmpty else { return }
-        hostParts.removeLast()  /// need to change it for domain zones like com.ua?
-        hostParts = hostParts.reversed()
-    }
+    tabsMutated.append(tabIDsWithTitleAndHost)
+
+    let currentWindow = _Window(tabs: tabsMutated)
+    windows.append(currentWindow)
+    Store.windows = windows
 }
 
 func filterTabs() {
@@ -274,6 +260,7 @@ struct TabHistoryView: View {
     func switchTabs() async {
         let indexOfTabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
         do {
+            addSpecificTabToHistory(tab: indexOfTabToSwitchToInSafari)
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
                 toExtensionWithIdentifier: extensionBundleIdentifier,

@@ -7,20 +7,6 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
         return
     }
     await tabs[id].activate()
-    await addSpecificTabToHistory(tabId: id, tabs: tabs)
-}
-
-func addSpecificTabToHistory(tabId: Int, tabs: [SFSafariTab]) async {
-    var windows = Store.windows
-    guard var tabsMutated = windows.windows.last?.tabs else { return }
-    
-    let tabIDsWithTitleAndHost = await Tab(id: tabId, tab: tabs[tabId])
-    tabsMutated.append(tabIDsWithTitleAndHost)
-    
-    let currentWindow = _Window(tabs: tabsMutated)
-    windows.append(currentWindow)
-    
-    Store.windows = windows
 }
 
 func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {

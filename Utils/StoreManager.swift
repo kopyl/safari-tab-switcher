@@ -22,6 +22,33 @@ struct _Window: Codable {
     }
 }
 
+func formatHost(_ host: String) -> String {
+    return host
+        .replacingOccurrences(of: "www.", with: "", options: NSString.CompareOptions.literal, range: nil)
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
+struct TabForSearch {
+    var id: Int
+    var title: String
+    var host: String
+    var hostParts: [String.SubSequence] = []
+    var domainZone: String.SubSequence = ""
+    var searchRating: Int = 0
+    
+    init(tab: Tab){
+        id = tab.id
+        title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
+
+        hostParts = host.split(separator: ".")
+        domainZone = hostParts.last ?? ""
+        guard !hostParts.isEmpty else { return }
+        hostParts.removeLast()  /// need to change it for domain zones like com.ua?
+        hostParts = hostParts.reversed()
+    }
+}
+
 struct Tab: Codable {
     var id: Int
     var title: String = ""
@@ -35,6 +62,12 @@ struct Tab: Codable {
     init(tab: SFSafariTab) async {
         self.id = -1
         await setTitleAndHostFromTab(tab: tab)
+    }
+    
+    init(tab: TabForSearch) {
+        self.id = tab.id
+        self.title = tab.title
+        self.host = tab.host
     }
     
     mutating func setTitleAndHostFromTab(tab: SFSafariTab) async {
