@@ -21,6 +21,25 @@ NSWorkspace.shared.notificationCenter.addObserver(
     }
 }
 
+class TabsPanelVisibilityObserver: NSObject {
+    private var panel: NSPanel
+    private var observation: NSKeyValueObservation?
+
+    init(panel: NSPanel) {
+        self.panel = panel
+        super.init()
+        observation = panel.observe(\.isVisible, options: [.new]) { _, change in
+            if let isVisible = change.newValue {
+                KeyboardShortcuts.isEnabled = !isVisible
+            }
+        }
+    }
+
+    deinit {
+        observation?.invalidate()
+    }
+}
+
 
 NotificationCenter.default.addObserver(
     forName: NSWindow.didResignKeyNotification,
@@ -215,6 +234,7 @@ func showSettingsWindow() {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
+    var panelObserver: TabsPanelVisibilityObserver?
     
     init(
         appState: AppState
@@ -226,6 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         createGreetingWindow()
         showGreetingWindow()
         createTabsPanel()
+        panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
