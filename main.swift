@@ -18,6 +18,7 @@ NSWorkspace.shared.notificationCenter.addObserver(
     }
     else {
         hideTabsPanel()
+        KeyboardShortcuts.isEnabled = false
     }
 }
 
