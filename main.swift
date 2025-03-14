@@ -202,6 +202,8 @@ func showTabsPanel() {
 func hideTabsPanel(withoutAnimation: Bool = false) {
     let animationDuration = withoutAnimation ? 0 : 0.25
     
+    NSApp.deactivate()
+    
     NSAnimationContext.runAnimationGroup({ context in
         context.duration = animationDuration
         tabsPanel?.animator().contentView?.alphaValue = 0
