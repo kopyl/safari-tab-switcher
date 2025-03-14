@@ -258,13 +258,13 @@ struct TabHistoryView: View {
     }
 
     func switchTabs() async {
-        let indexOfTabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
+        let tabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
         do {
-            addSpecificTabToHistory(tab: indexOfTabToSwitchToInSafari)
+            addSpecificTabToHistory(tab: tabToSwitchToInSafari)
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
                 toExtensionWithIdentifier: extensionBundleIdentifier,
-                userInfo: ["id": String(indexOfTabToSwitchToInSafari.id)]
+                userInfo: ["id": String(tabToSwitchToInSafari.id)]
             )
         } catch let error {
             log("Dispatching message to the extension resulted in an error: \(error)")
