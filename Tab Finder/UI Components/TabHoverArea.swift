@@ -3,10 +3,10 @@
 import SwiftUI
 
 class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : View {
-    let insideShape: (Bool) -> Void
+    let action: (Bool) -> Void
     
-    init(insideShape: @escaping (Bool) -> Void, rootView: Content) {
-        self.insideShape = insideShape
+    init(action: @escaping (Bool) -> Void, rootView: Content) {
+        self.action = action
         super.init(rootView: rootView)
         setupTrackingArea()
     }
@@ -25,7 +25,7 @@ class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : Vie
     }
         
     override func mouseExited(with event: NSEvent) {
-        self.insideShape(false)
+        self.action(false)
     }
     
     override func mouseMoved(with event: NSEvent) {
@@ -34,16 +34,16 @@ class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : Vie
     
     private func checkInside(with event: NSEvent) {
         let inside = self.frame.contains(self.convert(event.locationInWindow, from: nil))
-        self.insideShape(inside)
+        self.action(inside)
     }
 }
 
 struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: View {
-    let insideShape: (Bool) -> Void
+    let action: (Bool) -> Void
     let content: Content
     
     func makeNSView(context: Context) -> NSHostingView<Content> {
-        return TrackingNSHostingView(insideShape: insideShape, rootView: self.content)
+        return TrackingNSHostingView(action: action, rootView: self.content)
     }
     
     func updateNSView(_ nsView: NSHostingView<Content>, context: Context) {
@@ -54,6 +54,6 @@ struct HoverInsideModifier: ViewModifier {
     let action: (Bool) -> Void
     
     func body(content: Content) -> some View {
-        TrackingAreaRepresentable(insideShape: action, content: content)
+        TrackingAreaRepresentable(action: action, content: content)
     }
 }
