@@ -163,10 +163,8 @@ struct TabHistoryView: View {
                                 appState.indexOfTabToSwitchTo = id
                                 HideTabsPanelAndSwitchTabs()
                             }
-                            .onMouseMove { isHovered in
-                                if isHovered {
-                                    appState.indexOfTabToSwitchTo = id
-                                }
+                            .onMouseMove {
+                                appState.indexOfTabToSwitchTo = id
                             }
                         }
                     }

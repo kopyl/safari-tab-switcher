@@ -3,9 +3,9 @@
 import SwiftUI
 
 class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : View {
-    let action: (Bool) -> Void
+    let action: () -> Void
     
-    init(action: @escaping (Bool) -> Void, rootView: Content) {
+    init(action: @escaping () -> Void, rootView: Content) {
         self.action = action
         super.init(rootView: rootView)
         setupTrackingArea()
@@ -20,26 +20,17 @@ class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : Vie
     }
 
     func setupTrackingArea() {
-        let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
+        let options: NSTrackingArea.Options = [.mouseMoved, .activeAlways, .inVisibleRect]
         self.addTrackingArea(NSTrackingArea(rect: .zero, options: options, owner: self, userInfo: nil))
-    }
-        
-    override func mouseExited(with event: NSEvent) {
-        self.action(false)
     }
     
     override func mouseMoved(with event: NSEvent) {
-        return self.checkInside(with: event)
-    }
-    
-    private func checkInside(with event: NSEvent) {
-        let inside = self.frame.contains(self.convert(event.locationInWindow, from: nil))
-        self.action(inside)
+        return self.action()
     }
 }
 
 struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: View {
-    let action: (Bool) -> Void
+    let action: () -> Void
     let content: Content
     
     func makeNSView(context: Context) -> NSHostingView<Content> {
@@ -51,7 +42,7 @@ struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Vi
 }
 
 struct HoverInsideModifier: ViewModifier {
-    let action: (_ isHovered: Bool) -> Void
+    let action: () -> Void
     
     func body(content: Content) -> some View {
         TrackingAreaRepresentable(action: action, content: content)
@@ -59,7 +50,7 @@ struct HoverInsideModifier: ViewModifier {
 }
 
 extension View {
-    func onMouseMove(action: @escaping (_ isHovered: Bool) -> Void) -> some View {
+    func onMouseMove(action: @escaping () -> Void) -> some View {
         self.modifier(HoverInsideModifier(action: action))
     }
 }
