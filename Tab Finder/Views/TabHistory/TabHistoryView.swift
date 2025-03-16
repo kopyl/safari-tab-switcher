@@ -132,7 +132,7 @@ struct TabHistoryView: View {
                                 .font(.system(size: 18))
                                 .foregroundStyle(
                                     id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : .primary.opacity(0.9)
+                                    ? .currentTabFg : .currentTabFg.opacity(0.65)
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 
@@ -140,10 +140,9 @@ struct TabHistoryView: View {
                                 .font(.system(size: 13))
                                 .foregroundStyle(
                                     id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : Color.primary
+                                    ? .currentTabFg : .currentTabFg.opacity(0.65)
                                 )
                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                .opacity(0.65)
                             }
                             .lineLimit(1)
                             .padding(.top, 18).padding(.bottom, 18)
