@@ -157,7 +157,7 @@ struct TabHistoryView: View {
                             .contentShape(Rectangle())
                             .cornerRadius(6)
                         
-                            .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, maxWidth: .infinity)
+                            .frame(minWidth: 0, maxWidth: .infinity)
                             .onTapGesture {
                                 appState.indexOfTabToSwitchTo = id
                                 HideTabsPanelAndSwitchTabs()
