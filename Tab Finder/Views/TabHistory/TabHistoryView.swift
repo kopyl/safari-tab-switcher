@@ -146,7 +146,7 @@ struct TabHistoryView: View {
                                 .opacity(0.65)
                             }
                             .lineLimit(1)
-                            .padding(.top, 14).padding(.bottom, 14)
+                            .padding(.top, 18).padding(.bottom, 18)
                             .padding(.leading, 21).padding(.trailing, 21)
                             .background(
                                 .currentTabBg.opacity(
@@ -158,14 +158,14 @@ struct TabHistoryView: View {
                             .cornerRadius(6)
                         
                             .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, maxWidth: .infinity)
-                            .padding(4)
-                        
                             .onTapGesture {
                                 appState.indexOfTabToSwitchTo = id
                                 HideTabsPanelAndSwitchTabs()
                             }
                         }
                     }
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
                 }
             }
             .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
@@ -179,7 +179,7 @@ struct TabHistoryView: View {
             }
             .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
                 withAnimation {
-                    proxy.scrollTo(appState.indexOfTabToSwitchTo, anchor: .bottom)
+                    proxy.scrollTo(appState.indexOfTabToSwitchTo, anchor: UnitPoint(x: 0, y: 0.988))
                 }
             }
             .onChange(of: appState.searchQuery) { query in
