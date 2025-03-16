@@ -50,23 +50,33 @@ struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Vi
     }
 }
 
-
-struct TrackingAreaView<Content>: View where Content : View {
-    let insideShape: (Bool) -> Void
-    let content: () -> Content
+struct HoverInsideModifier<ID: Hashable>: ViewModifier {
+    let id: ID
+    let action: (Bool) -> Void
     
-    init(insideShape: @escaping (Bool) -> Void, @ViewBuilder content: @escaping () -> Content) {
+    func body(content: Content) -> some View {
+        TrackingAreaView(insideShape: action) {
+            content
+        }
+    }
+}
+
+struct TrackingAreaView<Content: View>: View {
+    let insideShape: (Bool) -> Void
+    let content: Content
+    
+    init(insideShape: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content) {
         self.insideShape = insideShape
-        self.content = content
+        self.content = content()
     }
     
     var body: some View {
-        TrackingAreaRepresentable(insideShape: insideShape, content: self.content())
+        TrackingAreaRepresentable(insideShape: insideShape, content: content)
     }
 }
 
 extension View {
-    func onHoverInside(action: @escaping (Bool) -> Void) -> some View {
-        TrackingAreaView(insideShape: action) { self }
+    func onMouseMove<ID: Hashable>(id: ID, action: @escaping (Bool) -> Void) -> some View {
+        modifier(HoverInsideModifier(id: id, action: action))
     }
 }

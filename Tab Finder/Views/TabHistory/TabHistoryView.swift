@@ -129,47 +129,43 @@ struct TabHistoryView: View {
                         ForEach(appState.filteredTabs.indices, id: \.self) { id in
                             let tab = appState.filteredTabs[id]
 
-                            ZStack {
-                                Rectangle()
-                                    .onHoverInside{ isHovered in
-                                        if isHovered {
-                                            appState.indexOfTabToSwitchTo = id
-                                        }
-                                    }
-                                    .opacity(0.0)
-                                HStack(alignment: .center) {
-                                    Text(tab.host)
-                                        .font(.system(size: 18))
-                                        .foregroundStyle(
-                                            id == appState.indexOfTabToSwitchTo
-                                            ? .currentTabFg : .currentTabFg.opacity(0.65)
-                                        )
-                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                    
-                                    Text(tab.title)
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(
-                                            id == appState.indexOfTabToSwitchTo
-                                            ? .currentTabFg : .currentTabFg.opacity(0.65)
-                                        )
-                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                }
-                                .lineLimit(1)
-                                .padding(.top, 18).padding(.bottom, 18)
-                                .padding(.leading, 21).padding(.trailing, 21)
-                                .background(
-                                    .currentTabBg.opacity(
+                            HStack(alignment: .center) {
+                                Text(tab.host)
+                                    .font(.system(size: 18))
+                                    .foregroundStyle(
                                         id == appState.indexOfTabToSwitchTo
-                                        ? 1 : 0)
-                                )
-                                .id(id)
-                                .contentShape(Rectangle())
-                                .cornerRadius(6)
+                                        ? .currentTabFg : .currentTabFg.opacity(0.65)
+                                    )
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                 
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                                .onTapGesture {
+                                Text(tab.title)
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(
+                                        id == appState.indexOfTabToSwitchTo
+                                        ? .currentTabFg : .currentTabFg.opacity(0.65)
+                                    )
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            }
+                            .lineLimit(1)
+                            .padding(.top, 18).padding(.bottom, 18)
+                            .padding(.leading, 21).padding(.trailing, 21)
+                            .background(
+                                .currentTabBg.opacity(
+                                    id == appState.indexOfTabToSwitchTo
+                                    ? 1 : 0)
+                            )
+                            .id(id)
+                            .contentShape(Rectangle())
+                            .cornerRadius(6)
+                            
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .onTapGesture {
+                                appState.indexOfTabToSwitchTo = id
+                                HideTabsPanelAndSwitchTabs()
+                            }
+                            .onMouseMove(id: id) { isHovered in
+                                if isHovered {
                                     appState.indexOfTabToSwitchTo = id
-                                    HideTabsPanelAndSwitchTabs()
                                 }
                             }
                         }
