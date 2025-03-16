@@ -159,7 +159,6 @@ struct StyledButton: View {
         Button(action: action) {
             HStack {
                 Text(title)
-//                    .font(.system(size: 16, weight: .medium))
                 Spacer()
                 ButtonIcon(icon: icon, style: style)
             }
