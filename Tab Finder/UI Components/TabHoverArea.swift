@@ -2,19 +2,13 @@
 
 import SwiftUI
 
-class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : Shape {
+class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : View {
     let insideShape: (Bool) -> Void
-    var path = Path()
     
     init(insideShape: @escaping (Bool) -> Void, rootView: Content) {
         self.insideShape = insideShape
         super.init(rootView: rootView)
         setupTrackingArea()
-    }
-    
-    override func layout() {
-        super.layout()
-        self.path = rootView.path(in: self.bounds)
     }
     
     required init(rootView: Content) {
@@ -39,12 +33,12 @@ class TrackingNSHostingView<Content>: NSHostingView<Content> where Content : Sha
     }
     
     private func checkInside(with event: NSEvent) {
-        let inside = path.contains(self.convert(event.locationInWindow, from: nil))
+        let inside = self.frame.contains(self.convert(event.locationInWindow, from: nil))
         self.insideShape(inside)
     }
 }
 
-struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Shape {
+struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: View {
     let insideShape: (Bool) -> Void
     let content: Content
     
@@ -57,7 +51,7 @@ struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Sh
 }
 
 
-struct TrackingAreaView<Content>: View where Content : Shape {
+struct TrackingAreaView<Content>: View where Content : View {
     let insideShape: (Bool) -> Void
     let content: () -> Content
     
@@ -71,21 +65,8 @@ struct TrackingAreaView<Content>: View where Content : Shape {
     }
 }
 
-extension Shape {
+extension View {
     func onHoverInside(action: @escaping (Bool) -> Void) -> some View {
         TrackingAreaView(insideShape: action) { self }
-    }
-}
-
-struct MyHoveredShape<Content> : View where Content : Shape {
-    @State private var hovered : Bool = false
-    let shape : Content
-    
-    var body: some View {
-        shape
-            .onHoverInside { isHoveredInside in
-                hovered = isHoveredInside
-            }
-            .foregroundColor(hovered ? .accentColor : .primary)
     }
 }
