@@ -121,7 +121,6 @@ struct CustomButtonStyle: ButtonStyle {
     }
 }
 
-
 struct ButtonIcon: View {
     let icon: String
     let style: CustomButtonStyle

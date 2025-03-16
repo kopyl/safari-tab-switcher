@@ -76,6 +76,7 @@ func handleHotKeyPress() {
     filterTabs()
     appState.indexOfTabToSwitchTo = 1
     startUsingTabFinder()
+    appState.isTabsPanelOpen = true
     showTabsPanel()
 }
 
@@ -89,6 +90,7 @@ class AppState: ObservableObject {
     @Published var filteredTabs: [TabForSearch] = []
     @Published var isTabsSwitcherNeededToStayOpen = false
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
+    @Published var isTabsPanelOpen: Bool = false
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
@@ -203,6 +205,8 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
     let animationDuration = withoutAnimation ? 0 : 0.25
     
     NSApp.deactivate()
+    
+    appState.isTabsPanelOpen = false
     
     NSAnimationContext.runAnimationGroup({ context in
         context.duration = animationDuration

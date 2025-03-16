@@ -83,6 +83,8 @@ struct TabHistoryView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) private var colorScheme
     
+    @State var proxy: ScrollViewProxy?
+    
     var greyInDarkAppearance: Color = .white.opacity(0.4)
     var greyInLightAppearance: Color = .black.opacity(0.4)
     
@@ -96,7 +98,7 @@ struct TabHistoryView: View {
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
 
     var body: some View {
-        ScrollViewReader { proxy in
+        ScrollViewReader { _proxy in
             VStack {
                 let tabsCount = appState.tabIDsWithTitleAndHost.count
                 HStack(spacing: 10){
@@ -127,39 +129,48 @@ struct TabHistoryView: View {
                         ForEach(appState.filteredTabs.indices, id: \.self) { id in
                             let tab = appState.filteredTabs[id]
 
-                            HStack(alignment: .center) {
-                                Text(tab.host)
-                                .font(.system(size: 18))
-                                .foregroundStyle(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : .currentTabFg.opacity(0.65)
+                            ZStack {
+                                Rectangle()
+                                    .onHoverInside{ isHovered in
+                                        if isHovered {
+                                            appState.indexOfTabToSwitchTo = id
+                                        }
+                                    }
+                                    .opacity(0.0)
+                                HStack(alignment: .center) {
+                                    Text(tab.host)
+                                        .font(.system(size: 18))
+                                        .foregroundStyle(
+                                            id == appState.indexOfTabToSwitchTo
+                                            ? .currentTabFg : .currentTabFg.opacity(0.65)
+                                        )
+                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text(tab.title)
+                                        .font(.system(size: 13))
+                                        .foregroundStyle(
+                                            id == appState.indexOfTabToSwitchTo
+                                            ? .currentTabFg : .currentTabFg.opacity(0.65)
+                                        )
+                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                }
+                                .lineLimit(1)
+                                .padding(.top, 18).padding(.bottom, 18)
+                                .padding(.leading, 21).padding(.trailing, 21)
+                                .background(
+                                    .currentTabBg.opacity(
+                                        id == appState.indexOfTabToSwitchTo
+                                        ? 1 : 0)
                                 )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                .id(id)
+                                .contentShape(Rectangle())
+                                .cornerRadius(6)
                                 
-                                Text(tab.title)
-                                .font(.system(size: 13))
-                                .foregroundStyle(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? .currentTabFg : .currentTabFg.opacity(0.65)
-                                )
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                            }
-                            .lineLimit(1)
-                            .padding(.top, 18).padding(.bottom, 18)
-                            .padding(.leading, 21).padding(.trailing, 21)
-                            .background(
-                                .currentTabBg.opacity(
-                                    id == appState.indexOfTabToSwitchTo
-                                    ? 1 : 0)
-                            )
-                            .id(id)
-                            .contentShape(Rectangle())
-                            .cornerRadius(6)
-                        
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .onTapGesture {
-                                appState.indexOfTabToSwitchTo = id
-                                HideTabsPanelAndSwitchTabs()
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .onTapGesture {
+                                    appState.indexOfTabToSwitchTo = id
+                                    HideTabsPanelAndSwitchTabs()
+                                }
                             }
                         }
                     }
@@ -170,20 +181,22 @@ struct TabHistoryView: View {
             .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
             .onAppear {
+                proxy = _proxy
                 setupInAppKeyListener()
                 appState.isTabsSwitcherNeededToStayOpen = isTabsSwitcherNeededToStayOpen
             }
             .onDisappear {
                 removeInAppKeyListener()
             }
-            .onChange(of: appState.indexOfTabToSwitchTo) { newIndex in
-                withAnimation {
-                    proxy.scrollTo(appState.indexOfTabToSwitchTo, anchor: UnitPoint(x: 0, y: 0.988))
+            .onChange(of: appState.isTabsPanelOpen) { isOpen in
+                if isOpen {
+                    scrollToSelectedTab()
                 }
             }
             .onChange(of: appState.searchQuery) { query in
                 filterTabs()
                 appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
+                scrollToSelectedTab()
             }
             .onChange(of: scenePhase) { phase in
                 guard !isUserHoldingShortcutModifiers() else { return }
@@ -192,6 +205,12 @@ struct TabHistoryView: View {
             .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
                 appState.isTabsSwitcherNeededToStayOpen = newValue
             }
+        }
+    }
+    
+    func scrollToSelectedTab() {
+        withAnimation {
+            proxy?.scrollTo(appState.indexOfTabToSwitchTo, anchor: UnitPoint(x: 0, y: 0.988))
         }
     }
 
@@ -235,14 +254,17 @@ struct TabHistoryView: View {
         switch key {
         case .arrowUp, .backTick:
             appState.indexOfTabToSwitchTo -= 1
+            scrollToSelectedTab()
         case .tab:
             if event.modifierFlags.contains(.shift) {
                 appState.indexOfTabToSwitchTo -= 1
             } else {
                 appState.indexOfTabToSwitchTo += 1
             }
+            scrollToSelectedTab()
         case .arrowDown:
             appState.indexOfTabToSwitchTo += 1
+            scrollToSelectedTab()
         case .return:
             HideTabsPanelAndSwitchTabs()
         case .escape:
