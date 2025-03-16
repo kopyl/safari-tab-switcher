@@ -55,23 +55,7 @@ struct HoverInsideModifier<ID: Hashable>: ViewModifier {
     let action: (Bool) -> Void
     
     func body(content: Content) -> some View {
-        TrackingAreaView(insideShape: action) {
-            content
-        }
-    }
-}
-
-struct TrackingAreaView<Content: View>: View {
-    let insideShape: (Bool) -> Void
-    let content: Content
-    
-    init(insideShape: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content) {
-        self.insideShape = insideShape
-        self.content = content()
-    }
-    
-    var body: some View {
-        TrackingAreaRepresentable(insideShape: insideShape, content: content)
+        TrackingAreaRepresentable(insideShape: action, content: content)
     }
 }
 
