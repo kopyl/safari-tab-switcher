@@ -50,8 +50,7 @@ struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Vi
     }
 }
 
-struct HoverInsideModifier<ID: Hashable>: ViewModifier {
-    let id: ID
+struct HoverInsideModifier: ViewModifier {
     let action: (Bool) -> Void
     
     func body(content: Content) -> some View {
