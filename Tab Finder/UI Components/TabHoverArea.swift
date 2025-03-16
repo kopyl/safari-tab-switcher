@@ -58,9 +58,3 @@ struct HoverInsideModifier<ID: Hashable>: ViewModifier {
         TrackingAreaRepresentable(insideShape: action, content: content)
     }
 }
-
-extension View {
-    func onMouseMove<ID: Hashable>(id: ID, action: @escaping (Bool) -> Void) -> some View {
-        modifier(HoverInsideModifier(id: id, action: action))
-    }
-}
