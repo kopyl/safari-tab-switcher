@@ -51,7 +51,7 @@ struct TrackingAreaRepresentable<Content>: NSViewRepresentable where Content: Vi
 }
 
 struct HoverInsideModifier: ViewModifier {
-    let action: (Bool) -> Void
+    let action: (_ isHovered: Bool) -> Void
     
     func body(content: Content) -> some View {
         TrackingAreaRepresentable(action: action, content: content)
@@ -59,7 +59,7 @@ struct HoverInsideModifier: ViewModifier {
 }
 
 extension View {
-    func onMouseMove(action: @escaping (Bool) -> Void) -> some View {
+    func onMouseMove(action: @escaping (_ isHovered: Bool) -> Void) -> some View {
         self.modifier(HoverInsideModifier(action: action))
     }
 }
