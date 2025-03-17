@@ -98,37 +98,37 @@ struct TabHistoryView: View {
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
 
     var body: some View {
-        ScrollViewReader { _proxy in
-            VStack {
-                let tabsCount = appState.tabIDsWithTitleAndHost.count
-                HStack(spacing: 10){
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(grey)
-                        .font(.system(size: 22))
-                    CustomTextField(
-                        text: $appState.searchQuery,
-                        placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
-                    )
-                    Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
-                        .foregroundStyle(grey)
-                        .font(.system(size: 22))
-                        .frame(width: 69, height: 72)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            isTabsSwitcherNeededToStayOpen.toggle()
-                            if !isTabsSwitcherNeededToStayOpen {
-                                guard !isUserHoldingShortcutModifiers() else { return }
-                                hideTabsPanel()
-                            }
+        VStack {
+            let tabsCount = appState.tabIDsWithTitleAndHost.count
+            HStack(spacing: 10){
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(grey)
+                    .font(.system(size: 22))
+                CustomTextField(
+                    text: $appState.searchQuery,
+                    placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+                )
+                Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
+                    .foregroundStyle(grey)
+                    .font(.system(size: 22))
+                    .frame(width: 69, height: 72)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isTabsSwitcherNeededToStayOpen.toggle()
+                        if !isTabsSwitcherNeededToStayOpen {
+                            guard !isUserHoldingShortcutModifiers() else { return }
+                            hideTabsPanel()
                         }
-                }
-                .padding(.leading, 24)
-
+                    }
+            }
+            .padding(.leading, 24)
+            
+            ScrollViewReader { _proxy in
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 0) {
                         ForEach(appState.filteredTabs.indices, id: \.self) { id in
                             let tab = appState.filteredTabs[id]
-
+                            
                             HStack(alignment: .center) {
                                 Text(tab.host)
                                     .font(.system(size: 18))
@@ -169,13 +169,16 @@ struct TabHistoryView: View {
                         }
                     }
                     .padding(.horizontal, 4)
-                    .padding(.bottom, 4)
+                }
+                .onAppear {
+                    proxy = _proxy
                 }
             }
+            }
+            .padding(.bottom, 4)
             .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
             .onAppear {
-                proxy = _proxy
                 setupInAppKeyListener()
                 appState.isTabsSwitcherNeededToStayOpen = isTabsSwitcherNeededToStayOpen
             }
@@ -184,7 +187,7 @@ struct TabHistoryView: View {
             }
             .onChange(of: appState.isTabsPanelOpen) { isOpen in
                 if isOpen {
-                    scrollToSelectedTab()
+                    proxy?.scrollTo(appState.indexOfTabToSwitchTo, anchor: .bottom)
                 }
             }
             .onChange(of: appState.searchQuery) { query in
@@ -199,13 +202,10 @@ struct TabHistoryView: View {
             .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
                 appState.isTabsSwitcherNeededToStayOpen = newValue
             }
-        }
     }
     
     func scrollToSelectedTab() {
-        withAnimation {
-            proxy?.scrollTo(appState.indexOfTabToSwitchTo, anchor: UnitPoint(x: 0, y: 0.988))
-        }
+        proxy?.scrollTo(appState.indexOfTabToSwitchTo)
     }
 
     func setupInAppKeyListener() {
