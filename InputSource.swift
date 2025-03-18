@@ -55,7 +55,7 @@ func changeInputSource(inputSource: TISInputSource) {
     TISSelectInputSource(inputSource)
 }
 
-public func selectPreviousInputSource() {
+func selectPreviousInputSource() {
     let inputSources = getInputSourcesSortedByHistory()
     guard inputSources.count > 1 else { return }
     let prevInputSource = inputSources[1]
