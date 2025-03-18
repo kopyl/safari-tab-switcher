@@ -1,6 +1,8 @@
 import SwiftUI
 import KeyboardShortcuts
 
+let tabsPanelFadeOutAnimationDuration = 0.25
+
 let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
@@ -205,7 +207,7 @@ func showTabsPanel() {
 }
 
 func hideTabsPanel(withoutAnimation: Bool = false) {
-    let animationDuration = withoutAnimation ? 0 : 0.25
+    let animationDuration = withoutAnimation ? 0 : tabsPanelFadeOutAnimationDuration
     
     NSApp.deactivate()
     
