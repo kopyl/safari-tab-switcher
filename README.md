@@ -2,7 +2,7 @@
 
 aka command+tab but for Safari
 
-[<img src="https://github.com/user-attachments/assets/4e81b325-0446-4b92-8141-aaaee9e41bec">](https://apps.apple.com/us/app/tab-finder/id6741719894)
+[<img src="https://github.com/user-attachments/assets/c57ef8eb-04d6-4c5e-b4ae-44f1b0d2ef7c">](https://apps.apple.com/us/app/tab-finder/id6741719894)
 
 ### Features:
 - Switching tab history navigation with Option+Tab (or set your own shortcut);
