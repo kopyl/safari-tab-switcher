@@ -368,15 +368,15 @@ class Application: NSApplication {
         guard NSApp.keyWindow?.identifier == tabsPanelID else {
             return super.sendEvent(event)
         }
+
+        guard isUserHoldingShortcutModifiers(event: event) else {
+            return super.sendEvent(event)
+        }
         
         /// space is pressed
         if event.keyCode == 49 && appState.searchQuery == "" {
             selectPreviousInputSource()
             return
-        }
-
-        guard isUserHoldingShortcutModifiers(event: event) else {
-            return super.sendEvent(event)
         }
 
         let newFlags = appState.isTabsSwitcherNeededToStayOpen
