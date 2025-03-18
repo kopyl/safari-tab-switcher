@@ -17,6 +17,10 @@ NSWorkspace.shared.notificationCenter.addObserver(
         KeyboardShortcuts.isEnabled = true
     }
     else {
+        if app.bundleIdentifier == Bundle.main.bundleIdentifier {
+            /// https://github.com/kopyl/safari-tab-switcher/issues/5
+            return
+        }
         hideTabsPanel()
         KeyboardShortcuts.isEnabled = false
     }
@@ -218,6 +222,11 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
         let workItem = DispatchWorkItem {
             tabsPanel?.orderOut(nil)
             tabsPanel?.animator().contentView?.alphaValue = 1
+            
+            /// https://github.com/kopyl/safari-tab-switcher/issues/5
+            if NSApp.isActive {
+                NSApp.hide(nil)
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: workItem)
         pendingDispatchWorkItem = workItem
