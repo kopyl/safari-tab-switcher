@@ -41,7 +41,6 @@ class TabsPanelVisibilityObserver: NSObject {
     }
 }
 
-
 NotificationCenter.default.addObserver(
     forName: NSWindow.didResignKeyNotification,
     object: tabsPanel,
