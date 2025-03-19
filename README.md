@@ -44,3 +44,4 @@ Timeline:
 - 21.02.2025: Got first 10 paying users
 - 13.03.2025: Increased price from $1.99 to $9.99. So far the app got sold 13 times, refunded 1 time and got downloaded for free (via a promo code) 6 times.
 - 18.03.2025: Reduced price from $9.99 to $4.99. Decided that i need more user feedback now than money. No one purchased the app since the last price change.
+- 19.03.2025: There was a purchase for $9.99 before the price got updated.
