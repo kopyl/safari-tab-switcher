@@ -28,7 +28,7 @@ func addSpecificTabToHistory(tab: TabForSearch) {
     Store.windows = windows
 }
 
-func HideTabsPanelAndSwitchTabs() {
+func hideTabsPanelAndSwitchTabs() {
     hideTabsPanel()
     guard !appState.filteredTabs.isEmpty else { return }
     Task{ await switchTabs() }
@@ -139,7 +139,7 @@ struct TabItemView: View {
         .frame(minWidth: 0, maxWidth: .infinity)
         .onTapGesture {
             state.indexOfTabToSwitchTo = tab.id
-            HideTabsPanelAndSwitchTabs()
+            hideTabsPanelAndSwitchTabs()
         }
         .onMouseMove {
             state.indexOfTabToSwitchTo = tab.id
@@ -237,7 +237,7 @@ struct TabHistoryView: View {
         }
         .onChange(of: scenePhase) { phase in
             guard !isUserHoldingShortcutModifiers() else { return }
-            HideTabsPanelAndSwitchTabs()
+            hideTabsPanelAndSwitchTabs()
         }
         .onChange(of: isTabsSwitcherNeededToStayOpen) { newValue in
             appState.isTabsSwitcherNeededToStayOpen = newValue
@@ -277,7 +277,7 @@ struct TabHistoryView: View {
     func handleKeyRelease(event: NSEvent) {
         guard isTabsSwitcherNeededToStayOpen == false else { return }
         guard !isUserHoldingShortcutModifiers(event: event) else { return }
-        HideTabsPanelAndSwitchTabs()
+        hideTabsPanelAndSwitchTabs()
     }
 
     func handleNavigationKeyPresses(event: NSEvent) {
@@ -300,7 +300,7 @@ struct TabHistoryView: View {
             appState.indexOfTabToSwitchTo += 1
             scrollToSelectedTab()
         case .return:
-            HideTabsPanelAndSwitchTabs()
+            hideTabsPanelAndSwitchTabs()
         case .escape:
             hideTabsPanel(withoutAnimation: true)
         }
