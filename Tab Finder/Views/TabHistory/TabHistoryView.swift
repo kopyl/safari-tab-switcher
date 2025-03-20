@@ -15,8 +15,16 @@ func addSpecificTabToHistory(tab: TabForSearch) {
 }
 
 func filterTabs() {
-    appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed().map{TabForSearch(tab: $0)}
-    guard !appState.searchQuery.isEmpty else { return }
+    
+    guard !appState.searchQuery.isEmpty else {
+        appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
+            .enumerated()
+            .map { TabForSearch(tab: $1, id: $0) }
+        return
+    }
+    
+    appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
+    .map { TabForSearch(tab: $0, id: 0) }
     
     let _searchQuery = appState.searchQuery.lowercased()
     
@@ -74,7 +82,9 @@ func filterTabs() {
         return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
     }
     
-    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }.map(\.tab)
+    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }
+        .enumerated()
+        .map { TabForSearch(tab: Tab(tab: $1.tab), id: $0) }
 }
 
 struct TabHistoryView: View {
@@ -126,14 +136,13 @@ struct TabHistoryView: View {
             ScrollViewReader { _proxy in
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 0) {
-                        ForEach(appState.filteredTabs.indices, id: \.self) { id in
-                            let tab = appState.filteredTabs[id]
+                        ForEach(appState.filteredTabs) { tab in
                             
                             HStack(alignment: .center) {
                                 Text(tab.host)
                                     .font(.system(size: 18))
                                     .foregroundStyle(
-                                        id == appState.indexOfTabToSwitchTo
+                                        tab.id == appState.indexOfTabToSwitchTo
                                         ? .currentTabFg : .currentTabFg.opacity(0.65)
                                     )
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -141,7 +150,7 @@ struct TabHistoryView: View {
                                 Text(tab.title)
                                     .font(.system(size: 13))
                                     .foregroundStyle(
-                                        id == appState.indexOfTabToSwitchTo
+                                        tab.id == appState.indexOfTabToSwitchTo
                                         ? .currentTabFg : .currentTabFg.opacity(0.65)
                                     )
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -151,20 +160,20 @@ struct TabHistoryView: View {
                             .padding(.leading, 21).padding(.trailing, 21)
                             .background(
                                 .currentTabBg.opacity(
-                                    id == appState.indexOfTabToSwitchTo
+                                    tab.id == appState.indexOfTabToSwitchTo
                                     ? 1 : 0)
                             )
-                            .id(id)
+                            .id(tab.id)
                             .contentShape(Rectangle())
                             .cornerRadius(6)
                             
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .onTapGesture {
-                                appState.indexOfTabToSwitchTo = id
+                                appState.indexOfTabToSwitchTo = tab.id
                                 HideTabsPanelAndSwitchTabs()
                             }
                             .onMouseMove {
-                                appState.indexOfTabToSwitchTo = id
+                                appState.indexOfTabToSwitchTo = tab.id
                             }
                         }
                     }

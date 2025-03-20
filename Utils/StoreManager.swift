@@ -28,7 +28,8 @@ func formatHost(_ host: String) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
-struct TabForSearch {
+struct TabForSearch: Identifiable {
+    var id: Int
     var safariID: Int
     var title: String
     var host: String
@@ -36,7 +37,8 @@ struct TabForSearch {
     var domainZone: String.SubSequence = ""
     var searchRating: Int = 0
     
-    init(tab: Tab){
+    init(tab: Tab, id: Int){
+        self.id = id
         safariID = tab.id
         title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
         host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
