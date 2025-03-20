@@ -279,7 +279,7 @@ struct TabHistoryView: View {
             try await SFSafariApplication.dispatchMessage(
                 withName: "switchtabto",
                 toExtensionWithIdentifier: extensionBundleIdentifier,
-                userInfo: ["id": String(tabToSwitchToInSafari.id)]
+                userInfo: ["id": String(tabToSwitchToInSafari.safariID)]
             )
         } catch let error {
             log("Dispatching message to the extension resulted in an error: \(error)")

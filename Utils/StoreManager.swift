@@ -29,7 +29,7 @@ func formatHost(_ host: String) -> String {
 }
 
 struct TabForSearch {
-    var id: Int
+    var safariID: Int
     var title: String
     var host: String
     var hostParts: [String.SubSequence] = []
@@ -37,7 +37,7 @@ struct TabForSearch {
     var searchRating: Int = 0
     
     init(tab: Tab){
-        id = tab.id
+        safariID = tab.id
         title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
         host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
 
@@ -65,7 +65,7 @@ struct Tab: Codable {
     }
     
     init(tab: TabForSearch) {
-        self.id = tab.id
+        self.id = tab.safariID
         self.title = tab.title
         self.host = tab.host
     }
