@@ -108,6 +108,7 @@ struct ColorPickerView: View {
                             Circle()
                                 .fill(.white)
                                 .scaleEffect(userSelectedAccentColor == colorToHex(color) ? 0.33 : 0)
+                                .animation(.linear(duration: 0.1), value: userSelectedAccentColor)
                         )
                 }
                 .buttonStyle(.plain)
@@ -128,6 +129,8 @@ struct SettingsView: View {
         store: Store.userDefaults
     ) private var userSelectedAccentColor: String = Store.userSelectedAccentColorDefaultValue
     
+    @State private var displayedColorName: String = ""
+    
     @State
     var shortcutModifiers =
     KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
@@ -135,7 +138,8 @@ struct SettingsView: View {
     @ObservedObject var appState: AppState
     @FocusState private var isFocused: Bool
 
-    var colorName: String { colorNames[colors.firstIndex(of: hexToColor(userSelectedAccentColor)) ?? 0]
+    var colorName: String {
+        colorNames[colors.firstIndex(of: hexToColor(userSelectedAccentColor)) ?? 0]
     }
     
     var body: some View {
@@ -148,7 +152,7 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
-            .contentShape(Rectangle())	
+            .contentShape(Rectangle())
             .onTapGesture {
                 isTabsSwitcherNeededToStayOpen.toggle()
             }
@@ -186,10 +190,21 @@ struct SettingsView: View {
                     Text("Accent color")
                         .font(.system(size: 15))
                     Spacer()
-                    Text(colorName)
+                    Text(displayedColorName)
+                        .id(displayedColorName)
                         .font(.system(size: 11))
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .clipped()
                 }
                 ColorPickerView()
+            }
+        }
+        .onAppear {
+            displayedColorName = colorName
+        }
+        .onChange(of: userSelectedAccentColor) { _ in
+            withAnimation(.linear(duration: 0.2)) {
+                displayedColorName = colorName
             }
         }
         .padding(.top, 74)
