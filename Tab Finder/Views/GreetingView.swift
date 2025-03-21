@@ -1,11 +1,5 @@
 import SwiftUI
 
-func startUsingTabFinder() {
-    greetingWindow?.orderOut(nil)
-    settingsWindow?.orderOut(nil)
-    NSApp.setActivationPolicy(.accessory)
-}
-
 struct OnboardingImage: View {
     var name: String
     
@@ -44,7 +38,7 @@ struct GreetingView: View {
                     }
                     .keyboardShortcut(.space, modifiers: [])
                     StyledButton(.primary, Copy.Onboarding.hideThisWindowButton, icon: "return") {
-                        startUsingTabFinder()
+                        NSApp.setActivationPolicy(.accessory)
                     }
                     .keyboardShortcut(.return, modifiers: [])
                 }
@@ -57,7 +51,7 @@ struct GreetingView: View {
             .padding(.horizontal, 41)
         }
         .onDisappear {
-            startUsingTabFinder()
+            NSApp.setActivationPolicy(.accessory)
         }
     }
 }

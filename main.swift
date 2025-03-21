@@ -80,7 +80,7 @@ func handleHotKeyPress() {
     appState.searchQuery = ""
     filterTabs()
     appState.indexOfTabToSwitchTo = 1
-    startUsingTabFinder()
+    NSApp.setActivationPolicy(.accessory)
     appState.isTabsPanelOpen = true
     showTabsPanel()
 }
