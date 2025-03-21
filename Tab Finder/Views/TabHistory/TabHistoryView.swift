@@ -160,6 +160,7 @@ struct TabListView: View {
                     }
                     .padding(.bottom, 4)
                 }
+                /// https://github.com/kopyl/safari-tab-switcher/issues/6#issuecomment-2742046807
                 .padding(.horizontal, 4)
             }
             .onAppear {
