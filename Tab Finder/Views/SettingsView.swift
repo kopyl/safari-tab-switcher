@@ -196,9 +196,11 @@ struct SettingsView: View {
             VStack(spacing: 12) {
                 HStack {
                     Text("Accent color")
+                        .opacity(0.8)
                         .font(.system(size: 15))
                     Spacer()
                     Text(displayedColorName)
+                        .opacity(0.6)
                         .id(displayedColorName)
                         .font(.system(size: 11))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
