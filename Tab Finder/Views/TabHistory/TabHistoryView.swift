@@ -158,6 +158,7 @@ struct TabListView: View {
                     ForEach(state.filteredTabs) { tab in
                         TabItemView(tab: tab)
                     }
+                    .padding(.bottom, 4)
                 }
                 .padding(.horizontal, 4)
             }
@@ -215,7 +216,6 @@ struct TabHistoryView: View {
             .padding(.leading, 24)
             TabListView(proxy: $proxy)
         }
-        .padding(.bottom, 4)
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
         .onAppear {
