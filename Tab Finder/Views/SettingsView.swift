@@ -214,7 +214,7 @@ struct SettingsView: View {
             displayedColorName = colorName
         }
         .onChange(of: userSelectedAccentColor) { _ in
-            withAnimation(.linear(duration: 0.2)) {
+            withAnimation(.interpolatingSpring(stiffness: 200, damping: 13)) {
                 displayedColorName = colorName
             }
         }
