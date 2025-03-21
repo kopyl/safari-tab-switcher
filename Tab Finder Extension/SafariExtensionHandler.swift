@@ -11,14 +11,21 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
 
 func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
-    var tabsToPrepend: [Tab] = []
-    
-    for (index, tab) in tabs.enumerated() {
-        let tabInfo = await Tab(id: index, tab: tab)
-        tabsToPrepend.append(tabInfo)
+    var tabsToPrepend = Array<Tab?>(repeating: nil, count: tabs.count)
+
+    await withTaskGroup(of: (Int, Tab)?.self) { group in
+        for (index, tab) in tabs.enumerated() {
+            group.addTask {
+                return (index, await Tab(id: index, tab: tab))
+            }
+        }
+
+        for await (index, tab) in group.compactMap({ $0 }) {
+            tabsToPrepend[index] = tab
+        }
     }
 
-    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend)
+    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend.compactMap { $0 })
     return tabsFromNavigationHistoryMutated
 }
 
@@ -46,15 +53,22 @@ func removeNonExistentTabsFromHistory(_ tabs: [SFSafariTab], _ tabsFromNavigatio
 }
 
 func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
-    var allTabsInfoUpdated = Tabs()
-    
-    for historyTab in tabsFromNavigationHistory {
-        let safariTab = tabs[historyTab.id]
-        let tabInfo = await Tab(id: historyTab.id, tab: safariTab)
-        allTabsInfoUpdated.append(tabInfo)
+    var allTabsInfoUpdated = Array<Tab?>(repeating: nil, count: tabsFromNavigationHistory.count)
+
+    await withTaskGroup(of: (Int, Tab?)?.self) { group in
+        for (index, historyTab) in tabsFromNavigationHistory.enumerated() {
+            group.addTask {
+                guard tabs.indices.contains(historyTab.id) else { return (index, nil) }
+                return (index, await Tab(id: historyTab.id, tab: tabs[historyTab.id]))
+            }
+        }
+
+        for await (index, tab) in group.compactMap({ $0 }) {
+            allTabsInfoUpdated[index] = tab
+        }
     }
-    
-    return allTabsInfoUpdated
+
+    return Tabs(allTabsInfoUpdated.compactMap { $0 })
 }
 
 func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
@@ -122,10 +136,11 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 ?? _Window(tabs: Tabs()).tabs
             
             let tabs = await window.allTabs()
-
+            
             tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
             tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
             
+            /// takes moderate amount of time
             await saveWindows(tabs: tabsFromNavigationHistory)
         }
         validationHandler(true, "")

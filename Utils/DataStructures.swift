@@ -103,19 +103,22 @@ struct Tabs: Sequence, Codable {
 
 extension SFSafariWindow {
     func id() async -> String {
-        var tabs = Tabs()
-        
         let allTabs = await self.allTabs()
-        var tabsToPrepend: [Tab] = []
-        for tab in allTabs {
-            let tabId = allTabs.firstIndex(of: tab)
-            let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
-            tabsToPrepend.append(tabInfo)
-        }
-        tabs.prepend(contentsOf: tabsToPrepend)
+        var tabs = Array<Tab?>(repeating: nil, count: allTabs.count)
 
-        let newWindow = _Window(tabs: tabs)
-        
+        await withTaskGroup(of: (Int, Tab)?.self) { group in
+            for (index, tab) in allTabs.enumerated() {
+                group.addTask {
+                    return (index, await Tab(id: index, tab: tab))
+                }
+            }
+
+            for await (index, tab) in group.compactMap({ $0 }) {
+                tabs[index] = tab
+            }
+        }
+
+        let newWindow = _Window(tabs: Tabs(tabs.compactMap { $0 }))
         return newWindow.combinedID
     }
 }
