@@ -97,6 +97,9 @@ struct Store {
     private static let windowsStoreKey = "windows"
     public static let isTabsSwitcherNeededToStayOpenStoreKey = "isTabsSwitcherNeededToStayOpen"
 
+    public static let userSelectedAccentColorStoreKey = "userSelectedAccentColor"
+    public static let userSelectedAccentColorDefaultValue = "#191919"
+
     static var windows: Windows {
             get {
                 guard let data = userDefaults.data(forKey: windowsStoreKey) else { return Windows() }

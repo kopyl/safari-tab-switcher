@@ -189,33 +189,45 @@ struct TabHistoryView: View {
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
         store: Store.userDefaults
     ) private var isTabsSwitcherNeededToStayOpen: Bool = false
+    
+    @AppStorage(
+        Store.userSelectedAccentColorStoreKey,
+        store: Store.userDefaults
+    ) private var userSelectedAccentColor: String = Store.userSelectedAccentColorDefaultValue
 
     var body: some View {
         VStack {
-            let tabsCount = appState.tabIDsWithTitleAndHost.count
-            HStack(spacing: 10){
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(grey)
-                    .font(.system(size: 22))
-                CustomTextField(
-                    text: $appState.searchQuery,
-                    placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
-                )
-                Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
-                    .foregroundStyle(grey)
-                    .font(.system(size: 22))
-                    .frame(width: 69, height: 72)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        isTabsSwitcherNeededToStayOpen.toggle()
-                        if !isTabsSwitcherNeededToStayOpen {
-                            guard !isUserHoldingShortcutModifiers() else { return }
-                            hideTabsPanel()
-                        }
+            ZStack {
+                if userSelectedAccentColor != Store.userSelectedAccentColorDefaultValue {
+                    Rectangle().fill(hexToColor(userSelectedAccentColor).opacity(0.15))
+                }
+                VStack {
+                    let tabsCount = appState.tabIDsWithTitleAndHost.count
+                    HStack(spacing: 10){
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(grey)
+                            .font(.system(size: 22))
+                        CustomTextField(
+                            text: $appState.searchQuery,
+                            placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+                        )
+                        Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
+                            .foregroundStyle(grey)
+                            .font(.system(size: 22))
+                            .frame(width: 69, height: 72)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                isTabsSwitcherNeededToStayOpen.toggle()
+                                if !isTabsSwitcherNeededToStayOpen {
+                                    guard !isUserHoldingShortcutModifiers() else { return }
+                                    hideTabsPanel()
+                                }
+                            }
                     }
+                    .padding(.leading, 24)
+                    TabListView(proxy: $proxy)
+                }
             }
-            .padding(.leading, 24)
-            TabListView(proxy: $proxy)
         }
         .background(VisualEffectBlur(material: .sidebar, blendingMode: .behindWindow))
 
