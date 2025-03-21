@@ -92,24 +92,30 @@ struct ColorPickerView: View {
     }
     
     var body: some View {
-        HStack(spacing: 36) {
+        HStack(spacing: 0) {
             ForEach(colors, id: \.self) { color in
                 Button(action: {
                     userSelectedAccentColor = colorToHex(color)
                 }) {
-                    Circle()
-                        .fill(color)
-                        .frame(width: 16, height: 16)
-                        .overlay(
-                            Circle().stroke(Color.white.opacity(0.2), lineWidth: 1)
-
-                        )
-                        .overlay(
-                            Circle()
-                                .fill(.white)
-                                .scaleEffect(userSelectedAccentColor == colorToHex(color) ? 0.33 : 0)
-                                .animation(.linear(duration: 0.1), value: userSelectedAccentColor)
-                        )
+                    ZStack {
+                        Rectangle()
+                            .fill(.clear)
+                            .contentShape(Rectangle())
+                            .frame(width: 52, height: 52)
+                        Circle()
+                            .fill(color)
+                            .frame(width: 16, height: 16)
+                            .overlay(
+                                Circle().stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                
+                            )
+                            .overlay(
+                                Circle()
+                                    .fill(.white)
+                                    .scaleEffect(userSelectedAccentColor == colorToHex(color) ? 0.33 : 0)
+                                    .animation(.linear(duration: 0.1), value: userSelectedAccentColor)
+                            )
+                    }
                 }
                 .buttonStyle(.plain)
             }
@@ -159,6 +165,7 @@ struct SettingsView: View {
             .tint(.white)
             .keyboardShortcut(.space, modifiers: [])
             .toggleStyle(.switch)
+            .padding(.horizontal, 30)
             
             HStack {
                 Text(
@@ -184,8 +191,9 @@ struct SettingsView: View {
                         isFocused = appState.isShortcutRecorderNeedsToBeFocused
                     }
             }
+            .padding(.horizontal, 30)
             
-            VStack(spacing: 30) {
+            VStack(spacing: 12) {
                 HStack {
                     Text("Accent color")
                         .font(.system(size: 15))
@@ -196,6 +204,7 @@ struct SettingsView: View {
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                         .clipped()
                 }
+                .padding(.horizontal, 30)
                 ColorPickerView()
             }
         }
@@ -208,7 +217,7 @@ struct SettingsView: View {
             }
         }
         .padding(.top, 74)
-        .padding(.bottom, 89)
-        .padding(.horizontal, 30)
+        .padding(.bottom, 71)
+        
     }
 }
