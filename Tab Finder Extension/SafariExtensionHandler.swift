@@ -11,15 +11,14 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
 
 func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
-
     var tabsToPrepend: [Tab] = []
-    for tab in tabs {
-        let tabId = tabs.firstIndex(of: tab)
-        let tabInfo = await Tab(id: tabId ?? -1, tab: tab)
+    
+    for (index, tab) in tabs.enumerated() {
+        let tabInfo = await Tab(id: index, tab: tab)
         tabsToPrepend.append(tabInfo)
     }
-    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend)
 
+    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend)
     return tabsFromNavigationHistoryMutated
 }
 
