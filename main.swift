@@ -337,14 +337,13 @@ class Application: NSApplication {
           action: #selector(openAboutPanel),
           keyEquivalent: "")
         )
-
-        appMenu.addItem(NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
-           action: #selector(terminate(_:)),
-           keyEquivalent: "q")
-        )
         appMenu.addItem(NSMenuItem(title: "Settings",
            action: #selector(openSettingsWindow),
            keyEquivalent: ",")
+        )
+        appMenu.addItem(NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
+           action: #selector(terminate(_:)),
+           keyEquivalent: "q")
         )
 
         let windowMenuItem = NSMenuItem()
