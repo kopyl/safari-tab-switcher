@@ -32,7 +32,7 @@ struct Tab: Codable, Identifiable {
     var id: Int
     var lastSeen: Int
     var title: String = ""
-    var host: String = ""
+    var host: String = "No title"
     
     init(id: Int, tab: SFSafariTab) async {
         self.id = id
