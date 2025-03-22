@@ -97,6 +97,9 @@ struct Store {
     private static let windowsStoreKey = "windows"
     public static let isTabsSwitcherNeededToStayOpenStoreKey = "isTabsSwitcherNeededToStayOpen"
 
+    public static let sortTabsByLastUsedStoreKey = "sortTabsByLastUsed"
+    public static let sortTabsByLastUsedDefaultValue = true
+
     public static let userSelectedAccentColorStoreKey = "userSelectedAccentColor"
     public static let userSelectedAccentColorDefaultValue = "#191919"
 
@@ -114,5 +117,9 @@ struct Store {
     
     static var isTabsSwitcherNeededToStayOpen: Bool {
         userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+    }
+    
+    static var sortTabsByLastUsed: Bool {
+        userDefaults.bool(forKey: sortTabsByLastUsedStoreKey)
     }
 }

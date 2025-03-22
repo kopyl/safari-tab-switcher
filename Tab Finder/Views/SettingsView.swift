@@ -128,7 +128,12 @@ struct SettingsView: View {
     @AppStorage(
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
         store: Store.userDefaults
-    ) private var isTabsSwitcherNeededToStayOpen: Bool = false
+    ) private var isTabsSwitcherNeededToStayOpen: Bool = true
+    
+    @AppStorage(
+        Store.sortTabsByLastUsedStoreKey,
+        store: Store.userDefaults
+    ) private var sortTabsByLastUsed: Bool = Store.sortTabsByLastUsedDefaultValue
     
     @AppStorage(
         Store.userSelectedAccentColorStoreKey,
@@ -161,6 +166,22 @@ struct SettingsView: View {
             .contentShape(Rectangle())
             .onTapGesture {
                 isTabsSwitcherNeededToStayOpen.toggle()
+            }
+            .tint(.white)
+            .toggleStyle(.switch)
+            .padding(.horizontal, 30)
+            
+            Toggle(isOn: $sortTabsByLastUsed) {
+                HStack {
+                    Text("Sort tabs by last used")
+                        .opacity(0.8)
+                        .font(.system(size: 15))
+                    Spacer()
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                sortTabsByLastUsed.toggle()
             }
             .tint(.white)
             .keyboardShortcut(.space, modifiers: [])
@@ -217,6 +238,9 @@ struct SettingsView: View {
             withAnimation(.interpolatingSpring(stiffness: 200, damping: 13)) {
                 displayedColorName = colorName
             }
+        }
+        .onChange(of: sortTabsByLastUsed) { val in
+            appState.sortTabsByLastUsed = val
         }
         .padding(.top, 74)
         .padding(.bottom, 71)
