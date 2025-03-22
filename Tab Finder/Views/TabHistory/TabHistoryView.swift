@@ -55,7 +55,7 @@ func filterTabs() {
             $0.host.localizedStandardCompare($1.host)  == .orderedDescending
         }
         .sorted {
-            $0.host.starts(with: appState.searchQuery) && !$1.host.starts(with: appState.searchQuery)
+            $0.host.starts(with: appState.searchQuery.lowercased()) && !$1.host.starts(with: appState.searchQuery.lowercased())
         }
         .enumerated().map { TabForSearch(tab: Tab(tab: $1), id: $0) }
 }
