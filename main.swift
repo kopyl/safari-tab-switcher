@@ -97,7 +97,7 @@ var aboutPanel: NSPanel?
 class AppState: ObservableObject {
     @Published var searchQuery = ""
     @Published var tabIDsWithTitleAndHost = Tabs()
-    @Published var filteredTabs: [TabForSearch] = []
+    @Published var filteredTabs: [Tab] = []
     @Published var isTabsSwitcherNeededToStayOpen = false
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false

@@ -28,43 +28,16 @@ func formatHost(_ host: String) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
-struct TabForSearch: Identifiable {
+struct Tab: Codable, Identifiable {
     var id: Int
-    var safariID: Int
-    var title: String
-    var host: String
-    var hostParts: [String.SubSequence] = []
-    var domainZone: String.SubSequence = ""
-    var searchRating: Int = 0
-    
-    init(tab: Tab, id: Int){
-        self.id = id
-        safariID = tab.id
-        title = tab.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        host = tab.host == "" && title == "" ? "No title" : formatHost(tab.host)
-
-        hostParts = host.split(separator: ".")
-        domainZone = hostParts.last ?? ""
-        guard !hostParts.isEmpty else { return }
-        hostParts.removeLast()  /// need to change it for domain zones like com.ua?
-        hostParts = hostParts.reversed()
-    }
-}
-
-struct Tab: Codable {
-    var id: Int
+    var lastSeen: Int
     var title: String = ""
     var host: String = ""
     
     init(id: Int, tab: SFSafariTab) async {
         self.id = id
+        self.lastSeen = 0
         await setTitleAndHostFromTab(tab: tab)
-    }
-    
-    init(tab: TabForSearch) {
-        self.id = tab.safariID
-        self.title = tab.title
-        self.host = tab.host
     }
     
     mutating func setTitleAndHostFromTab(tab: SFSafariTab) async {

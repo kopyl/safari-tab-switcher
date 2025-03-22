@@ -8,20 +8,18 @@ func switchTabs() async {
         try await SFSafariApplication.dispatchMessage(
             withName: "switchtabto",
             toExtensionWithIdentifier: extensionBundleIdentifier,
-            userInfo: ["id": String(tabToSwitchToInSafari.safariID)]
+            userInfo: ["id": String(tabToSwitchToInSafari.id)]
         )
     } catch let error {
         log("Dispatching message to the extension resulted in an error: \(error)")
     }
 }
 
-func addSpecificTabToHistory(tab: TabForSearch) {
+func addSpecificTabToHistory(tab: Tab) {
     var windows = Store.windows
     guard var tabsMutated = windows.windows.last?.tabs else { return }
-    
-    let tabIDsWithTitleAndHost = Tab(tab: tab)
 
-    tabsMutated.append(tabIDsWithTitleAndHost)
+    tabsMutated.append(tab)
 
     let currentWindow = _Window(tabs: tabsMutated)
     windows.append(currentWindow)
@@ -38,12 +36,15 @@ func filterTabs() {
     guard !appState.searchQuery.isEmpty else {
         appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
             .enumerated()
-            .map { TabForSearch(tab: $1, id: $0) }
+            .map { index, _tab in
+                var tab = _tab
+                tab.lastSeen = index
+                return tab
+            }
         return
     }
     
     appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
-    .map { TabForSearch(tab: $0, id: 0) }
     
     let _filteredTabs = appState.filteredTabs.filter {
         $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
@@ -57,26 +58,30 @@ func filterTabs() {
         .sorted {
             $0.host.starts(with: appState.searchQuery.lowercased()) && !$1.host.starts(with: appState.searchQuery.lowercased())
         }
-        .enumerated().map { TabForSearch(tab: Tab(tab: $1), id: $0) }
+        .enumerated().map { index, _tab in
+            var tab = _tab
+            tab.lastSeen = index
+            return tab
+        }
 }
 
 struct TabItemView: View {
     @ObservedObject var state = appState
-    let tab: TabForSearch
+    let tab: Tab
     
     var body: some View {
         HStack(alignment: .center) {
             Text(tab.host)
                 .font(.system(size: 18))
                 .foregroundStyle(
-                    tab.id == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
+                    tab.lastSeen == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             
             Text(tab.title)
                 .font(.system(size: 13))
                 .foregroundStyle(
-                    tab.id == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
+                    tab.lastSeen == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         }
@@ -84,18 +89,18 @@ struct TabItemView: View {
         .padding(.top, 18).padding(.bottom, 18)
         .padding(.leading, 21).padding(.trailing, 21)
         .background(
-            .currentTabBg.opacity(tab.id == state.indexOfTabToSwitchTo ? 1 : 0)
+            .currentTabBg.opacity(tab.lastSeen == state.indexOfTabToSwitchTo ? 1 : 0)
         )
-        .id(tab.id)
+        .id(tab.lastSeen)
         .contentShape(Rectangle())
         .cornerRadius(6)
         .frame(minWidth: 0, maxWidth: .infinity)
         .onTapGesture {
-            state.indexOfTabToSwitchTo = tab.id
+            state.indexOfTabToSwitchTo = tab.lastSeen
             hideTabsPanelAndSwitchTabs()
         }
         .onMouseMove {
-            state.indexOfTabToSwitchTo = tab.id
+            state.indexOfTabToSwitchTo = tab.lastSeen
         }
     }
 }
@@ -108,7 +113,7 @@ struct TabListView: View {
         ScrollViewReader { _proxy in
             ScrollView(.vertical) {
                 LazyVStack(spacing: 0) {
-                    ForEach(state.filteredTabs) { tab in
+                    ForEach(state.filteredTabs, id: \.lastSeen) { tab in
                         TabItemView(tab: tab)
                     }
                     .padding(.bottom, 4)
