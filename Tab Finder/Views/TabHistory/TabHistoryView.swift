@@ -35,7 +35,6 @@ func hideTabsPanelAndSwitchTabs() {
 }
 
 func filterTabs() {
-    
     guard !appState.searchQuery.isEmpty else {
         appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
             .enumerated()
@@ -46,65 +45,19 @@ func filterTabs() {
     appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
     .map { TabForSearch(tab: $0, id: 0) }
     
-    let _searchQuery = appState.searchQuery.lowercased()
-    
     let _filteredTabs = appState.filteredTabs.filter {
         $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
         $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
     }
     
-    let weightedResults = _filteredTabs.compactMap { tab -> (tab: TabForSearch, score: Int)? in
-        var tab = tab
-        let host = tab.host
-        
-        tab.searchRating = 0
-        
-        var scoreMultiplier = 10
-        
-        for hostPartIndex in tab.hostParts.indices {
-            scoreMultiplier -= hostPartIndex
-            
-            if scoreMultiplier < 1 {
-                scoreMultiplier = 1
-            }
-            
-            let hostPart = tab.hostParts[hostPartIndex]
-            
-            if hostPart == "No title" {
-                continue
-            }
-            
-            if hostPart.starts(with: _searchQuery) {
-                tab.searchRating += 5*scoreMultiplier
-            }
-            else if hostPart.localizedCaseInsensitiveContains(appState.searchQuery) {
-                tab.searchRating += 2
-            }
+    appState.filteredTabs = _filteredTabs
+        .sorted {
+            $0.host.localizedStandardCompare($1.host)  == .orderedDescending
         }
-        
-        if tab.searchRating == 0 {
-            if host.localizedCaseInsensitiveContains(appState.searchQuery) {
-                tab.searchRating += 1
-            }
+        .sorted {
+            $0.host.starts(with: appState.searchQuery) && !$1.host.starts(with: appState.searchQuery)
         }
-
-        if tab.domainZone.localizedCaseInsensitiveContains(appState.searchQuery) {
-            tab.searchRating += 1
-        }
-        
-        if tab.title.starts(with: _searchQuery) {
-            tab.searchRating += 4
-        }
-        else if tab.title.localizedCaseInsensitiveContains(appState.searchQuery) {
-            tab.searchRating += 1
-        }
-
-        return tab.searchRating > 0 ? (tab, tab.searchRating) : nil
-    }
-    
-    appState.filteredTabs = weightedResults.sorted { $0.tab.searchRating > $1.tab.searchRating }
-        .enumerated()
-        .map { TabForSearch(tab: Tab(tab: $1.tab), id: $0) }
+        .enumerated().map { TabForSearch(tab: Tab(tab: $1), id: $0) }
 }
 
 struct TabItemView: View {
