@@ -61,11 +61,6 @@ struct Tab: Codable {
         await setTitleAndHostFromTab(tab: tab)
     }
     
-    init(tab: SFSafariTab) async {
-        self.id = -1
-        await setTitleAndHostFromTab(tab: tab)
-    }
-    
     init(tab: TabForSearch) {
         self.id = tab.safariID
         self.title = tab.title
