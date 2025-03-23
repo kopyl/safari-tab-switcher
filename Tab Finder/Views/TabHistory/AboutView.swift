@@ -14,18 +14,19 @@ struct AboutView: View {
                 Text("Tab Finder")
                     .font(.system(size: 28, weight: .regular))
             }
+            .offset(x: -2)
             Spacer()
             HStack {
                 Text("Made by designer and developer [Oleh Kopyl](https://kopyloleh.com/)")
                 Spacer()
-                Text("\(currentVersion)")
+                Text("v\(currentVersion)")
             }
             .font(.system(size: 14))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(.horizontal, 41)
-        .padding(.top, 33)
-        .padding(.bottom, 41)
-        .frame(minWidth: 444, minHeight: 240)
+        .padding(.horizontal, 30)
+        .padding(.top, 22)
+        .padding(.bottom, 29)
+        .frame(minWidth: 444, minHeight: 177)
     }
 }

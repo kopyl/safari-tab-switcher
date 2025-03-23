@@ -262,7 +262,7 @@ func showAboutPanel() {
         styleMask: [.titled, .closable]
     )
     
-    aboutPanel?.setContentSize(NSSize(width: 444, height: 240))
+    aboutPanel?.setContentSize(NSSize(width: 444, height: 177))
     aboutPanel?.center()
     aboutPanel?.makeKeyAndOrderFront(nil)
 }
