@@ -87,6 +87,7 @@ func handleHotKeyPress() {
     appState.searchQuery = ""
     rerenderTabs()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
+    appState.currentInputSourceName = getCurrentInputSourceName()
     startUsingTabFinder()
     appState.isTabsPanelOpen = true
     showTabsPanel()
