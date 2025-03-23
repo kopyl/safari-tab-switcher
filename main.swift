@@ -196,7 +196,7 @@ func showTabsPanel() {
     
     tabsPanel?.makeKeyAndOrderFront(nil)
     
-    if !Store.isTabsSwitcherNeededToStayOpen {
+    if !Store.isTabsSwitcherNeededToStayOpen && appState.sortTabsBy == .lastSeen {
         tabsPanel?.contentView?.alphaValue = 0
         pendingDispatchWorkItem?.cancel()
         let workItem = DispatchWorkItem {
