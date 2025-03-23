@@ -7,6 +7,13 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
+func startUsingTabFinder() {
+    greetingWindow?.orderOut(nil)
+    settingsWindow?.orderOut(nil)
+    aboutPanel?.orderOut(nil)
+    NSApp.setActivationPolicy(.accessory)
+}
+
 NSWorkspace.shared.notificationCenter.addObserver(
     forName: NSWorkspace.didActivateApplicationNotification,
     object: nil,
@@ -80,7 +87,7 @@ func handleHotKeyPress() {
     appState.searchQuery = ""
     rerenderTabs()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
-    NSApp.setActivationPolicy(.accessory)
+    startUsingTabFinder()
     appState.isTabsPanelOpen = true
     showTabsPanel()
 }
@@ -287,9 +294,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        tabsPanel?.orderOut(nil)
         for window in sender.windows {
             if window.identifier == tabsPanelID { continue }
-            if !window.isVisible { continue }
             window.makeKeyAndOrderFront(nil)
         }
         return true

@@ -38,7 +38,7 @@ struct GreetingView: View {
                     }
                     .keyboardShortcut(.space, modifiers: [])
                     StyledButton(.primary, Copy.Onboarding.hideThisWindowButton, icon: "return") {
-                        NSApp.setActivationPolicy(.accessory)
+                        startUsingTabFinder()
                     }
                     .keyboardShortcut(.return, modifiers: [])
                 }
@@ -51,7 +51,7 @@ struct GreetingView: View {
             .padding(.horizontal, 41)
         }
         .onDisappear {
-            NSApp.setActivationPolicy(.accessory)
+            startUsingTabFinder()
         }
     }
 }
