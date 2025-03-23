@@ -180,14 +180,30 @@ struct TabHistoryView: View {
                 }
                 VStack {
                     let tabsCount = appState.savedTabs.count
-                    HStack(spacing: 10){
-                        Image(systemName: "magnifyingglass")
-                            .foregroundStyle(grey)
-                            .font(.system(size: 22))
-                        CustomTextField(
-                            text: $appState.searchQuery,
-                            placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
-                        )
+                    HStack(spacing: 0) {
+                        HStack(spacing: 10){
+                            Image(systemName: "magnifyingglass")
+                                .foregroundStyle(grey)
+                                .font(.system(size: 22))
+                            CustomTextField(
+                                text: $appState.searchQuery,
+                                placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+                            )
+                        }
+                        if appState.searchQuery == "" {
+                            Text(appState.currentInputSourceName)
+                                .font(.system(size: 12))
+                                .opacity(0.8)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal, 9)
+                                .background(grey.opacity(0.15))
+                                .cornerRadius(3)
+                                .frame(minWidth: 0)
+                                .onTapGesture {
+                                    selectPreviousInputSource()
+                                }
+                        }
+                        
                         Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
                             .foregroundStyle(grey)
                             .font(.system(size: 22))

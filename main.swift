@@ -98,6 +98,7 @@ class AppState: ObservableObject {
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false
     @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
+    @Published var currentInputSourceName = getCurrentInputSourceName()
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {

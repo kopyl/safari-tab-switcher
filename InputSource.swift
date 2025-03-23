@@ -60,4 +60,12 @@ func selectPreviousInputSource() {
     guard inputSources.count > 1 else { return }
     let prevInputSource = inputSources[1]
     changeInputSource(inputSource: prevInputSource)
+    appState.currentInputSourceName = getCurrentInputSourceName()
+}
+
+func getCurrentInputSourceName() -> String {
+    let currentInputSource = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
+    let nameProperty = TISGetInputSourceProperty(currentInputSource, kTISPropertyLocalizedName)
+    let name = nameProperty != nil ? Unmanaged<CFString>.fromOpaque(nameProperty!).takeUnretainedValue() as String : "Unknown"
+    return name
 }
