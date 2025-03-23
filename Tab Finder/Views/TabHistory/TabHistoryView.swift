@@ -64,7 +64,7 @@ func filterTabs() {
         return
     }
     
-    let _filteredTabs = appState.filteredTabs.filter {
+    let _filteredTabs = appState.tabIDsWithTitleAndHost .filter {
         $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
         $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
     }
