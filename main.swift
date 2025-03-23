@@ -76,9 +76,9 @@ func handleHotKeyPress() {
         return
     }
     guard let tabs = Store.windows.windows.last?.tabs else { return }
-    appState.tabIDsWithTitleAndHost = tabs
+    appState.savedTabs = tabs
     appState.searchQuery = ""
-    filterTabs()
+    rerenderTabs()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
     NSApp.setActivationPolicy(.accessory)
     appState.isTabsPanelOpen = true
@@ -92,8 +92,8 @@ var aboutPanel: NSPanel?
 
 class AppState: ObservableObject {
     @Published var searchQuery = ""
-    @Published var tabIDsWithTitleAndHost = Tabs()
-    @Published var filteredTabs: [Tab] = []
+    @Published var savedTabs = Tabs()
+    @Published var renderedTabs: [Tab] = []
     @Published var isTabsSwitcherNeededToStayOpen = false
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false
@@ -103,10 +103,10 @@ class AppState: ObservableObject {
     var indexOfTabToSwitchTo: Int {
         get { _indexOfTabToSwitchTo }
         set {
-            if filteredTabs.isEmpty {
+            if renderedTabs.isEmpty {
                 _indexOfTabToSwitchTo = 0
             } else {
-                _indexOfTabToSwitchTo = pythonTrueModulo(newValue, filteredTabs.count)
+                _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)
             }
         }
     }

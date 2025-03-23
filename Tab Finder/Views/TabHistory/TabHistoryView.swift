@@ -2,7 +2,7 @@ import SwiftUI
 import SafariServices.SFSafariExtensionManager
 
 func switchTabs() async {
-    let tabToSwitchToInSafari = appState.filteredTabs[appState.indexOfTabToSwitchTo]
+    let tabToSwitchToInSafari = appState.renderedTabs[appState.indexOfTabToSwitchTo]
     do {
         addSpecificTabToHistory(tab: tabToSwitchToInSafari)
         try await SFSafariApplication.dispatchMessage(
@@ -28,13 +28,13 @@ func addSpecificTabToHistory(tab: Tab) {
 
 func hideTabsPanelAndSwitchTabs() {
     hideTabsPanel()
-    guard !appState.filteredTabs.isEmpty else { return }
+    guard !appState.renderedTabs.isEmpty else { return }
     Task{ await switchTabs() }
 }
 
-func noSearchQueryTabsFiltering() -> [Tab] {
+func renderTabsWithoutSearchQuery() -> [Tab] {
     if appState.sortTabsBy == .asTheyAppearInBrowser {
-        return appState.tabIDsWithTitleAndHost
+        return appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -44,8 +44,8 @@ func noSearchQueryTabsFiltering() -> [Tab] {
             .sorted { $0.id < $1.id }
     }
     else if appState.sortTabsBy == .asTheyAppearInBrowserReversed {
-        let tabsCount = appState.tabIDsWithTitleAndHost.count
-        return appState.tabIDsWithTitleAndHost
+        let tabsCount = appState.savedTabs.count
+        return appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -55,16 +55,16 @@ func noSearchQueryTabsFiltering() -> [Tab] {
             .sorted { $0.id < $1.id }
             .reversed()
     }
-    return appState.tabIDsWithTitleAndHost.reversed()
+    return appState.savedTabs.reversed()
 }
 
-func filterTabs() {
+func rerenderTabs() {
     guard !appState.searchQuery.isEmpty else {
-        appState.filteredTabs = noSearchQueryTabsFiltering()
+        appState.renderedTabs = renderTabsWithoutSearchQuery()
         return
     }
     
-    appState.filteredTabs = appState.tabIDsWithTitleAndHost
+    appState.renderedTabs = appState.savedTabs
         .filter {
             $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
             $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
@@ -131,7 +131,7 @@ struct TabListView: View {
         ScrollViewReader { _proxy in
             ScrollView(.vertical) {
                 LazyVStack(spacing: 0) {
-                    ForEach(state.filteredTabs, id: \.renderIndex) { tab in
+                    ForEach(state.renderedTabs, id: \.renderIndex) { tab in
                         TabItemView(tab: tab)
                     }
                     .padding(.bottom, 4)
@@ -178,7 +178,7 @@ struct TabHistoryView: View {
                     Rectangle().fill(hexToColor(userSelectedAccentColor).opacity(0.15))
                 }
                 VStack {
-                    let tabsCount = appState.tabIDsWithTitleAndHost.count
+                    let tabsCount = appState.savedTabs.count
                     HStack(spacing: 10){
                         Image(systemName: "magnifyingglass")
                             .foregroundStyle(grey)
@@ -220,7 +220,7 @@ struct TabHistoryView: View {
             }
         }
         .onChange(of: appState.searchQuery) { query in
-            filterTabs()
+            rerenderTabs()
             appState.indexOfTabToSwitchTo = query.isEmpty ? 1 : 0
             scrollToSelectedTab()
         }
@@ -271,7 +271,7 @@ struct TabHistoryView: View {
 
     func handleNavigationKeyPresses(event: NSEvent) {
         guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
-        guard !appState.tabIDsWithTitleAndHost.isEmpty else { return }
+        guard !appState.savedTabs.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
 
         switch key {
