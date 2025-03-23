@@ -3,7 +3,7 @@ import AppKit
 
 struct CustomTextField: NSViewRepresentable {
     @Binding var text: String
-    var placeholder: String.LocalizationValue
+    var placeholder: String
     var font: NSFont = NSFont.systemFont(ofSize: 26)
     
     var placeholderColorDark: NSColor = .white.withAlphaComponent(0.3)
@@ -33,7 +33,7 @@ struct CustomTextField: NSViewRepresentable {
             .foregroundColor: colorScheme == .dark ? placeholderColorDark : placeholderColorLight,
             .font: font,
         ]
-        let inflected = AttributedString(localized: placeholder)
+        let inflected = AttributedString(localized: String.LocalizationValue(placeholder))
         let inflectedStr = String(inflected.characters)
         return NSAttributedString(string: inflectedStr, attributes: attributes)
     }

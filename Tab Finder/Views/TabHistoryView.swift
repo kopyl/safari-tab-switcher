@@ -246,22 +246,11 @@ struct TabHistoryView: View {
                                 .font(.system(size: 22))
                             CustomTextField(
                                 text: $appState.searchQuery,
-                                placeholder: "Search among ^[\(tabsCount) \("tab")](inflect: true)"
+                                placeholder: getSearchFieldPlaceholderText(
+                                    by: appState.currentInputSourceName,
+                                    tabsCount: tabsCount
+                                )
                             )
-                        }
-                        if appState.searchQuery == "" {
-                            Text(appState.currentInputSourceName)
-                                .font(.system(size: 12))
-                                .opacity(0.8)
-                                .padding(.vertical, 5)
-                                .padding(.horizontal, 9)
-                                .background(grey.opacity(0.15))
-                                .cornerRadius(3)
-                                .frame(minWidth: 0)
-                                .onTapGesture {
-                                    selectPreviousInputSource()
-                                }
-                                .help(Copy.Tooltips.inputSource)
                         }
                         
                         Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
