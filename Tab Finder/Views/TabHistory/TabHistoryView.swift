@@ -49,7 +49,7 @@ func noSearchQueryTabsFiltering() -> [Tab] {
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
-                tab.renderIndex = tabsCount - 1 - 	tab.id
+                tab.renderIndex = tabsCount - 1 - tab.id
                 return tab
             }
             .sorted { $0.id < $1.id }
