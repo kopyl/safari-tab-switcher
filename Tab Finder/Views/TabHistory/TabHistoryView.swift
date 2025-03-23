@@ -71,7 +71,10 @@ func rerenderTabs() {
             $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
         }
         .sorted {
-            $0.host.localizedStandardCompare($1.host)  == .orderedDescending
+            $0.host.localizedStandardCompare($1.host)  == .orderedAscending
+        }
+        .sorted {
+            $0.renderIndex < $1.renderIndex
         }
         .sorted {
             $0.host.starts(with: appState.searchQuery.lowercased()) && !$1.host.starts(with: appState.searchQuery.lowercased())
