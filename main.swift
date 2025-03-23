@@ -315,8 +315,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showGreetingWindow()
-        tabsPanel?.resignKey()
+        for window in sender.windows {
+            if window.identifier == tabsPanelID { continue }
+            if !window.isVisible { continue }
+            window.makeKeyAndOrderFront(nil)
+        }
         return true
     }
     
