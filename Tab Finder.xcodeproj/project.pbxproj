@@ -10,6 +10,7 @@
 		480202122D8060CB00979EEC /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 480202112D8060CB00979EEC /* KeyboardShortcuts */; };
 		4849CB5E2D4889F4000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		4849CB602D488A96000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
+		48751CE92D8FC53B00319882 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48751CE82D8FC53B00319882 /* AboutView.swift */; };
 		48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A0338E2D2CD81F00BB6F8C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */; };
 		48A033D82D2DC75600BB6F8C /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
@@ -55,6 +56,7 @@
 /* Begin PBXFileReference section */
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		48534A232D333B3D003FF94A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		48751CE82D8FC53B00319882 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		48A033D72D2DC75600BB6F8C /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
 		48B48FC52D2A59620054B680 /* Tab Finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tab Finder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +158,7 @@
 			children = (
 				48E9EE412D33E20B007BC086 /* Math.swift */,
 				48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */,
+				48751CE82D8FC53B00319882 /* AboutView.swift */,
 			);
 			path = TabHistory;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 				48FEE0F92D71FB3A007704A0 /* main.swift in Sources */,
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				48F265CC2D89EC24005F5AD7 /* InputSource.swift in Sources */,
+				48751CE92D8FC53B00319882 /* AboutView.swift in Sources */,
 				48F9D6BF2D74E0D800DEE99E /* TabHistoryView.swift in Sources */,
 				48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */,
 				48E9EE422D33E20B007BC086 /* Math.swift in Sources */,
