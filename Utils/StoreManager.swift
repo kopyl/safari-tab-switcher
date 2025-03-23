@@ -30,13 +30,13 @@ func formatHost(_ host: String) -> String {
 
 struct Tab: Codable, Identifiable {
     var id: Int
-    var lastSeen: Int
+    var renderIndex: Int
     var title: String = ""
     var host: String = "No title"
     
     init(id: Int, tab: SFSafariTab) async {
         self.id = id
-        self.lastSeen = 0
+        self.renderIndex = 0
         await setTitleAndHostFromTab(tab: tab)
     }
     

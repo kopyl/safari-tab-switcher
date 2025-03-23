@@ -38,7 +38,7 @@ func noSearchQueryTabsFiltering() -> [Tab] {
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
-                tab.lastSeen = tab.id
+                tab.renderIndex = tab.id
                 return tab
             }
             .sorted { $0.id < $1.id }
@@ -49,7 +49,7 @@ func noSearchQueryTabsFiltering() -> [Tab] {
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
-                tab.lastSeen = tabsCount - 1 - 	tab.id
+                tab.renderIndex = tabsCount - 1 - 	tab.id
                 return tab
             }
             .sorted { $0.id < $1.id }
@@ -79,7 +79,7 @@ func filterTabs() {
         .enumerated()
         .map { index, _tab in
             var tab = _tab
-            tab.lastSeen = index
+            tab.renderIndex = index
             return tab
         }
 }
@@ -93,14 +93,14 @@ struct TabItemView: View {
             Text(tab.host)
                 .font(.system(size: 18))
                 .foregroundStyle(
-                    tab.lastSeen == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
+                    tab.renderIndex == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             
             Text(tab.title)
                 .font(.system(size: 13))
                 .foregroundStyle(
-                    tab.lastSeen == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
+                    tab.renderIndex == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         }
@@ -108,18 +108,18 @@ struct TabItemView: View {
         .padding(.top, 18).padding(.bottom, 18)
         .padding(.leading, 21).padding(.trailing, 21)
         .background(
-            .currentTabBg.opacity(tab.lastSeen == state.indexOfTabToSwitchTo ? 1 : 0)
+            .currentTabBg.opacity(tab.renderIndex == state.indexOfTabToSwitchTo ? 1 : 0)
         )
-        .id(tab.lastSeen)
+        .id(tab.renderIndex)
         .contentShape(Rectangle())
         .cornerRadius(6)
         .frame(minWidth: 0, maxWidth: .infinity)
         .onTapGesture {
-            state.indexOfTabToSwitchTo = tab.lastSeen
+            state.indexOfTabToSwitchTo = tab.renderIndex
             hideTabsPanelAndSwitchTabs()
         }
         .onMouseMove {
-            state.indexOfTabToSwitchTo = tab.lastSeen
+            state.indexOfTabToSwitchTo = tab.renderIndex
         }
     }
 }
@@ -132,7 +132,7 @@ struct TabListView: View {
         ScrollViewReader { _proxy in
             ScrollView(.vertical) {
                 LazyVStack(spacing: 0) {
-                    ForEach(state.filteredTabs, id: \.lastSeen) { tab in
+                    ForEach(state.filteredTabs, id: \.renderIndex) { tab in
                         TabItemView(tab: tab)
                     }
                     .padding(.bottom, 4)

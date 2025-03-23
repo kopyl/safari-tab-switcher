@@ -69,14 +69,14 @@ struct Tabs: Sequence, Codable {
         }
         set {
             _tabs = newValue
-            updateLastSeen()
+            updateRenderIndex()
         }
     }
     
-    private mutating func updateLastSeen() {
+    private mutating func updateRenderIndex() {
         let count = _tabs.count
         for i in 0..<count {
-            _tabs[i].lastSeen = count - 1 - i
+            _tabs[i].renderIndex = count - 1 - i
         }
     }
 
