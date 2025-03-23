@@ -148,6 +148,7 @@
 			children = (
 				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
 				48F9D6C52D74E38B00DEE99E /* SettingsView.swift */,
+				48751CE82D8FC53B00319882 /* AboutView.swift */,
 				48F9D6C32D74E29C00DEE99E /* TabHistory */,
 			);
 			path = Views;
@@ -158,7 +159,6 @@
 			children = (
 				48E9EE412D33E20B007BC086 /* Math.swift */,
 				48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */,
-				48751CE82D8FC53B00319882 /* AboutView.swift */,
 			);
 			path = TabHistory;
 			sourceTree = "<group>";
