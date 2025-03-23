@@ -79,7 +79,7 @@ func handleHotKeyPress() {
     appState.tabIDsWithTitleAndHost = tabs
     appState.searchQuery = ""
     filterTabs()
-    appState.indexOfTabToSwitchTo = 1
+    appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
     NSApp.setActivationPolicy(.accessory)
     appState.isTabsPanelOpen = true
     showTabsPanel()
