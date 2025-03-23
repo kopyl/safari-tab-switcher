@@ -52,7 +52,7 @@ struct Windows: Sequence {
 }
 
 struct Tabs: Sequence, Codable {
-    public var tabs: [Tab] = []
+    public var _tabs: [Tab] = []
     private var seenIDs: Set<Int> = []
     
     init() {}
@@ -60,6 +60,23 @@ struct Tabs: Sequence, Codable {
     init(_ tabs: [Tab]) {
         for tab in tabs {
             append(tab)
+        }
+    }
+    
+    public var tabs: [Tab] {
+        get {
+            return _tabs
+        }
+        set {
+            _tabs = newValue
+            updateLastSeen()
+        }
+    }
+    
+    private mutating func updateLastSeen() {
+        let count = _tabs.count
+        for i in 0..<count {
+            _tabs[i].lastSeen = count - 1 - i
         }
     }
 

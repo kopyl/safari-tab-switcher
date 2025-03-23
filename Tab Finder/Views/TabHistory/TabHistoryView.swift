@@ -35,12 +35,6 @@ func hideTabsPanelAndSwitchTabs() {
 func filterTabs() {
     guard !appState.searchQuery.isEmpty else {
         appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
-            .enumerated()
-            .map { index, _tab in
-                var tab = _tab
-                tab.lastSeen = index
-                return tab
-            }
         return
     }
     
