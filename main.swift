@@ -1,5 +1,6 @@
 import SwiftUI
 import KeyboardShortcuts
+import InputMethodKit
 
 let tabsPanelFadeOutAnimationDuration = 0.25
 
@@ -32,6 +33,16 @@ NSWorkspace.shared.notificationCenter.addObserver(
         }
         hideTabsPanel()
         KeyboardShortcuts.isEnabled = false
+    }
+}
+
+DistributedNotificationCenter.default().addObserver(
+    forName: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
+    object: nil,
+    queue: .main
+) { _ in
+    DispatchQueue.main.async {
+        appState.currentInputSourceName = getCurrentInputSourceName()
     }
 }
 
