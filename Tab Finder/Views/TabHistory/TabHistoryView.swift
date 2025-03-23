@@ -44,8 +44,6 @@ func filterTabs() {
         return
     }
     
-    appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
-    
     let _filteredTabs = appState.filteredTabs.filter {
         $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
         $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
