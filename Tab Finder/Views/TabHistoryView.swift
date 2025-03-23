@@ -1,5 +1,10 @@
 import SwiftUI
+import KeyboardShortcuts
 import SafariServices.SFSafariExtensionManager
+
+func getToolTipText() -> String {
+    return "Click to avoid closing this panel when you release \(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation ?? "your modifier key/s")"
+}
 
 func switchTabs() async {
     let tabToSwitchToInSafari = appState.renderedTabs[appState.indexOfTabToSwitchTo]
@@ -202,6 +207,7 @@ struct TabHistoryView: View {
                                 .onTapGesture {
                                     selectPreviousInputSource()
                                 }
+                                .help(Copy.Tooltips.inputSource)
                         }
                         
                         Image(systemName: isTabsSwitcherNeededToStayOpen ? "pin.fill" : "pin")
@@ -216,6 +222,7 @@ struct TabHistoryView: View {
                                     hideTabsPanel()
                                 }
                             }
+                            .help(getToolTipText())
                     }
                     .padding(.leading, 24)
                     TabListView(proxy: $proxy)

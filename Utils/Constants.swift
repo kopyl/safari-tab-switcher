@@ -30,6 +30,9 @@ class Copy {
         static let configureShortcutButton = "Change shortcut"
         static let buttonHint = "This app must be open for the extension to work. To reopen the app, click on the extension icon in Safari"
     }
+    class Tooltips {
+        static let inputSource = "Click to change the language of your input to a previous one. You can also change it by pressing \"space\" key when you haven't enetered your search query yet"
+    }
 }
 
 class AssetNames {

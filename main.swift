@@ -99,6 +99,7 @@ class AppState: ObservableObject {
     @Published var isTabsPanelOpen: Bool = false
     @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
     @Published var currentInputSourceName = getCurrentInputSourceName()
+    @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
