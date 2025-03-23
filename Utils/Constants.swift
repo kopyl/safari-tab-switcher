@@ -26,7 +26,7 @@ class Copy {
     class Onboarding {    
         static let description = "Switch easily between last open tabs in the same way you switch between last open apps"
         static let title = "Welcome to Tab Finder"
-        static let hideThisWindowButton = "Hide this window"
+        static let hideThisWindowButton = "Hide the app"
         static let configureShortcutButton = "Change shortcut"
         static let buttonHint = "This app must be open for the extension to work. To reopen the app, click on the extension icon in Safari"
     }
