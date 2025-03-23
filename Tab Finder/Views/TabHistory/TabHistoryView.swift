@@ -32,9 +32,35 @@ func hideTabsPanelAndSwitchTabs() {
     Task{ await switchTabs() }
 }
 
+func noSearchQueryTabsFiltering() -> [Tab] {
+    if appState.sortTabsBy == .asTheyAppearInBrowser {
+        return appState.tabIDsWithTitleAndHost
+            .enumerated()
+            .map { index, _tab in
+                var tab = _tab
+                tab.lastSeen = tab.id
+                return tab
+            }
+            .sorted { $0.id < $1.id }
+    }
+    else if appState.sortTabsBy == .asTheyAppearInBrowserReversed {
+        let tabsCount = appState.tabIDsWithTitleAndHost.count
+        return appState.tabIDsWithTitleAndHost
+            .enumerated()
+            .map { index, _tab in
+                var tab = _tab
+                tab.lastSeen = tabsCount - 1 - 	tab.id
+                return tab
+            }
+            .sorted { $0.id < $1.id }
+            .reversed()
+    }
+    return appState.tabIDsWithTitleAndHost.reversed()
+}
+
 func filterTabs() {
     guard !appState.searchQuery.isEmpty else {
-        appState.filteredTabs = appState.tabIDsWithTitleAndHost.reversed()
+        appState.filteredTabs = noSearchQueryTabsFiltering()
         return
     }
     

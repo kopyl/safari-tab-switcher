@@ -3,10 +3,6 @@ import KeyboardShortcuts
 
 let tabsPanelFadeOutAnimationDuration = 0.25
 
-Store.userDefaults.register(defaults: [
-    Store.sortTabsByLastUsedStoreKey: Store.sortTabsByLastUsedDefaultValue
-])
-
 let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
@@ -101,7 +97,7 @@ class AppState: ObservableObject {
     @Published var isTabsSwitcherNeededToStayOpen = false
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false
-    @Published var sortTabsByLastUsed: Bool = Store.sortTabsByLastUsed
+    @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {

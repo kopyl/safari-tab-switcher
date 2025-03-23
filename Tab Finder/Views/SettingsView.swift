@@ -131,9 +131,9 @@ struct SettingsView: View {
     ) private var isTabsSwitcherNeededToStayOpen: Bool = true
     
     @AppStorage(
-        Store.sortTabsByLastUsedStoreKey,
+        Store.sortTabsByStoreKey,
         store: Store.userDefaults
-    ) private var sortTabsByLastUsed: Bool = Store.sortTabsByLastUsedDefaultValue
+    ) private var sortTabsBy: SortTabsBy = Store.sortTabsByDefaultValue
     
     @AppStorage(
         Store.userSelectedAccentColorStoreKey,
@@ -171,21 +171,17 @@ struct SettingsView: View {
             .toggleStyle(.switch)
             .padding(.horizontal, 30)
             
-            Toggle(isOn: $sortTabsByLastUsed) {
-                HStack {
-                    Text("Sort tabs by last used")
-                        .opacity(0.8)
-                        .font(.system(size: 15))
-                    Spacer()
+            HStack {
+                Text("Sort tabs by")
+                Spacer()
+                Picker("", selection: $sortTabsBy) {
+                    ForEach(SortTabsBy.allCases, id: \.self) { item in
+                        Text(item.rawValue)
+                    }
                 }
+                .pickerStyle(.menu)
+                .frame(maxWidth: 250)
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                sortTabsByLastUsed.toggle()
-            }
-            .tint(.white)
-            .keyboardShortcut(.space, modifiers: [])
-            .toggleStyle(.switch)
             .padding(.horizontal, 30)
             
             HStack {
@@ -239,8 +235,8 @@ struct SettingsView: View {
                 displayedColorName = colorName
             }
         }
-        .onChange(of: sortTabsByLastUsed) { val in
-            appState.sortTabsByLastUsed = val
+        .onChange(of: sortTabsBy) { val in
+            appState.sortTabsBy = val
         }
         .padding(.top, 74)
         .padding(.bottom, 71)

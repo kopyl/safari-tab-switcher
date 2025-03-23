@@ -60,13 +60,19 @@ func decode<T: Codable>(_ type: T.Type, from data: Data) -> T? {
     return try? decoder.decode(T.self, from: data)
 }
 
+enum SortTabsBy: String, CaseIterable {
+    case lastSeen = "Last seen"
+    case asTheyAppearInBrowser = "As they appear in browser"
+    case asTheyAppearInBrowserReversed = "As they appear in browser (reversed)"
+}
+
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
     public static let isTabsSwitcherNeededToStayOpenStoreKey = "isTabsSwitcherNeededToStayOpen"
 
-    public static let sortTabsByLastUsedStoreKey = "sortTabsByLastUsed"
-    public static let sortTabsByLastUsedDefaultValue = true
+    public static let sortTabsByStoreKey = "sortTabsBy"
+    public static let sortTabsByDefaultValue: SortTabsBy = .lastSeen
 
     public static let userSelectedAccentColorStoreKey = "userSelectedAccentColor"
     public static let userSelectedAccentColorDefaultValue = "#191919"
@@ -87,7 +93,7 @@ struct Store {
         userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
     }
     
-    static var sortTabsByLastUsed: Bool {
-        userDefaults.bool(forKey: sortTabsByLastUsedStoreKey)
+    static var sortTabsBy: SortTabsBy {
+        SortTabsBy(rawValue: userDefaults.string(forKey: sortTabsByStoreKey) ?? sortTabsByDefaultValue.rawValue) ?? sortTabsByDefaultValue
     }
 }
