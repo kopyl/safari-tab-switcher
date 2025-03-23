@@ -32,9 +32,10 @@ func hideTabsPanelAndSwitchTabs() {
     Task{ await switchTabs() }
 }
 
-func renderTabsWithoutSearchQuery() -> [Tab] {
-    if appState.sortTabsBy == .asTheyAppearInBrowser {
-        return appState.savedTabs
+func renderTabsWithoutSearchQuery() {
+    switch(appState.sortTabsBy) {
+    case .asTheyAppearInBrowser:
+        appState.renderedTabs = appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -42,10 +43,9 @@ func renderTabsWithoutSearchQuery() -> [Tab] {
                 return tab
             }
             .sorted { $0.id < $1.id }
-    }
-    else if appState.sortTabsBy == .asTheyAppearInBrowserReversed {
+    case .asTheyAppearInBrowserReversed:
         let tabsCount = appState.savedTabs.count
-        return appState.savedTabs
+        appState.renderedTabs = appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -54,13 +54,14 @@ func renderTabsWithoutSearchQuery() -> [Tab] {
             }
             .sorted { $0.id < $1.id }
             .reversed()
+    case .lastSeen:
+        appState.renderedTabs = appState.savedTabs.reversed()
     }
-    return appState.savedTabs.reversed()
 }
 
 func rerenderTabs() {
-    guard !appState.searchQuery.isEmpty else {
-        appState.renderedTabs = renderTabsWithoutSearchQuery()
+    if appState.searchQuery.isEmpty {
+        renderTabsWithoutSearchQuery()
         return
     }
     
