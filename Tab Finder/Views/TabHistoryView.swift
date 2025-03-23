@@ -70,22 +70,76 @@ func rerenderTabs() {
         return
     }
     
-    appState.renderedTabs = appState.savedTabs
+    let searchQuery = appState.searchQuery
+    let lowercaseQuery = searchQuery.lowercased()
+    
+    let matchingTabs = appState.savedTabs
         .filter {
-            $0.host.localizedCaseInsensitiveContains(appState.searchQuery) ||
-            $0.title.localizedCaseInsensitiveContains(appState.searchQuery)
+            $0.host.localizedCaseInsensitiveContains(searchQuery) ||
+            $0.title.localizedCaseInsensitiveContains(searchQuery)
         }
-        .sorted {
-            $0.host.localizedStandardCompare($1.host)  == .orderedAscending
+    
+    let scoredTabs = matchingTabs.map { tab -> (tab: Tab, score: Int) in
+        let host = tab.host
+        var score = 0
+        
+        let hostParts = host.split(separator: ".")
+        let domainZone = hostParts.last ?? ""
+        var reversedDomainParts: [String.SubSequence] = []
+        
+        if !hostParts.isEmpty {
+            var domainParts = hostParts
+            domainParts.removeLast() // Remove domain zone
+            reversedDomainParts = domainParts.reversed()
         }
-        .sorted {
-            $0.host.starts(with: appState.searchQuery.lowercased()) && !$1.host.starts(with: appState.searchQuery.lowercased())
+        
+        var scoreMultiplier = 10
+        for (index, part) in reversedDomainParts.enumerated() {
+            scoreMultiplier = max(10 - index, 1)
+            
+            if part == "No title" {
+                continue
+            }
+            
+            if part.starts(with: lowercaseQuery) {
+                score += 5 * scoreMultiplier
+            }
+            else if part.localizedCaseInsensitiveContains(searchQuery) {
+                score += 2
+            }
         }
+        
+        if score == 0 {
+            if host.localizedCaseInsensitiveContains(searchQuery) {
+                score += 1
+            }
+        }
+        
+        if domainZone.localizedCaseInsensitiveContains(searchQuery) {
+            score += 1
+        }
+        
+        if tab.title.starts(with: searchQuery) {
+            score += 4
+        }
+        else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
+            score += 1
+        }
+        
+        return (tab, score)
+    }
+    
+    let filteredAndSorted = scoredTabs
+        .filter { $0.score > 0 }
+        .sorted { $0.score > $1.score }
+        .map { $0.tab }
+    
+    appState.renderedTabs = filteredAndSorted
         .enumerated()
-        .map { index, _tab in
-            var tab = _tab
-            tab.renderIndex = index
-            return tab
+        .map { index, tab in
+            var updatedTab = tab
+            updatedTab.renderIndex = index
+            return updatedTab
         }
 }
 
