@@ -32,7 +32,13 @@ struct Tab: Codable, Identifiable {
     var id: Int
     var renderIndex: Int
     var title: String = ""
-    var host: String = "No title"
+    private var _host: String = "No title"
+    
+    public var host: String {
+        get {
+            formatHost(_host)
+        }
+    }
     
     init(id: Int, tab: SFSafariTab) async {
         self.id = id
@@ -44,7 +50,7 @@ struct Tab: Codable, Identifiable {
         if let activePage = await tab.activePage() {
             if let properties = await activePage.properties() {
                 title = properties.title ?? "No title"
-                host = properties.url?.host ?? ""
+                _host = properties.url?.host ?? ""
             }
         }
     }
