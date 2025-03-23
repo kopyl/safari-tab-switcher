@@ -58,7 +58,8 @@ func filterTabs() {
         .sorted {
             $0.host.starts(with: appState.searchQuery.lowercased()) && !$1.host.starts(with: appState.searchQuery.lowercased())
         }
-        .enumerated().map { index, _tab in
+        .enumerated()
+        .map { index, _tab in
             var tab = _tab
             tab.lastSeen = index
             return tab
