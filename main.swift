@@ -318,7 +318,7 @@ class Application: NSApplication {
         
         appMenu.addItem(NSMenuItem(title: "About \(ProcessInfo.processInfo.processName)",
           action: #selector(openAboutPanel),
-          keyEquivalent: "")
+          keyEquivalent: "i")
         )
         appMenu.addItem(NSMenuItem(title: "Settings",
            action: #selector(openSettingsWindow),
