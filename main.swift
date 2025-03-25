@@ -2,7 +2,7 @@ import SwiftUI
 import KeyboardShortcuts
 import InputMethodKit
 
-let tabsPanelFadeOutAnimationDuration = 0.25
+let tabsPanelFadeOutAnimationDuration: Double = 0.25
 
 let appState = AppState()
 let delegate = AppDelegate(appState: appState)
