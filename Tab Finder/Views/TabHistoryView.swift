@@ -97,7 +97,7 @@ func rerenderTabs() {
         for (index, part) in reversedDomainParts.enumerated() {
             scoreMultiplier = max(10 - index, 1)
             
-            if part == "No title" {
+            if part == "" {
                 continue
             }
             
@@ -146,22 +146,41 @@ func rerenderTabs() {
 struct TabItemView: View {
     @ObservedObject var state = appState
     let tab: Tab
+    var firstColumn: String {
+        if tab.host == "" {
+            return "No title"
+        }
+        switch appState.columnOrder {
+        case .host_title:
+            return tab.host
+        case .title_host:
+            return tab.title
+        }
+    }
+    var secondColumn: String {
+        switch appState.columnOrder {
+        case .host_title:
+            return tab.title
+        case .title_host:
+            return tab.host
+        }
+    }
     
     var body: some View {
         HStack(alignment: .center) {
-            Text(tab.host)
+            Text(firstColumn)
                 .font(.system(size: 18))
                 .foregroundStyle(
                     tab.renderIndex == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             
-            Text(tab.title)
+            Text(secondColumn)
                 .font(.system(size: 13))
                 .foregroundStyle(
                     tab.renderIndex == state.indexOfTabToSwitchTo ? .currentTabFg : .currentTabFg.opacity(0.65)
                 )
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                .frame(minWidth: 0, maxWidth: state.columnOrder == .host_title ? .infinity : 200, alignment: .leading)
         }
         .lineLimit(1)
         .padding(.top, 18).padding(.bottom, 18)

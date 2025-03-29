@@ -32,7 +32,7 @@ struct Tab: Codable, Identifiable {
     var id: Int
     var renderIndex: Int
     var title: String = ""
-    private var _host: String = "No title"
+    private var _host: String = ""
     
     public var host: String {
         get {
@@ -72,6 +72,12 @@ enum SortTabsBy: String, CaseIterable {
     case asTheyAppearInBrowserReversed = "As they appear in browser (reversed)"
 }
 
+enum ColumnOrder: String, CaseIterable {
+    case host_title = "host | title"
+    case title_host = "title | host"
+    
+}
+
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
@@ -79,6 +85,9 @@ struct Store {
 
     public static let sortTabsByStoreKey = "sortTabsBy"
     public static let sortTabsByDefaultValue: SortTabsBy = .lastSeen
+    
+    public static let columnOrderStoreKey = "columnOrder"
+    public static let columnOrderDefaultValue: ColumnOrder = .host_title
 
     public static let userSelectedAccentColorStoreKey = "userSelectedAccentColor"
     public static let userSelectedAccentColorDefaultValue = "#191919"
@@ -101,5 +110,9 @@ struct Store {
     
     static var sortTabsBy: SortTabsBy {
         SortTabsBy(rawValue: userDefaults.string(forKey: sortTabsByStoreKey) ?? sortTabsByDefaultValue.rawValue) ?? sortTabsByDefaultValue
+    }
+    
+    static var columnOrder: ColumnOrder {
+        ColumnOrder(rawValue: userDefaults.string(forKey: columnOrderStoreKey) ?? columnOrderDefaultValue.rawValue) ?? columnOrderDefaultValue
     }
 }

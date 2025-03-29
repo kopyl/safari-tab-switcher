@@ -136,6 +136,11 @@ struct SettingsView: View {
     ) private var sortTabsBy: SortTabsBy = Store.sortTabsByDefaultValue
     
     @AppStorage(
+        Store.columnOrderStoreKey,
+        store: Store.userDefaults
+    ) private var columnOrder: ColumnOrder = Store.columnOrderDefaultValue
+    
+    @AppStorage(
         Store.userSelectedAccentColorStoreKey,
         store: Store.userDefaults
     ) private var userSelectedAccentColor: String = Store.userSelectedAccentColorDefaultValue
@@ -176,6 +181,19 @@ struct SettingsView: View {
                 Spacer()
                 Picker("", selection: $sortTabsBy) {
                     ForEach(SortTabsBy.allCases, id: \.self) { item in
+                        Text(item.rawValue)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(maxWidth: 250)
+            }
+            .padding(.horizontal, 30)
+            
+            HStack {
+                Text("Column order")
+                Spacer()
+                Picker("", selection: $columnOrder) {
+                    ForEach(ColumnOrder.allCases, id: \.self) { item in
                         Text(item.rawValue)
                     }
                 }
@@ -237,6 +255,9 @@ struct SettingsView: View {
         }
         .onChange(of: sortTabsBy) { val in
             appState.sortTabsBy = val
+        }
+        .onChange(of: columnOrder) { val in
+            appState.columnOrder = val
         }
         .padding(.top, 74)
         .padding(.bottom, 71)
