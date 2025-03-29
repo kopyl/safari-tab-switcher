@@ -197,7 +197,7 @@ struct SettingsView: View {
                         Text(item.rawValue)
                     }
                 }
-                .pickerStyle(.menu)
+                .pickerStyle(.segmented)
                 .frame(maxWidth: 250)
             }
             .padding(.horizontal, 30)
