@@ -147,26 +147,21 @@ func rerenderTabs() {
 
 class Favicons: ObservableObject {
     @Published var icons: [String: NSImage] = [:]
-    private var cache = NSCache<NSString, NSImage>()
+    private var cache: Array<String> = []
     
     static let shared = Favicons()
 
     func fetchFavicon(for host: String) {
+        if cache.contains(host) {
+            return
+        }
+        cache.append(host)
         
         let urlString = "https://icons.duckduckgo.com/ip3/\(host).ico"
         guard let url = URL(string: urlString) else { return }
         
-        if let cachedImage = cache.object(forKey: host as NSString) {
-            DispatchQueue.main.async {
-                self.icons[host] = cachedImage
-            }
-            return
-        }
-        
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, let image = NSImage(data: data), error == nil else { return }
-            
-            self.cache.setObject(image, forKey: host as NSString)
             
             DispatchQueue.main.async {
                 self.icons[host] = image
