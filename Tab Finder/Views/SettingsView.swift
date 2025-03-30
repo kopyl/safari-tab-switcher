@@ -282,6 +282,9 @@ struct SettingsView: View {
         .onChange(of: columnOrder) { val in
             appState.columnOrder = val
         }
+        .onChange(of: addStatusBarItemWhenAppMovesInBackground) { val in
+            statusBarItem?.isVisible = val
+        }
         .padding(.top, 74)
         .padding(.bottom, 71)
         
