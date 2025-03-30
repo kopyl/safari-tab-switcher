@@ -13,6 +13,8 @@ func putIntoBackground() {
     settingsWindow?.orderOut(nil)
     aboutPanel?.orderOut(nil)
     NSApp.setActivationPolicy(.accessory)
+    
+    guard Store.addStatusBarItemWhenAppMovesInBackground else { return }
     statusBarItem?.isVisible = true
 }
 

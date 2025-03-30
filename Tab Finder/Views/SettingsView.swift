@@ -148,7 +148,12 @@ struct SettingsView: View {
     @AppStorage(
         Store.moveAppOutOfBackgroundWhenSafariClosesStoreKey,
         store: Store.userDefaults
-    ) private var moveAppOutOfBackgroundWhenSafariCloses: Bool = true
+    ) private var moveAppOutOfBackgroundWhenSafariCloses: Bool = Store.moveAppOutOfBackgroundWhenSafariClosesDefaultValue
+    
+    @AppStorage(
+        Store.addStatusBarItemWhenAppMovesInBackgroundStoreKey,
+        store: Store.userDefaults
+    ) private var addStatusBarItemWhenAppMovesInBackground: Bool = Store.addStatusBarItemWhenAppMovesInBackgroundDefaultValue
     
     @State private var displayedColorName: String = ""
     
@@ -211,10 +216,17 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 30)
             
-            Toggle(isOn: !$moveAppOutOfBackgroundWhenSafariCloses) {
-                styledText("Keep app in background when Safari closes")
-                    .padding(.leading, 5)
-              }
+            VStack(alignment: .leading, spacing: 20) {
+                Toggle(isOn: $addStatusBarItemWhenAppMovesInBackground) {
+                    styledText("Add status bar item when app hides in background")
+                        .padding(.leading, 5)
+                }
+                
+                Toggle(isOn: !$moveAppOutOfBackgroundWhenSafariCloses) {
+                    styledText("Keep app in background when Safari closes")
+                        .padding(.leading, 5)
+                }
+            }
             .padding(.horizontal, 30)
             
             HStack {

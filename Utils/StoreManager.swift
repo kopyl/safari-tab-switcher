@@ -94,6 +94,9 @@ struct Store {
     
     public static let moveAppOutOfBackgroundWhenSafariClosesStoreKey = "moveAppOutOfBackgroundWhenSafariCloses"
     public static let moveAppOutOfBackgroundWhenSafariClosesDefaultValue = true
+    
+    public static let addStatusBarItemWhenAppMovesInBackgroundStoreKey = "addStatusBarItemWhenAppMovesInBackground"
+    public static let addStatusBarItemWhenAppMovesInBackgroundDefaultValue = true
 
     static var windows: Windows {
             get {
@@ -121,5 +124,9 @@ struct Store {
     
     static var moveAppOutOfBackgroundWhenSafariCloses: Bool {
         userDefaults.bool(forKey: moveAppOutOfBackgroundWhenSafariClosesStoreKey)
+    }
+    
+    static var addStatusBarItemWhenAppMovesInBackground: Bool {
+        userDefaults.bool(forKey: addStatusBarItemWhenAppMovesInBackgroundStoreKey)
     }
 }
