@@ -421,6 +421,8 @@ class Application: NSApplication {
         Application.addSupportMenuItem(to: menu, title: "Discord", webAppURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
         Application.addSupportMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
         Application.addSupportMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
+        Application.addSupportMenuItem(to: menu, title: "x.com", webAppURL: "https://x.com/TabFinderMac")
+        Application.addSupportMenuItem(to: menu, title: "GitHub", webAppURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
     }
     
     private static func addSupportMenuItem(to menu: NSMenu, title: String, webAppURL: String? = nil, appURL: String? = nil) {
