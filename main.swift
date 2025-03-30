@@ -348,6 +348,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         supportMenuItem.submenu = supportSubmenu
         Application.addSupportItems(to: supportSubmenu)
         
+        Application.addSupportMenuItem(to: menu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
+        
         menu.addItem(NSMenuItem.separator())
         
         menu.addItem(NSMenuItem(title: "Quit Tab Finder", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
@@ -425,7 +427,7 @@ class Application: NSApplication {
         Application.addSupportMenuItem(to: menu, title: "GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
     }
     
-    private static func addSupportMenuItem(to menu: NSMenu, title: String, webURL: String? = nil, appURL: String? = nil) {
+    public static func addSupportMenuItem(to menu: NSMenu, title: String, webURL: String? = nil, appURL: String? = nil) {
             let menuItem = NSMenuItem(title: title, action: #selector(openSupportLink(_:)), keyEquivalent: "")
             menuItem.representedObject = [ "webAppURL": webURL as Any, "appURL": appURL as Any ]
             menu.addItem(menuItem)
