@@ -229,7 +229,7 @@ struct TabItemView: View {
                         }
                     }
             }
-        .padding(.trailing, 17)
+        .padding(.trailing, 12)
             
             Text(firstColumn)
                 .font(.system(size: 18))
