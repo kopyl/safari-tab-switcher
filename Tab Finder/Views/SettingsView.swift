@@ -145,6 +145,11 @@ struct SettingsView: View {
         store: Store.userDefaults
     ) private var userSelectedAccentColor: String = Store.userSelectedAccentColorDefaultValue
     
+    @AppStorage(
+        Store.moveAppOutOfBackgroundWhenSafariClosesStoreKey,
+        store: Store.userDefaults
+    ) private var moveAppOutOfBackgroundWhenSafariCloses: Bool = true
+    
     @State private var displayedColorName: String = ""
     
     @State
@@ -178,6 +183,8 @@ struct SettingsView: View {
             
             HStack {
                 Text("Sort tabs by")
+                    .opacity(0.8)
+                    .font(.system(size: 15))
                 Spacer()
                 Picker("", selection: $sortTabsBy) {
                     ForEach(SortTabsBy.allCases, id: \.self) { item in
@@ -191,6 +198,8 @@ struct SettingsView: View {
             
             HStack {
                 Text("Column order")
+                    .opacity(0.8)
+                    .font(.system(size: 15))
                 Spacer()
                 Picker("", selection: $columnOrder) {
                     ForEach(ColumnOrder.allCases, id: \.self) { item in
@@ -200,6 +209,14 @@ struct SettingsView: View {
                 .pickerStyle(.segmented)
                 .frame(maxWidth: 250)
             }
+            .padding(.horizontal, 30)
+            
+            Toggle(isOn: !$moveAppOutOfBackgroundWhenSafariCloses) {
+                Text("Keep app in background when Safari closes")
+                    .opacity(0.8)
+                    .font(.system(size: 15))
+                    .padding(.leading, 5)
+              }
             .padding(.horizontal, 30)
             
             HStack {

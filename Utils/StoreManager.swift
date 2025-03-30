@@ -91,6 +91,9 @@ struct Store {
 
     public static let userSelectedAccentColorStoreKey = "userSelectedAccentColor"
     public static let userSelectedAccentColorDefaultValue = "#191919"
+    
+    public static let moveAppOutOfBackgroundWhenSafariClosesStoreKey = "moveAppOutOfBackgroundWhenSafariCloses"
+    public static let moveAppOutOfBackgroundWhenSafariClosesDefaultValue = true
 
     static var windows: Windows {
             get {
@@ -114,5 +117,9 @@ struct Store {
     
     static var columnOrder: ColumnOrder {
         ColumnOrder(rawValue: userDefaults.string(forKey: columnOrderStoreKey) ?? columnOrderDefaultValue.rawValue) ?? columnOrderDefaultValue
+    }
+    
+    static var moveAppOutOfBackgroundWhenSafariCloses: Bool {
+        userDefaults.bool(forKey: moveAppOutOfBackgroundWhenSafariClosesStoreKey)
     }
 }

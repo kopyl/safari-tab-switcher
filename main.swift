@@ -8,6 +8,11 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
+Store.userDefaults.register(defaults: [
+    Store.moveAppOutOfBackgroundWhenSafariClosesStoreKey:
+        Store.moveAppOutOfBackgroundWhenSafariClosesDefaultValue
+])
+
 func putIntoBackground() {
     greetingWindow?.orderOut(nil)
     settingsWindow?.orderOut(nil)
@@ -33,6 +38,23 @@ NSWorkspace.shared.notificationCenter.addObserver(
         }
         hideTabsPanel()
         KeyboardShortcuts.isEnabled = false
+    }
+}
+
+NSWorkspace.shared.notificationCenter.addObserver(
+    forName: NSWorkspace.didTerminateApplicationNotification,
+    object: nil,
+    queue: .main
+) { notification in
+    guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+        return
+    }
+    guard app.bundleIdentifier == "com.apple.Safari" else { return }
+    /// App Review support does not want the app to run background processes when user quits Safari
+    let previousActivationPolicy = NSApp.activationPolicy()
+    NSApp.setActivationPolicy(.regular)
+    if previousActivationPolicy != .regular {    
+        greetingWindow?.orderBack(nil)
     }
 }
 
