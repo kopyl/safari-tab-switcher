@@ -51,6 +51,9 @@ NSWorkspace.shared.notificationCenter.addObserver(
     }
     guard app.bundleIdentifier == "com.apple.Safari" else { return }
     /// App Review support does not want the app to run background processes when user quits Safari
+    
+    guard Store.moveAppOutOfBackgroundWhenSafariCloses else { return }
+
     let previousActivationPolicy = NSApp.activationPolicy()
     NSApp.setActivationPolicy(.regular)
     if previousActivationPolicy != .regular {    
