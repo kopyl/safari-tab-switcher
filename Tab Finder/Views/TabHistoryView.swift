@@ -156,8 +156,6 @@ class Favicons: ObservableObject {
         }
         cache.insert(host)
         
-        print(host)
-        
         let urlString = "https://icons.duckduckgo.com/ip3/\(host).ico"
         guard let url = URL(string: urlString) else { return }
         
