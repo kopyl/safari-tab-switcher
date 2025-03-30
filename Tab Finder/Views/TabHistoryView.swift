@@ -161,8 +161,16 @@ class Favicons: ObservableObject {
         guard let url = URL(string: urlString) else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 404 {
+                    return
+                } else if !(200...299).contains(httpResponse.statusCode) {
+                    return
+                }
+            }
+
             guard let data = data, let image = NSImage(data: data), error == nil else { return }
-            
+
             DispatchQueue.main.async {
                 self.icons[host] = image
             }
