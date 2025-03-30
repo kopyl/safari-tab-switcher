@@ -416,18 +416,18 @@ class Application: NSApplication {
     }
     
     public static func addSupportItems(to menu: NSMenu) {
-        Application.addSupportMenuItem(to: menu, title: "Email", webAppURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
-        Application.addSupportMenuItem(to: menu, title: "Telegram", webAppURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
-        Application.addSupportMenuItem(to: menu, title: "Discord", webAppURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        Application.addSupportMenuItem(to: menu, title: "Email", webURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
+        Application.addSupportMenuItem(to: menu, title: "Telegram", webURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
+        Application.addSupportMenuItem(to: menu, title: "Discord", webURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
         Application.addSupportMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
         Application.addSupportMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
-        Application.addSupportMenuItem(to: menu, title: "x.com", webAppURL: "https://x.com/TabFinderMac")
-        Application.addSupportMenuItem(to: menu, title: "GitHub", webAppURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
+        Application.addSupportMenuItem(to: menu, title: "x.com", webURL: "https://x.com/TabFinderMac")
+        Application.addSupportMenuItem(to: menu, title: "GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
     }
     
-    private static func addSupportMenuItem(to menu: NSMenu, title: String, webAppURL: String? = nil, appURL: String? = nil) {
+    private static func addSupportMenuItem(to menu: NSMenu, title: String, webURL: String? = nil, appURL: String? = nil) {
             let menuItem = NSMenuItem(title: title, action: #selector(openSupportLink(_:)), keyEquivalent: "")
-            menuItem.representedObject = [ "webAppURL": webAppURL as Any, "appURL": appURL as Any ]
+            menuItem.representedObject = [ "webAppURL": webURL as Any, "appURL": appURL as Any ]
             menu.addItem(menuItem)
         }
 
