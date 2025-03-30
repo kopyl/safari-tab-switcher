@@ -18,6 +18,7 @@ func putIntoBackground() {
     settingsWindow?.orderOut(nil)
     aboutPanel?.orderOut(nil)
     NSApp.setActivationPolicy(.accessory)
+    statusBarItem?.isVisible = true
 }
 
 NSWorkspace.shared.notificationCenter.addObserver(
@@ -58,6 +59,7 @@ NSWorkspace.shared.notificationCenter.addObserver(
     NSApp.setActivationPolicy(.regular)
     if previousActivationPolicy != .regular {    
         greetingWindow?.orderBack(nil)
+        statusBarItem?.isVisible = false
     }
 }
 
@@ -132,6 +134,7 @@ var greetingWindow: NSWindow?
 var tabsPanel: NSPanel?
 var settingsWindow: NSWindow?
 var aboutPanel: NSPanel?
+var statusBarItem: NSStatusItem?
 
 class AppState: ObservableObject {
     @Published var searchQuery = ""
@@ -328,11 +331,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showGreetingWindow()
         createTabsPanel()
         panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
+        addStatusBarItem()
     }
+    
+    private func addStatusBarItem() {
+        statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        if let button = statusBarItem?.button {
+            button.image = NSImage(systemSymbolName: "safari.fill", accessibilityDescription: "Tab Finder")
+
+            button.action = #selector(statusBarButtonClicked(_:))
+            button.target = self
+        }
+
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(openSettingsWindow), keyEquivalent: ","))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit Tab Finder", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        statusBarItem?.menu = menu
+        statusBarItem?.isVisible = false
+    }
+    
+    @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
+            statusBarItem?.menu?.popUp(positioning: nil, at: sender.frame.origin, in: sender.superview)
+        }
+    
+    @objc func openSettingsWindow() {
+            showSettingsWindow()
+        }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         tabsPanel?.orderOut(nil)
         greetingWindow?.makeKeyAndOrderFront(nil)
+        statusBarItem?.isVisible = false
         return true
     }
     
