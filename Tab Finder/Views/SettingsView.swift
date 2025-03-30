@@ -163,13 +163,17 @@ struct SettingsView: View {
         colorNames[colors.firstIndex(of: hexToColor(userSelectedAccentColor)) ?? 0]
     }
     
+    func styledText(_ text: String) -> some View {
+        Text(text)
+            .opacity(0.8)
+            .font(.system(size: 15))
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 86) {
             Toggle(isOn: !$isTabsSwitcherNeededToStayOpen) {
                 HStack {
-                    Text("Close tabs list when \(shortcutModifiers ?? "Option") is released")
-                        .opacity(0.8)
-                        .font(.system(size: 15))
+                    styledText("Close tabs list when \(shortcutModifiers ?? "Option") is released")
                     Spacer()
                 }
             }
@@ -182,9 +186,7 @@ struct SettingsView: View {
             .padding(.horizontal, 30)
             
             HStack {
-                Text("Sort tabs by")
-                    .opacity(0.8)
-                    .font(.system(size: 15))
+                styledText("Sort tabs by")
                 Spacer()
                 Picker("", selection: $sortTabsBy) {
                     ForEach(SortTabsBy.allCases, id: \.self) { item in
@@ -197,9 +199,7 @@ struct SettingsView: View {
             .padding(.horizontal, 30)
             
             HStack {
-                Text("Column order")
-                    .opacity(0.8)
-                    .font(.system(size: 15))
+                styledText("Column order")
                 Spacer()
                 Picker("", selection: $columnOrder) {
                     ForEach(ColumnOrder.allCases, id: \.self) { item in
@@ -212,22 +212,18 @@ struct SettingsView: View {
             .padding(.horizontal, 30)
             
             Toggle(isOn: !$moveAppOutOfBackgroundWhenSafariCloses) {
-                Text("Keep app in background when Safari closes")
-                    .opacity(0.8)
-                    .font(.system(size: 15))
+                styledText("Keep app in background when Safari closes")
                     .padding(.leading, 5)
               }
             .padding(.horizontal, 30)
             
             HStack {
-                Text(
+                styledText(
                     isFocused ?
                     "Press shortcut to open tabs list"
                     :
                     "Shortcut for opening tabs list"
                 )
-                    .opacity(0.8)
-                    .font(.system(size: 15))
                 Spacer()
                 KeyboardShortcuts.Recorder(for: .openTabsList)
                     .focused($isFocused)
@@ -247,9 +243,7 @@ struct SettingsView: View {
             
             VStack(spacing: 12) {
                 HStack {
-                    Text("Accent color")
-                        .opacity(0.8)
-                        .font(.system(size: 15))
+                    styledText("Accent color")
                     Spacer()
                     Text(displayedColorName)
                         .opacity(0.6)
