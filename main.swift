@@ -348,12 +348,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
-            statusBarItem?.menu?.popUp(positioning: nil, at: sender.frame.origin, in: sender.superview)
-        }
+        statusBarItem?.menu?.popUp(positioning: nil, at: sender.frame.origin, in: sender.superview)
+    }
     
     @objc func openSettingsWindow() {
-            showSettingsWindow()
-        }
+        showSettingsWindow()
+    }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         tabsPanel?.orderOut(nil)
