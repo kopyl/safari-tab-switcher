@@ -342,7 +342,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         menu.addItem(NSMenuItem.separator())
 
-        let supportMenuItem = NSMenuItem(title: "Support", action: #selector(Application.openSettingsWindow), keyEquivalent: ",")
+        let supportMenuItem = NSMenuItem(title: "Support", action: nil, keyEquivalent: "")
         menu.addItem(supportMenuItem)
         let supportSubmenu = NSMenu()
         supportMenuItem.submenu = supportSubmenu
