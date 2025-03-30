@@ -339,7 +339,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(Application.openSettingsWindow), keyEquivalent: ","))
+        
         menu.addItem(NSMenuItem.separator())
+
+        let supportMenuItem = NSMenuItem(title: "Support", action: #selector(Application.openSettingsWindow), keyEquivalent: ",")
+        menu.addItem(supportMenuItem)
+        let supportSubmenu = NSMenu()
+        supportMenuItem.submenu = supportSubmenu
+        Application.addSupportItems(to: supportSubmenu)
+        
+        menu.addItem(NSMenuItem.separator())
+        
         menu.addItem(NSMenuItem(title: "Quit Tab Finder", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusBarItem?.menu = menu
         statusBarItem?.isVisible = false
@@ -402,14 +412,18 @@ class Application: NSApplication {
         let helpMenu = NSMenu(title: "Support")
         helpMenuItem.submenu = helpMenu
 
-        addSupportMenuItem(to: helpMenu, title: "Email", webAppURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
-        addSupportMenuItem(to: helpMenu, title: "Telegram", webAppURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
-        addSupportMenuItem(to: helpMenu, title: "Discord", webAppURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
-        addSupportMenuItem(to: helpMenu, title: "iMessage", appURL: "sms:+380507308141")
-        addSupportMenuItem(to: helpMenu, title: "+380507308141", appURL: "facetime:+380507308141")
+        Application.addSupportItems(to: helpMenu)
     }
     
-    private func addSupportMenuItem(to menu: NSMenu, title: String, webAppURL: String? = nil, appURL: String? = nil) {
+    public static func addSupportItems(to menu: NSMenu) {
+        Application.addSupportMenuItem(to: menu, title: "Email", webAppURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
+        Application.addSupportMenuItem(to: menu, title: "Telegram", webAppURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
+        Application.addSupportMenuItem(to: menu, title: "Discord", webAppURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        Application.addSupportMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
+        Application.addSupportMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
+    }
+    
+    private static func addSupportMenuItem(to menu: NSMenu, title: String, webAppURL: String? = nil, appURL: String? = nil) {
             let menuItem = NSMenuItem(title: title, action: #selector(openSupportLink(_:)), keyEquivalent: "")
             menuItem.representedObject = [ "webAppURL": webAppURL as Any, "appURL": appURL as Any ]
             menu.addItem(menuItem)
