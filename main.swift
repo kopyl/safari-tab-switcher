@@ -333,12 +333,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func addStatusBarItem() {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        if let button = statusBarItem?.button {
-            button.image = NSImage(systemSymbolName: "safari.fill", accessibilityDescription: "Tab Finder")
-
-            button.action = #selector(statusBarButtonClicked(_:))
-            button.target = self
-        }
+        
+        guard let button = statusBarItem?.button else { return }
+        button.image = NSImage(named: "status-bar-icon")
+        button.action = #selector(statusBarButtonClicked(_:))
+        button.target = self
 
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(openSettingsWindow), keyEquivalent: ","))
