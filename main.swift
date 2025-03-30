@@ -285,8 +285,7 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
 
 func showSettingsWindow() {
     if let settingsWindow {
-        settingsWindow.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
-        settingsWindow.orderFrontRegardless()
+        settingsWindow.makeKeyAndOrderFront(nil)
         return
     }
     
@@ -296,10 +295,6 @@ func showSettingsWindow() {
     settingsWindow?.setContentSize(NSSize(width: 444, height: 424))
     settingsWindow?.center()
     settingsWindow?.makeKeyAndOrderFront(nil)
-
-    settingsWindow?.level = .floating
-    settingsWindow?.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
-    settingsWindow?.orderFrontRegardless()
 }
 
 func showAboutPanel() {
@@ -434,6 +429,7 @@ class Application: NSApplication {
         }
     
     @objc func openSettingsWindow() {
+        NSApp.activate(ignoringOtherApps: true)
         showSettingsWindow()
     }
 
