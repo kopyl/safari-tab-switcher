@@ -283,6 +283,9 @@ struct SettingsView: View {
             appState.columnOrder = val
         }
         .onChange(of: addStatusBarItemWhenAppMovesInBackground) { val in
+            if NSApp.activationPolicy() == .regular {
+                return
+            }
             statusBarItem?.isVisible = val
         }
         .padding(.top, 74)
