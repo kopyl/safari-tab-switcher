@@ -430,6 +430,10 @@ class Application: NSApplication {
     
     @objc func openSettingsWindow() {
         NSApp.activate(ignoringOtherApps: true)
+        
+        /// Making window key is needed to prevent shortcut recorder become focused
+        settingsWindow?.becomeKey()
+        
         showSettingsWindow()
     }
 
