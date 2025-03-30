@@ -8,11 +8,6 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
-Store.userDefaults.register(defaults: [
-    Store.moveAppOutOfBackgroundWhenSafariClosesStoreKey:
-        Store.moveAppOutOfBackgroundWhenSafariClosesDefaultValue
-])
-
 func putIntoBackground() {
     greetingWindow?.orderOut(nil)
     settingsWindow?.orderOut(nil)
