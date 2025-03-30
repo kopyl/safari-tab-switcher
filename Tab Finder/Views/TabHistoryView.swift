@@ -1,6 +1,7 @@
 import SwiftUI
 import KeyboardShortcuts
 import SafariServices.SFSafariExtensionManager
+import Combine
 
 func getToolTipText() -> String {
     return "Click to avoid closing this panel when you release \(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation ?? "your modifier key/s")"
@@ -143,6 +144,37 @@ func rerenderTabs() {
         }
 }
 
+
+class Favicons: ObservableObject {
+    @Published var icons: [String: NSImage] = [:]
+    private var cache = NSCache<NSString, NSImage>()
+    
+    static let shared = Favicons()
+
+    func fetchFavicon(for host: String) {
+        
+        let urlString = "https://icons.duckduckgo.com/ip3/\(host).ico"
+        guard let url = URL(string: urlString) else { return }
+        
+        if let cachedImage = cache.object(forKey: host as NSString) {
+            DispatchQueue.main.async {
+                self.icons[host] = cachedImage
+            }
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, let image = NSImage(data: data), error == nil else { return }
+            
+            self.cache.setObject(image, forKey: host as NSString)
+            
+            DispatchQueue.main.async {
+                self.icons[host] = image
+            }
+        }.resume()
+    }
+}
+
 struct TabItemView: View {
     @ObservedObject var state = appState
     let tab: Tab
@@ -166,8 +198,25 @@ struct TabItemView: View {
         }
     }
     
+    @StateObject private var favicons = Favicons.shared
+    
     var body: some View {
         HStack(alignment: .center) {
+        Group {
+            if let image = favicons.icons[tab.host] {
+                Image(nsImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    } else {
+                        ProgressView()
+                            .onAppear {
+                                favicons.fetchFavicon(for: tab.host)
+                            }
+                    }
+            }
+        .padding(.trailing, 17)
+            
             Text(firstColumn)
                 .font(.system(size: 18))
                 .foregroundStyle(
@@ -205,6 +254,8 @@ struct TabItemView: View {
 struct TabListView: View {
     @Binding var proxy: ScrollViewProxy?
     @ObservedObject var state = appState
+    
+    let favicons = Favicons()
     
     var body: some View {
         ScrollViewReader { _proxy in
