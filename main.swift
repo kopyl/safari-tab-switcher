@@ -8,7 +8,7 @@ let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?
 
-func startUsingTabFinder() {
+func putIntoBackground() {
     greetingWindow?.orderOut(nil)
     settingsWindow?.orderOut(nil)
     aboutPanel?.orderOut(nil)
@@ -99,7 +99,6 @@ func handleHotKeyPress() {
     rerenderTabs()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
     appState.currentInputSourceName = getCurrentInputSourceName()
-    startUsingTabFinder()
     appState.isTabsPanelOpen = true
     showTabsPanel()
 }
@@ -214,7 +213,7 @@ func showTabsPanel() {
     /// Maybe only ony thing helped – either moving .floating level setting here or addding .canJoinAllSpaces. to the collectionBehavior
     /// For me on macOS 15.x everything works with onlyt setting fullScreenPrimary. Sava haven't tried it yet
     tabsPanel?.level = .floating
-    tabsPanel?.collectionBehavior = [.fullScreenPrimary, .canJoinAllSpaces]
+    tabsPanel?.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
     
     tabsPanel?.makeKeyAndOrderFront(nil)
     

@@ -26,9 +26,9 @@ class Copy {
     class Onboarding {    
         static let description = "Switch easily between last open tabs in the same way you switch between last open apps"
         static let title = "Welcome to Tab Finder"
-        static let hideThisWindowButton = "Hide the app"
+        static let hideThisWindowButton = "Hide Tab Finder in Background"
         static let configureShortcutButton = "Change shortcut"
-        static let buttonHint = "This app must be open for the extension to work. To reopen the app, click on the extension icon in Safari"
+        static let buttonHint = "This app must be running for the extension to work. To reopen the app, click on the extension icon in Safari"
     }
     class Tooltips {
         static let inputSource = "Click to change the language of your input to a previous one. You can also change it by pressing \"space\" key when you haven't enetered your search query yet"

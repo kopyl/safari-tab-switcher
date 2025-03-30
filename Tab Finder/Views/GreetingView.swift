@@ -38,7 +38,7 @@ struct GreetingView: View {
                     }
                     .keyboardShortcut(.space, modifiers: [])
                     StyledButton(.primary, Copy.Onboarding.hideThisWindowButton, icon: "return") {
-                        startUsingTabFinder()
+                        putIntoBackground()
                     }
                     .keyboardShortcut(.return, modifiers: [])
                 }
@@ -49,9 +49,6 @@ struct GreetingView: View {
             }
             .padding(.bottom, 41)
             .padding(.horizontal, 41)
-        }
-        .onDisappear {
-            startUsingTabFinder()
         }
     }
 }
