@@ -32,11 +32,11 @@ struct Tab: Codable, Identifiable {
     var id: Int
     var renderIndex: Int
     var title: String = ""
-    private var _host: String = ""
+    public var url: URL?
     
     public var host: String {
         get {
-            formatHost(_host)
+            formatHost(url?.host ?? "")
         }
     }
     
@@ -50,7 +50,7 @@ struct Tab: Codable, Identifiable {
         if let activePage = await tab.activePage() {
             if let properties = await activePage.properties() {
                 title = properties.title ?? "No title"
-                _host = properties.url?.host ?? ""
+                url = properties.url
             }
         }
     }
