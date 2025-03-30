@@ -71,70 +71,105 @@ func rerenderTabs() {
         return
     }
     
-    let searchQuery = appState.searchQuery
-    let lowercaseQuery = searchQuery.lowercased()
-    
-    let matchingTabs = appState.savedTabs
-        .filter {
-            $0.host.localizedCaseInsensitiveContains(searchQuery) ||
-            $0.title.localizedCaseInsensitiveContains(searchQuery)
+    let searchQuery = appState.searchQuery.lowercased()
+    let searchWords = searchQuery.split(separator: " ").map { String($0) }
+
+    let matchingTabs = appState.savedTabs.filter { tab in
+        var title = tab.title
+        if tab.host == "" && tab.title == "" {
+            title = "no title"
         }
-    
-    let scoredTabs = matchingTabs.map { tab -> (tab: Tab, score: Int) in
-        let host = tab.host
-        var score = 0
         
+        let textToSearch = (tab.host + " " + title).lowercased()
+        return searchWords.allSatisfy { textToSearch.contains($0) }
+    }
+
+    let scoredTabs = matchingTabs.map { tab -> (tab: Tab, 	score: Int) in
+        let host = tab.host.lowercased()
+        
+        var title = tab.title.lowercased()
+        if tab.host == "" && tab.title == "" {
+            title = "no title"
+        }
+        
+        var score = 0
+
+        
+        func scoreForMatch(in text: String) -> Int {
+            var matchScore = 0
+            let textWords = text.split(separator: " ").map { String($0) }
+            
+            if searchWords.allSatisfy({ word in textWords.contains(where: { $0.contains(word) }) }) {
+                matchScore += 1
+            }
+
+            if text.contains(searchQuery) {
+                matchScore += 1
+            } else {
+                let orderedMatch = textWords.joined(separator: " ")
+                if orderedMatch.contains(searchQuery) {
+                    matchScore += 1
+                }
+            }
+            return matchScore
+        }
+        
+        score += scoreForMatch(in: host) * 1
+        score += scoreForMatch(in: title + " " + host)
+
         let hostParts = host.split(separator: ".")
         let domainZone = hostParts.last ?? ""
-        var reversedDomainParts: [String.SubSequence] = []
         
+        var domainParts: [String.SubSequence] = []
+        var reversedDomainParts: [String.SubSequence] = []
         if !hostParts.isEmpty {
-            var domainParts = hostParts
-            domainParts.removeLast() // Remove domain zone
+            domainParts = hostParts
+            domainParts.removeLast()
             reversedDomainParts = domainParts.reversed()
         }
         
-        var scoreMultiplier = 10
+        var scoreMultiplier = 50
         for (index, part) in reversedDomainParts.enumerated() {
-            scoreMultiplier = max(10 - index, 1)
+            if domainParts.count == 1 {
+                scoreMultiplier = 20
+            }
+            else if index == 0 {
+                scoreMultiplier = 10
+            }
+            else {
+                scoreMultiplier = 1
+            }
             
             if part == "" {
                 continue
             }
             
-            if part.starts(with: lowercaseQuery) {
+            if part.starts(with: searchQuery) {
                 score += 5 * scoreMultiplier
             }
-            else if part.localizedCaseInsensitiveContains(searchQuery) {
+            else if part.contains(searchQuery) {
                 score += 2
             }
         }
         
         if score == 0 {
-            if host.localizedCaseInsensitiveContains(searchQuery) {
+            if host.contains(searchQuery) {
                 score += 1
             }
         }
         
-        if domainZone.localizedCaseInsensitiveContains(searchQuery) {
+        if domainZone.contains(searchQuery) {
             score += 1
         }
-        
-        if tab.title.starts(with: searchQuery) {
-            score += 4
-        }
-        else if tab.title.localizedCaseInsensitiveContains(searchQuery) {
-            score += 1
-        }
-        
+
         return (tab, score)
     }
-    
+
     let filteredAndSorted = scoredTabs
         .filter { $0.score > 0 }
         .sorted { $0.score > $1.score }
         .map { $0.tab }
-    
+
     appState.renderedTabs = filteredAndSorted
         .enumerated()
         .map { index, tab in
