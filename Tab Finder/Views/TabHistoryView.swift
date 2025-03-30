@@ -195,19 +195,38 @@ struct TabItemView: View {
     
     @StateObject private var favicons = Favicons.shared
     
+    @Environment(\.colorScheme) private var colorScheme
+    var greyInDarkAppearance: Color = .white.opacity(0.1)
+    var greyInLightAppearance: Color = .black.opacity(0.1)
+    var grey: Color {
+        colorScheme == .dark ? greyInDarkAppearance : greyInLightAppearance
+    }
+    
+    func placeholderImage(tab: Tab) -> some View {
+        Text(tab.host.first?.uppercased() ?? "N")
+            .opacity(0.7)
+            .font(.system(size: 6))
+            .frame(width: 16, height: 16)
+            .background(grey)
+            .cornerRadius(3)
+    }
+    
     var body: some View {
         HStack(alignment: .center) {
         Group {
-            if let image = favicons.icons[tab.host] {
+            if tab.host == "" {
+                placeholderImage(tab: tab)
+            }
+            else if let image = favicons.icons[tab.host] {
                 Image(nsImage: image)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 16, height: 16)
                     } else {
-                        ProgressView()
-                            .onAppear {
-                                favicons.fetchFavicon(for: tab.host)
-                            }
+                        placeholderImage(tab: tab)
+                        .onAppear {
+                            favicons.fetchFavicon(for: tab.host)
+                        }
                     }
             }
         .padding(.trailing, 17)
