@@ -155,20 +155,28 @@ class Favicons: ObservableObject {
             return
         }
         cache.insert(host)
-        
-        let urlString = "https://icons.duckduckgo.com/ip3/\(host).ico"
+
+        let primaryURL = "https://icons.duckduckgo.com/ip3/\(host).ico"
+        let fallbackURL = "https://www.google.com/s2/favicons?sz=32&domain=\(host)"
+
+        fetchImage(from: primaryURL, for: host, fallbackURL: fallbackURL)
+    }
+
+    private func fetchImage(from urlString: String, for host: String, fallbackURL: String? = nil) {
         guard let url = URL(string: urlString) else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
-            if let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode == 404 {
-                    return
-                } else if !(200...299).contains(httpResponse.statusCode) {
-                    return
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
+                
+                if let fallbackURL = fallbackURL {
+                    self.fetchImage(from: fallbackURL, for: host)
                 }
+                return
             }
 
-            guard let data = data, let image = NSImage(data: data), error == nil else { return }
+            guard let data = data, let image = NSImage(data: data), error == nil else {
+                return
+            }
 
             DispatchQueue.main.async {
                 self.icons[host] = image
