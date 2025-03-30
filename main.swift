@@ -348,7 +348,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         supportMenuItem.submenu = supportSubmenu
         Application.addSupportItems(to: supportSubmenu)
         
-        Application.addSupportMenuItem(to: menu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
+        Application.addLinkMenuItem(to: menu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
         
         menu.addItem(NSMenuItem.separator())
         
@@ -388,7 +388,7 @@ class Application: NSApplication {
         )
         
         appMenu.addItem(.separator())
-        Application.addSupportMenuItem(to: appMenu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
+        Application.addLinkMenuItem(to: appMenu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
         appMenu.addItem(.separator())
         
         appMenu.addItem(NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
@@ -423,16 +423,16 @@ class Application: NSApplication {
     }
     
     public static func addSupportItems(to menu: NSMenu) {
-        Application.addSupportMenuItem(to: menu, title: "Email", webURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
-        Application.addSupportMenuItem(to: menu, title: "Telegram", webURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
-        Application.addSupportMenuItem(to: menu, title: "Discord", webURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
-        Application.addSupportMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
-        Application.addSupportMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
-        Application.addSupportMenuItem(to: menu, title: "x.com", webURL: "https://x.com/TabFinderMac")
-        Application.addSupportMenuItem(to: menu, title: "GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
+        Application.addLinkMenuItem(to: menu, title: "Email", webURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
+        Application.addLinkMenuItem(to: menu, title: "Telegram", webURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
+        Application.addLinkMenuItem(to: menu, title: "Discord", webURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        Application.addLinkMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
+        Application.addLinkMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
+        Application.addLinkMenuItem(to: menu, title: "x.com", webURL: "https://x.com/TabFinderMac")
+        Application.addLinkMenuItem(to: menu, title: "GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher/issues/new")
     }
     
-    public static func addSupportMenuItem(to menu: NSMenu, title: String, webURL: String? = nil, appURL: String? = nil) {
+    public static func addLinkMenuItem(to menu: NSMenu, title: String, webURL: String? = nil, appURL: String? = nil) {
             let menuItem = NSMenuItem(title: title, action: #selector(openSupportLink(_:)), keyEquivalent: "")
             menuItem.representedObject = [ "webAppURL": webURL as Any, "appURL": appURL as Any ]
             menu.addItem(menuItem)
