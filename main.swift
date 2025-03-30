@@ -307,10 +307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         tabsPanel?.orderOut(nil)
-        for window in sender.windows {
-            if window.identifier == tabsPanelID { continue }
-            window.makeKeyAndOrderFront(nil)
-        }
+        greetingWindow?.makeKeyAndOrderFront(nil)
         return true
     }
     
