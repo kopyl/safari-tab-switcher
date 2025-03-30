@@ -386,6 +386,11 @@ class Application: NSApplication {
            action: #selector(openSettingsWindow),
            keyEquivalent: ",")
         )
+        
+        appMenu.addItem(.separator())
+        Application.addSupportMenuItem(to: appMenu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
+        appMenu.addItem(.separator())
+        
         appMenu.addItem(NSMenuItem(title: "Quit \(ProcessInfo.processInfo.processName)",
            action: #selector(terminate(_:)),
            keyEquivalent: "q")
