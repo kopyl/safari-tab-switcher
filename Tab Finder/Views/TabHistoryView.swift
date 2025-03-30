@@ -147,7 +147,7 @@ func rerenderTabs() {
 
 class Favicons: ObservableObject {
     @Published var icons: [String: NSImage] = [:]
-    private var cache: Array<String> = []
+    private var cache: Set<String> = []
     
     static let shared = Favicons()
 
@@ -155,7 +155,7 @@ class Favicons: ObservableObject {
         if cache.contains(host) {
             return
         }
-        cache.append(host)
+        cache.insert(host)
         
         let urlString = "https://icons.duckduckgo.com/ip3/\(host).ico"
         guard let url = URL(string: urlString) else { return }
