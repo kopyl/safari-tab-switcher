@@ -341,23 +341,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         guard let button = statusBarItem?.button else { return }
         button.image = NSImage(named: "status-bar-icon")
-        button.action = #selector(statusBarButtonClicked(_:))
-        button.target = self
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(openSettingsWindow), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(Application.openSettingsWindow), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit Tab Finder", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusBarItem?.menu = menu
         statusBarItem?.isVisible = false
-    }
-    
-    @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
-        statusBarItem?.menu?.popUp(positioning: nil, at: sender.frame.origin, in: sender.superview)
-    }
-    
-    @objc func openSettingsWindow() {
-        showSettingsWindow()
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
