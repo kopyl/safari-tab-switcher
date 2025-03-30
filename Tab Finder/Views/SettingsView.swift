@@ -218,7 +218,7 @@ struct SettingsView: View {
             
             VStack(alignment: .leading, spacing: 20) {
                 Toggle(isOn: $addStatusBarItemWhenAppMovesInBackground) {
-                    styledText("Add status bar item when app hides in background")
+                    styledText("Show menu bar icon when app hides in background")
                         .padding(.leading, 5)
                 }
                 
