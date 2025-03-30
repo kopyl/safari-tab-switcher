@@ -222,13 +222,13 @@ struct TabItemView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 16, height: 16)
-                    } else {
-                        placeholderImage(tab: tab)
-                        .onAppear {
-                            favicons.fetchFavicon(for: tab.host)
-                        }
-                    }
+            } else {
+                placeholderImage(tab: tab)
+                .onAppear {
+                    favicons.fetchFavicon(for: tab.host)
+                }
             }
+        }
         .padding(.trailing, 12)
             
             Text(firstColumn)
