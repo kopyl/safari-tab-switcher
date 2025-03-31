@@ -123,7 +123,6 @@ struct ColorPickerView: View {
     }
 }
 
-
 struct SettingsView: View {
     @AppStorage(
         Store.isTabsSwitcherNeededToStayOpenStoreKey,
