@@ -337,6 +337,7 @@ struct TabItemView: View {
                 Button() {
                     state.indexOfTabToSwitchTo = state.indexOfTabToSwitchTo + 1
                     state.renderedTabs = state.renderedTabs.filter { $0.id != tab.id }
+                    state.savedTabs = state.savedTabs.filter { $0.id != tab.id }
                     Task {
                         await closeTab(tab: tab)
                     }
@@ -419,7 +420,6 @@ struct TabHistoryView: View {
                     Rectangle().fill(hexToColor(userSelectedAccentColor).opacity(0.15))
                 }
                 VStack {
-                    let tabsCount = appState.savedTabs.count
                     HStack(spacing: 0) {
                         HStack(spacing: 10){
                             Image(systemName: "magnifyingglass")
@@ -429,7 +429,7 @@ struct TabHistoryView: View {
                                 text: $appState.searchQuery,
                                 placeholder: getSearchFieldPlaceholderText(
                                     by: appState.currentInputSourceName,
-                                    tabsCount: tabsCount
+                                    tabsCount: appState.savedTabs.count
                                 )
                             )
                         }
