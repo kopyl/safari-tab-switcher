@@ -245,8 +245,6 @@ class Favicons: ObservableObject {
 }
 
 struct TabItemView: View {
-    @State var isHovering: Bool = false
-    
     @ObservedObject var state = appState
     let tab: Tab
     var firstColumn: String {
@@ -352,7 +350,7 @@ struct TabItemView: View {
                 }
                 .buttonStyle(.plain)
                 .offset(x: -12, y: -3)
-                .opacity(isHovering ? 1 : 0)
+                .opacity(tab.renderIndex == state.hoverinTabIndex ? 1 : 0)
             },
             alignment: .trailing)
         .onTapGesture {
@@ -360,9 +358,12 @@ struct TabItemView: View {
             hideTabsPanelAndSwitchTabs()
         }
         .onMouseMove { isHovering in
-            self.isHovering = isHovering
             if isHovering {
+                state.hoverinTabIndex = tab.renderIndex
                 state.indexOfTabToSwitchTo = tab.renderIndex
+            }
+            else {
+                state.hoverinTabIndex = nil
             }
         }
     }
