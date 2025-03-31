@@ -247,7 +247,10 @@ class Favicons: ObservableObject {
 struct TabItemView: View {
     @ObservedObject var state = appState
     let tab: Tab
+    
+    @Binding var hoverinTabIndex: Int?
     @Binding var hoveredTabCloseButtonIndex: Int?
+    
     var firstColumn: String {
         if tab.host == "" {
             return "No title"
@@ -352,7 +355,7 @@ struct TabItemView: View {
                             hoveredTabCloseButtonIndex = nil
                         }
                     }
-                .opacity(tab.renderIndex == state.hoverinTabIndex ? 1 : 0)
+                .opacity(tab.renderIndex == hoverinTabIndex ? 1 : 0)
                 .frame(width: 22, height: 22)
                 .overlay(
                     Rectangle().fill(lightGrey    )
@@ -379,11 +382,11 @@ struct TabItemView: View {
         }
         .onMouseMove { isHovering in
             if isHovering {
-                state.hoverinTabIndex = tab.renderIndex
+                hoverinTabIndex = tab.renderIndex
                 state.indexOfTabToSwitchTo = tab.renderIndex
             }
             else {
-                state.hoverinTabIndex = nil
+                hoverinTabIndex = nil
             }
         }
     }
@@ -394,6 +397,7 @@ struct TabListView: View {
     @ObservedObject var state = appState
     
     @State var hoveredTabCloseButtonIndex: Int? = nil
+    @State var hoverinTabIndex: Int? = nil
     
     let favicons = Favicons()
     
@@ -404,6 +408,7 @@ struct TabListView: View {
                     ForEach(state.renderedTabs, id: \.renderIndex) { tab in
                         TabItemView(
                             tab: tab,
+                            hoverinTabIndex: $hoverinTabIndex,
                             hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
                         )
                     }

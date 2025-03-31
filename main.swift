@@ -144,7 +144,6 @@ class AppState: ObservableObject {
     @Published var columnOrder: ColumnOrder = Store.columnOrder
     @Published var currentInputSourceName = getCurrentInputSourceName()
     @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
-    @Published var hoverinTabIndex: Int? = nil
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
