@@ -255,7 +255,7 @@ struct TabItemView: View {
     func placeholderImage(tab: Tab) -> some View {
         Text(tab.host.first?.uppercased() ?? "N")
             .opacity(0.7)
-            .font(.system(size: 6))
+            .font(.system(size: 10))
             .frame(width: 16, height: 16)
             .background(grey)
             .cornerRadius(3)
