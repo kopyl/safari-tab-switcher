@@ -21,12 +21,36 @@ func switchTabs() async {
     }
 }
 
+func closeTab(tab: Tab) async {
+    do {
+        removeSpecificTabFromHistory(tab: tab)
+        try await SFSafariApplication.dispatchMessage(
+            withName: "closetab",
+            toExtensionWithIdentifier: extensionBundleIdentifier,
+            userInfo: ["id": String(tab.id)]
+        )
+    } catch let error {
+        log("Dispatching message to the extension resulted in an error: \(error)")
+    }
+}
+
 func addSpecificTabToHistory(tab: Tab) {
     var windows = Store.windows
     guard var tabsMutated = windows.windows.last?.tabs else { return }
 
     tabsMutated.append(tab)
 
+    let currentWindow = _Window(tabs: tabsMutated)
+    windows.append(currentWindow)
+    Store.windows = windows
+}
+
+func removeSpecificTabFromHistory(tab: Tab) {
+    var windows = Store.windows
+    guard var tabsMutated = windows.windows.last?.tabs else { return }
+    
+    tabsMutated = tabsMutated.filter { $0.id != tab.id }
+    
     let currentWindow = _Window(tabs: tabsMutated)
     windows.append(currentWindow)
     Store.windows = windows
@@ -221,6 +245,8 @@ class Favicons: ObservableObject {
 }
 
 struct TabItemView: View {
+    @State var isHovering: Bool = false
+    
     @ObservedObject var state = appState
     let tab: Tab
     var firstColumn: String {
@@ -297,20 +323,43 @@ struct TabItemView: View {
         }
         .lineLimit(1)
         .padding(.top, 18).padding(.bottom, 18)
-        .padding(.leading, 21).padding(.trailing, 21)
+        .padding(.leading, 21).padding(.trailing, 41)
         .background(
             .currentTabBg.opacity(tab.renderIndex == state.indexOfTabToSwitchTo ? 1 : 0)
         )
         .id(tab.renderIndex)
-        .contentShape(Rectangle())
         .cornerRadius(6)
         .frame(minWidth: 0, maxWidth: .infinity)
+        .padding(.bottom, 4)
+        .contentShape(Rectangle())
+        .overlay(
+            VStack {
+                Button() {
+                    state.indexOfTabToSwitchTo = state.indexOfTabToSwitchTo + 1
+                    state.renderedTabs = state.renderedTabs.filter { $0.id != tab.id }
+                    Task {
+                        await closeTab(tab: tab)
+                    }
+                } label: {
+                    Label("", systemImage: "xmark.square.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                        .opacity(0.8)
+                }
+                .buttonStyle(.plain)
+                .offset(x: -12, y: -3)
+                .opacity(isHovering ? 1 : 0)
+            },
+            alignment: .trailing)
         .onTapGesture {
             state.indexOfTabToSwitchTo = tab.renderIndex
             hideTabsPanelAndSwitchTabs()
         }
-        .onMouseMove {
-            state.indexOfTabToSwitchTo = tab.renderIndex
+        .onMouseMove { isHovering in
+            self.isHovering = isHovering
+            if isHovering {
+                state.indexOfTabToSwitchTo = tab.renderIndex
+            }
         }
     }
 }
@@ -328,9 +377,7 @@ struct TabListView: View {
                     ForEach(state.renderedTabs, id: \.renderIndex) { tab in
                         TabItemView(tab: tab)
                     }
-                    .padding(.bottom, 4)
                 }
-                /// https://github.com/kopyl/safari-tab-switcher/issues/6#issuecomment-2742046807
                 .padding(.horizontal, 4)
             }
             .onAppear {

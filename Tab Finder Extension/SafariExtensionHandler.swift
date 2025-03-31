@@ -9,6 +9,14 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
     await tabs[id].activate()
 }
 
+func closeTab(id: Int, tabs: [SFSafariTab]) {
+    guard tabs.indices.contains(id) else {
+        log("Previous tab ID \(id) is out of range.")
+        return
+    }
+    tabs[id].close()
+}
+
 func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var tabsFromNavigationHistoryMutated = tabsFromNavigationHistory
     var tabsToPrepend = Array<Tab?>(repeating: nil, count: tabs.count)
@@ -100,6 +108,7 @@ func saveWindows(tabs: Tabs) async {
 
 enum AppCommands: String {
     case switchtabto
+    case closetab
 }
 
 class SafariExtensionViewController: SFSafariExtensionViewController {
@@ -119,6 +128,16 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tabs = await activeWindow.allTabs()
                 await switchToTab(id: tabId, tabs: tabs)
             }
+        case .closetab:
+            guard let tabIdString = userInfo?["id"] as? String,
+                  let tabId = Int(tabIdString) else { return }
+            
+            Task{
+                guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
+                let tabs = await activeWindow.allTabs()
+                closeTab(id: tabId, tabs: tabs)
+            }
+            
         }
     }
     
