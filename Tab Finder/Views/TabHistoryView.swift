@@ -270,8 +270,15 @@ struct TabItemView: View {
     @StateObject private var favicons = Favicons.shared
     
     @Environment(\.colorScheme) private var colorScheme
-    var greyInDarkAppearance: Color = .white.opacity(0.1)
-    var greyInLightAppearance: Color = .black.opacity(0.1)
+    
+    var lightGreyInDarkAppearance: Color = .white.opacity(0.1)
+    var lightGreyInLightAppearance: Color = .black.opacity(0.1)
+    var lightGrey: Color {
+        colorScheme == .dark ? lightGreyInDarkAppearance : lightGreyInLightAppearance
+    }
+    
+    var greyInDarkAppearance: Color = .white.opacity(0.8)
+    var greyInLightAppearance: Color = .black.opacity(0.5)
     var grey: Color {
         colorScheme == .dark ? greyInDarkAppearance : greyInLightAppearance
     }
@@ -281,7 +288,7 @@ struct TabItemView: View {
             .opacity(0.7)
             .font(.system(size: 10))
             .frame(width: 16, height: 16)
-            .background(grey)
+            .background(lightGrey)
             .cornerRadius(3)
     }
     
@@ -345,8 +352,7 @@ struct TabItemView: View {
                 } label: {
                     Label("", systemImage: "xmark.square.fill")
                         .font(.system(size: 16))
-                        .foregroundStyle(.white)
-                        .opacity(0.8)
+                        .foregroundStyle(grey)
                 }
                 .buttonStyle(.plain)
                 .offset(x: -12, y: -3)
