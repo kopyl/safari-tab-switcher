@@ -426,7 +426,8 @@ class Application: NSApplication {
     public static func addSupportItems(to menu: NSMenu) {
         Application.addLinkMenuItem(to: menu, title: "Email", webURL: "mailto:kopyloleh@gmail.com?subject=Tab%20Finder%20Support&body=Hello,%20I'm%20writing%20regarding%20Tab%20Finder...")
         Application.addLinkMenuItem(to: menu, title: "Telegram", webURL: "https://t.me/kopyl", appURL: "tg://resolve?domain=kopyl")
-        Application.addLinkMenuItem(to: menu, title: "Discord", webURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        Application.addLinkMenuItem(to: menu, title: "Discord DM", webURL: "https://discordapp.com/users/346770476992954369", appURL: "discord://discordapp.com/users/346770476992954369")
+        Application.addLinkMenuItem(to: menu, title: "Discord Community", webURL: "https://discord.gg/PSAcv7QfRR")
         Application.addLinkMenuItem(to: menu, title: "iMessage", appURL: "sms:+380507308141")
         Application.addLinkMenuItem(to: menu, title: "+380507308141", appURL: "facetime:+380507308141")
         Application.addLinkMenuItem(to: menu, title: "x.com", webURL: "https://x.com/TabFinderMac")
