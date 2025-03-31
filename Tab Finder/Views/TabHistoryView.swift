@@ -332,11 +332,14 @@ struct TabItemView: View {
         .frame(minWidth: 0, maxWidth: .infinity)
         .padding(.bottom, 4)
         .contentShape(Rectangle())
+        .transition(.move(edge: .bottom))
         .overlay(
             VStack {
                 Button() {
                     state.indexOfTabToSwitchTo = state.indexOfTabToSwitchTo + 1
-                    state.renderedTabs = state.renderedTabs.filter { $0.id != tab.id }
+                    withAnimation(.snappy(duration: 0.2)) {
+                        state.renderedTabs = state.renderedTabs.filter { $0.id != tab.id }
+                    }
                     state.savedTabs = state.savedTabs.filter { $0.id != tab.id }
                     Task {
                         await closeTab(tab: tab)
