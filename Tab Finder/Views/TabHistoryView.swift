@@ -247,6 +247,7 @@ class Favicons: ObservableObject {
 struct TabItemView: View {
     @ObservedObject var state = appState
     let tab: Tab
+    @Binding var hoveredTabCloseButtonIndex: Int?
     var firstColumn: String {
         if tab.host == "" {
             return "No title"
@@ -340,7 +341,27 @@ struct TabItemView: View {
         .transition(.move(edge: .bottom))
         .overlay(
             VStack {
-                Button() {
+                Image(systemName: "xmark.square.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(grey)
+                    .onMouseMove { isHovering in
+                        if isHovering {
+                            hoveredTabCloseButtonIndex = tab.renderIndex
+                        }
+                        else {
+                            hoveredTabCloseButtonIndex = nil
+                        }
+                    }
+                .opacity(tab.renderIndex == state.hoverinTabIndex ? 1 : 0)
+                .frame(width: 22, height: 22)
+                .overlay(
+                    Rectangle().fill(lightGrey    )
+                        .frame(width: 20, height: 20)
+                        .cornerRadius(4)
+                        .opacity(tab.renderIndex == hoveredTabCloseButtonIndex ? 1 : 0)
+                )
+                .offset(x: -18, y: -2)
+                .onTapGesture {
                     state.indexOfTabToSwitchTo = state.indexOfTabToSwitchTo + 1
                     withAnimation(.snappy(duration: 0.2)) {
                         state.renderedTabs = state.renderedTabs.filter { $0.id != tab.id }
@@ -349,14 +370,7 @@ struct TabItemView: View {
                     Task {
                         await closeTab(tab: tab)
                     }
-                } label: {
-                    Label("", systemImage: "xmark.square.fill")
-                        .font(.system(size: 16))
-                        .foregroundStyle(grey)
                 }
-                .buttonStyle(.plain)
-                .offset(x: -12, y: -3)
-                .opacity(tab.renderIndex == state.hoverinTabIndex ? 1 : 0)
             },
             alignment: .trailing)
         .onTapGesture {
@@ -379,6 +393,8 @@ struct TabListView: View {
     @Binding var proxy: ScrollViewProxy?
     @ObservedObject var state = appState
     
+    @State var hoveredTabCloseButtonIndex: Int? = nil
+    
     let favicons = Favicons()
     
     var body: some View {
@@ -386,7 +402,10 @@ struct TabListView: View {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 0) {
                     ForEach(state.renderedTabs, id: \.renderIndex) { tab in
-                        TabItemView(tab: tab)
+                        TabItemView(
+                            tab: tab,
+                            hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
+                        )
                     }
                 }
                 .padding(.horizontal, 4)
