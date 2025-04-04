@@ -380,15 +380,15 @@ struct TabItemView: View {
             state.indexOfTabToSwitchTo = tab.renderIndex
             hideTabsPanelAndSwitchTabs()
         }
-        .onMouseMove { isHovering in
-            if isHovering {
-                hoverinTabIndex = tab.renderIndex
-                state.indexOfTabToSwitchTo = tab.renderIndex
-            }
-            else {
-                hoverinTabIndex = nil
-            }
-        }
+//        .onMouseMove { isHovering in
+//            if isHovering {
+//                hoverinTabIndex = tab.renderIndex
+//                state.indexOfTabToSwitchTo = tab.renderIndex
+//            }
+//            else {
+//                hoverinTabIndex = nil
+//            }
+//        }
     }
 }
 
@@ -402,22 +402,12 @@ struct TabListView: View {
     let favicons = Favicons()
     
     var body: some View {
-        ScrollViewReader { _proxy in
-            ScrollView(.vertical) {
-                LazyVStack(spacing: 0) {
-                    ForEach(state.renderedTabs, id: \.renderIndex) { tab in
-                        TabItemView(
-                            tab: tab,
-                            hoverinTabIndex: $hoverinTabIndex,
-                            hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
-                        )
-                    }
-                }
-                .padding(.horizontal, 4)
-            }
-            .onAppear {
-                proxy = _proxy
-            }
+        StackViewWrapper(items: state.renderedTabs, id: \.renderIndex) { tab in
+            TabItemView(
+                tab: tab,
+                hoverinTabIndex: $hoverinTabIndex,
+                hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
+            )
         }
     }
 }
@@ -574,6 +564,57 @@ struct TabHistoryView: View {
             hideTabsPanelAndSwitchTabs()
         case .escape:
             hideTabsPanel(withoutAnimation: true)
+        }
+    }
+}
+
+struct StackViewWrapper<T, Content: View>: NSViewRepresentable where T: Hashable {
+    let items: [T]
+    let id: KeyPath<T, Int>
+    let content: (T) -> Content
+    
+    func makeNSView(context: Context) -> NSScrollView {
+        let scrollView = NSScrollView()
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.documentView = stackView
+        
+        scrollView.drawsBackground = false
+        
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor),
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        ])
+        
+        stackView.layer?.masksToBounds = true
+        
+        return scrollView
+    }
+    
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        guard let stackView = scrollView.documentView as? NSStackView else { return }
+
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        for item in items {
+            let hostingView = NSHostingView(rootView: content(item))
+            hostingView.translatesAutoresizingMaskIntoConstraints = false
+            stackView.addArrangedSubview(hostingView)
+            
+            NSLayoutConstraint.activate([
+                hostingView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+                hostingView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor)
+            ])
+        }
+        
+        DispatchQueue.main.async {
+            let contentView = scrollView.contentView
+            contentView.scroll(to: .zero)
+            scrollView.reflectScrolledClipView(contentView)
         }
     }
 }

@@ -28,7 +28,7 @@ func formatHost(_ host: String) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
-struct Tab: Codable, Identifiable {
+struct Tab: Codable, Identifiable, Hashable {
     var id: Int
     var renderIndex: Int
     var title: String = ""
