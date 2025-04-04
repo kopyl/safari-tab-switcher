@@ -2,7 +2,6 @@ import SwiftUI
 import Combine
 
 class AppKitTabHistoryView: NSViewController {
-    let items = Array(0..<30).map { String($0) }
     private var cancellables: Set<AnyCancellable> = []
     
     private var scrollView: NSScrollView!
