@@ -1,6 +1,12 @@
 import SwiftUI
 import Combine
 
+class FlippedView: NSView {
+    override var isFlipped: Bool {
+        return true
+    }
+}
+
 class AppKitTabHistoryView: NSViewController {
     private var cancellables: Set<AnyCancellable> = []
     
@@ -25,7 +31,9 @@ class AppKitTabHistoryView: NSViewController {
         stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        scrollView.documentView = stackView
+        let flippedView = FlippedView(frame: scrollView.bounds)
+        flippedView.addSubview(stackView)
+        scrollView.documentView = flippedView
         
         appState.$renderedTabs
             .sink { [weak stackView] newTabs in

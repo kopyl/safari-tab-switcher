@@ -244,7 +244,7 @@ class Favicons: ObservableObject {
     }
 }
 
-struct TabItemView: View {
+private struct TabItemView: View {
     @ObservedObject var state = appState
     let tab: Tab
     
