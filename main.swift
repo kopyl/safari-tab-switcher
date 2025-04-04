@@ -189,6 +189,17 @@ class Panel: NSPanel {
         self.contentViewController = NSHostingController(rootView: view)
     }
     
+    init(view: some NSViewController, styleMask: NSWindow.StyleMask = [.nonactivatingPanel]) {
+        super.init(
+            contentRect: .zero,
+            styleMask: styleMask,
+            backing: .buffered,
+            defer: false
+        )
+        self.titlebarAppearsTransparent = true
+        self.contentViewController = view
+    }
+    
     override var canBecomeKey: Bool {
         return true
     }
@@ -212,10 +223,10 @@ func showGreetingWindow() {
 
 func createTabsPanel() {
     tabsPanel = Panel(
-        view: TabHistoryView(
-            appState: appState
-        )
+        view: AppKitTabHistoryView()
     )
+    
+//    AppKitTabHistoryView
     
     tabsPanel?.backgroundColor = .clear
     tabsPanel?.contentView?.layer?.cornerRadius = 8
