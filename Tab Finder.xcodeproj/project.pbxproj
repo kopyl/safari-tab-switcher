@@ -148,11 +148,11 @@
 		48F9D6BD2D74E0A200DEE99E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				48731FB52D9F854D001AE594 /* TabHistoryViewAppKit.swift */,
 				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
 				48F9D6C52D74E38B00DEE99E /* SettingsView.swift */,
 				48751CE82D8FC53B00319882 /* AboutView.swift */,
 				48F9D6BE2D74E0D400DEE99E /* TabHistoryView.swift */,
+				48731FB52D9F854D001AE594 /* TabHistoryViewAppKit.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
