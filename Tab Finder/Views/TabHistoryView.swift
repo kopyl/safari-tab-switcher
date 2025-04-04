@@ -108,7 +108,7 @@ func rerenderTabs() {
         return searchWords.allSatisfy { textToSearch.contains($0) }
     }
 
-    let scoredTabs = matchingTabs.map { tab -> (tab: Tab, 	score: Int) in
+    let scoredTabs = matchingTabs.map { tab -> (tab: Tab,     score: Int) in
         let host = tab.host.lowercased()
         
         var title = tab.title.lowercased()
@@ -402,12 +402,22 @@ struct TabListView: View {
     let favicons = Favicons()
     
     var body: some View {
-        ForEach(state.renderedTabs, id: \.renderIndex) { tab in
-            TabItemView(
-                tab: tab,
-                hoverinTabIndex: $hoverinTabIndex,
-                hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
-            )
+        ScrollViewReader { _proxy in
+            ScrollView(.vertical) {
+                LazyVStack(spacing: 0) {
+                    ForEach(state.renderedTabs, id: \.renderIndex) { tab in
+                        TabItemView(
+                            tab: tab,
+                            hoverinTabIndex: $hoverinTabIndex,
+                            hoveredTabCloseButtonIndex: $hoveredTabCloseButtonIndex
+                        )
+                    }
+                }
+                .padding(.horizontal, 4)
+            }
+            .onAppear {
+                proxy = _proxy
+            }
         }
     }
 }
