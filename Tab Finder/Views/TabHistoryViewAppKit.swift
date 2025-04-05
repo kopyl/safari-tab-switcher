@@ -41,7 +41,7 @@ class AppKitTabHistoryView: NSViewController {
                 }
                 
                 let height = stackView?.fittingSize.height ?? 0
-                scrollView.documentView?.frame.size = CGSize(width:     scrollView.contentSize.width, height: height)
+                scrollView.documentView?.frame.size = CGSize(width: scrollView.contentSize.width, height: height)
             }
             .store(in: &cancellables)
         
