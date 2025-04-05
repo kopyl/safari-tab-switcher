@@ -10,8 +10,6 @@ class FlippedView: NSView {
 class AppKitTabHistoryView: NSViewController {
     private var cancellables: Set<AnyCancellable> = []
     
-    private var scrollView: NSScrollView!
-    
     override func loadView() {
         self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
     }
@@ -19,9 +17,7 @@ class AppKitTabHistoryView: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scrollView = NSScrollView(frame: view.bounds)
-        scrollView.hasVerticalScroller = true
-        scrollView.autoresizingMask = [.width, .height]
+        let scrollView = NSScrollView(frame: view.bounds)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         
@@ -43,14 +39,11 @@ class AppKitTabHistoryView: NSViewController {
                     let textView = NSTextField(labelWithString: item.host)
                     stackView?.addArrangedSubview(textView)
                 }
+                
+                let height = stackView?.fittingSize.height ?? 0
+                scrollView.documentView?.frame.size = CGSize(width:     scrollView.contentSize.width, height: height)
             }
             .store(in: &cancellables)
-        
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 10),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -10),
-            stackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 10)
-        ])
         
         
         NSLayoutConstraint.activate([
