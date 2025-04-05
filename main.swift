@@ -226,8 +226,6 @@ func createTabsPanel() {
         view: AppKitTabHistoryView()
     )
     
-//    AppKitTabHistoryView
-    
     tabsPanel?.backgroundColor = .clear
     tabsPanel?.contentView?.layer?.cornerRadius = 8
     
