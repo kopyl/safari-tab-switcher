@@ -54,8 +54,8 @@ class AppKitTabHistoryView: NSViewController {
                 stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
                 for tab in tabs {
-                    let label = NSTextField(labelWithString: tab.host)
-                    stackView?.addArrangedSubview(label)
+                    let tabView = NSHostingView(rootView: TabItemView(tab: tab))
+                    stackView?.addArrangedSubview(tabView)
                 }
 
                 let fittingHeight = stackView?.fittingSize.height ?? 0
