@@ -41,6 +41,8 @@ class AppKitTabHistoryView: NSViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        
+        view.wantsLayer = true
 
         bindTabs(to: stackView, in: scrollView)
     }
