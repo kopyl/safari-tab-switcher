@@ -17,43 +17,19 @@ class AppKitTabHistoryView: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let visualEffectView = NSVisualEffectView(frame: view.bounds)
-        visualEffectView.blendingMode = .behindWindow
-        visualEffectView.material = .sidebar
-        visualEffectView.state = .active
-        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        let visualEffectView = makeVisualEffectView()
+        let scrollView = makeScrollView()
+        let stackView = makeStackView()
+
         view.addSubview(visualEffectView)
-        
-        let scrollView = NSScrollView(frame: view.bounds)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.drawsBackground = false
         view.addSubview(scrollView)
-        
-        let stackView = NSStackView()
-        stackView.orientation = .vertical
-        stackView.alignment = .leading
-        stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let flippedView = FlippedView(frame: scrollView.bounds)
+
+        let flippedView = FlippedView()
+        flippedView.translatesAutoresizingMaskIntoConstraints = false
         flippedView.addSubview(stackView)
+
         scrollView.documentView = flippedView
-        
-        appState.$renderedTabs
-            .sink { [weak stackView] tabs in
-                stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
-                
-                for tab in tabs {
-                    let textView = NSTextField(labelWithString: tab.host)
-                    stackView?.addArrangedSubview(textView)
-                }
-                
-                let height = stackView?.fittingSize.height ?? 0
-                scrollView.documentView?.frame.size = CGSize(width: scrollView.contentSize.width, height: height)
-            }
-            .store(in: &cancellables)
-        
-        
+
         NSLayoutConstraint.activate([
             visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -63,7 +39,51 @@ class AppKitTabHistoryView: NSViewController {
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+
+        bindTabs(to: stackView, in: scrollView)
+    }
+    
+    private func bindTabs(to stackView: NSStackView, in scrollView: NSScrollView) {
+        appState.$renderedTabs
+            .receive(on: RunLoop.main)
+            .sink { [weak stackView] tabs in
+                stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+                for tab in tabs {
+                    let label = NSTextField(labelWithString: tab.host)
+                    stackView?.addArrangedSubview(label)
+                }
+
+                let fittingHeight = stackView?.fittingSize.height ?? 0
+                scrollView.documentView?.frame.size.height = fittingHeight
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func makeVisualEffectView() -> NSVisualEffectView {
+        let v = NSVisualEffectView()
+        v.blendingMode = .behindWindow
+        v.material = .sidebar
+        v.state = .active
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }
+
+    private func makeScrollView() -> NSScrollView {
+        let sv = NSScrollView()
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.drawsBackground = false
+        return sv
+    }
+
+    private func makeStackView() -> NSStackView {
+        let sv = NSStackView()
+        sv.orientation = .vertical
+        sv.alignment = .leading
+        sv.spacing = 10
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        return sv
     }
 }
