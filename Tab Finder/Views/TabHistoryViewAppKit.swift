@@ -32,11 +32,11 @@ class AppKitTabHistoryView: NSViewController {
         scrollView.documentView = flippedView
         
         appState.$renderedTabs
-            .sink { [weak stackView] newTabs in
+            .sink { [weak stackView] tabs in
                 stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
                 
-                for item in newTabs {
-                    let textView = NSTextField(labelWithString: item.host)
+                for tab in tabs {
+                    let textView = NSTextField(labelWithString: tab.host)
                     stackView?.addArrangedSubview(textView)
                 }
                 
