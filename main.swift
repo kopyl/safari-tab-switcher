@@ -227,10 +227,6 @@ func createTabsPanel() {
     )
     
     tabsPanel?.backgroundColor = .clear
-    tabsPanel?.contentView?.layer?.cornerRadius = 8
-    
-    /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
-    tabsPanel?.contentView?.layer?.masksToBounds = true
     
     tabsPanel?.setContentSize(NSSize(width: 800, height: 500))
     tabsPanel?.center()

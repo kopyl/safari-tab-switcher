@@ -42,7 +42,7 @@ class AppKitTabHistoryView: NSViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        view.wantsLayer = true
+        setBorderRadius()
 
         bindTabs(to: stackView, in: scrollView)
     }
@@ -62,6 +62,14 @@ class AppKitTabHistoryView: NSViewController {
                 scrollView.documentView?.frame.size.height = fittingHeight
             }
             .store(in: &cancellables)
+    }
+    
+    private func setBorderRadius() {
+        view.wantsLayer = true
+        view.layer?.cornerRadius = 12
+        
+        /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
+        view.layer?.masksToBounds = true
     }
     
     private func makeVisualEffectView() -> NSVisualEffectView {
