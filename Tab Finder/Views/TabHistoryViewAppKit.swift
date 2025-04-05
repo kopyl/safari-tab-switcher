@@ -17,8 +17,16 @@ class AppKitTabHistoryView: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let visualEffectView = NSVisualEffectView(frame: view.bounds)
+        visualEffectView.blendingMode = .behindWindow
+        visualEffectView.material = .sidebar
+        visualEffectView.state = .active
+        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(visualEffectView)
+        
         let scrollView = NSScrollView(frame: view.bounds)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.drawsBackground = false
         view.addSubview(scrollView)
         
         let stackView = NSStackView()
@@ -47,6 +55,11 @@ class AppKitTabHistoryView: NSViewController {
         
         
         NSLayoutConstraint.activate([
+            visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
