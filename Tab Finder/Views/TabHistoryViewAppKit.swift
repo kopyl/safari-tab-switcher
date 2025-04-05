@@ -56,6 +56,11 @@ class AppKitTabHistoryView: NSViewController {
                 for tab in tabs {
                     let tabView = NSHostingView(rootView: TabItemView(tab: tab))
                     stackView?.addArrangedSubview(tabView)
+                    
+                    NSLayoutConstraint.activate([
+                        tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                        tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                    ])
                 }
 
                 let fittingHeight = stackView?.fittingSize.height ?? 0
