@@ -22,11 +22,11 @@ func makeScrollView() -> NSScrollView {
     return sv
 }
 
-func makeStackView() -> NSStackView {
+func makeStackView(spacing: CGFloat = 0) -> NSStackView {
     let sv = NSStackView()
     sv.orientation = .vertical
     sv.alignment = .leading
-    sv.spacing = 10
+    sv.spacing = spacing
     sv.translatesAutoresizingMaskIntoConstraints = false
     return sv
 }

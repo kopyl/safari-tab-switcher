@@ -13,7 +13,7 @@ class AppKitTabHistoryView: NSViewController {
         
         let visualEffectView = makeVisualEffectView()
         scrollView = makeScrollView()
-        tabsStackView = makeStackView()
+        tabsStackView = makeStackView(spacing: 4)
         mainStackView = makeStackView()
         textView = makeTextField()
 
