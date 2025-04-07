@@ -78,7 +78,9 @@ class AppKitTabHistoryView: NSViewController {
         handleKeyRelease(event: event)
     }
     
-    private func scrollToSelectedTab() {
+    private func scrollToSelectedTabWithoutAnimation() {
+        /// https://kopyl.gitbook.io/tab-finder/appkit-rewrite/features/scrolling/current-implementation-specifics
+        
         guard let scrollView = view.subviews.compactMap({ $0 as? NSScrollView }).first,
               let stackView = scrollView.documentView?.subviews.first(where: { $0 is NSStackView }) as? NSStackView else {
             return
@@ -89,9 +91,16 @@ class AppKitTabHistoryView: NSViewController {
 
         let selectedTabView = stackView.arrangedSubviews[index]
         let tabFrameInContentView = selectedTabView.convert(selectedTabView.bounds, to: scrollView.contentView)
-
+        let visibleRect = scrollView.contentView.bounds
+        
         DispatchQueue.main.async {
-            scrollView.contentView.scrollToVisible(tabFrameInContentView)
+            if tabFrameInContentView.minY < visibleRect.minY {
+                scrollView.contentView.bounds.origin.y = tabFrameInContentView.minY
+            }
+            
+            if tabFrameInContentView.maxY > visibleRect.maxY {
+                scrollView.contentView.bounds.origin.y = tabFrameInContentView.maxY - visibleRect.height
+            }
         }
     }
     
@@ -110,17 +119,17 @@ class AppKitTabHistoryView: NSViewController {
         switch key {
         case .arrowUp, .backTick:
             appState.indexOfTabToSwitchTo -= 1
-            scrollToSelectedTab()
-        case .tab:		
+            scrollToSelectedTabWithoutAnimation()
+        case .tab:
             if event.modifierFlags.contains(.shift) {
                 appState.indexOfTabToSwitchTo -= 1
             } else {
                 appState.indexOfTabToSwitchTo += 1
             }
-            scrollToSelectedTab()
+            scrollToSelectedTabWithoutAnimation()
         case .arrowDown:
             appState.indexOfTabToSwitchTo += 1
-            scrollToSelectedTab()
+            scrollToSelectedTabWithoutAnimation()
         case .return:
             hideTabsPanelAndSwitchTabs()
         case .escape:
