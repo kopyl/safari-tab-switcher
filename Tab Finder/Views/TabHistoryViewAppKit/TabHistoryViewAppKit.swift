@@ -146,29 +146,4 @@ class AppKitTabHistoryView: NSViewController {
         /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
         view.layer?.masksToBounds = true
     }
-    
-    private func makeVisualEffectView() -> NSVisualEffectView {
-        let v = NSVisualEffectView()
-        v.blendingMode = .behindWindow
-        v.material = .sidebar
-        v.state = .active
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }
-
-    private func makeScrollView() -> NSScrollView {
-        let sv = NSScrollView()
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        sv.drawsBackground = false
-        return sv
-    }
-
-    private func makeStackView() -> NSStackView {
-        let sv = NSStackView()
-        sv.orientation = .vertical
-        sv.alignment = .leading
-        sv.spacing = 10
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
-    }
 }

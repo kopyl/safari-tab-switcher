@@ -1,0 +1,26 @@
+import Cocoa
+
+func makeVisualEffectView() -> NSVisualEffectView {
+    let v = NSVisualEffectView()
+    v.blendingMode = .behindWindow
+    v.material = .sidebar
+    v.state = .active
+    v.translatesAutoresizingMaskIntoConstraints = false
+    return v
+}
+
+func makeScrollView() -> NSScrollView {
+    let sv = NSScrollView()
+    sv.translatesAutoresizingMaskIntoConstraints = false
+    sv.drawsBackground = false
+    return sv
+}
+
+func makeStackView() -> NSStackView {
+    let sv = NSStackView()
+    sv.orientation = .vertical
+    sv.alignment = .leading
+    sv.spacing = 10
+    sv.translatesAutoresizingMaskIntoConstraints = false
+    return sv
+}
