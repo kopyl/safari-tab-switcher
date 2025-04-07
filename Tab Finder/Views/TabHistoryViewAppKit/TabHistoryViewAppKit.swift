@@ -42,6 +42,10 @@ class AppKitTabHistoryView: NSViewController {
             mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
+        /// wiithout thid SwiftUI is not able to respond on `.onTapGesture` events
+        flippedView.frame = CGRect(origin: .zero, size: CGSize(width: 792, height: 0))
+        flippedView.autoresizingMask = [.width]
+        
         setBorderRadius()
         
         setupKeyEventMonitor()

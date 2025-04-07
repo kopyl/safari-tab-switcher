@@ -339,5 +339,9 @@ struct TabItemView: View {
         .padding(.bottom, 4)
         .contentShape(Rectangle())
         .transition(.move(edge: .bottom))
+        .onTapGesture {
+            state.indexOfTabToSwitchTo = tab.renderIndex
+            hideTabsPanelAndSwitchTabs()
+        }
     }
 }
