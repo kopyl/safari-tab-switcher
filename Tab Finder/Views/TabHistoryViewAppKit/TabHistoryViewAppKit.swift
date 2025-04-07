@@ -8,21 +8,31 @@ class FlippedView: NSView {
 
 class AppKitTabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
-    private var stackView: NSStackView!
+    private var tabsStackView: NSStackView!
+    private var mainStackView: NSStackView!
+    private var textView: NSTextField!
+    
+    private var localEventMonitor: Any?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let visualEffectView = makeVisualEffectView()
         scrollView = makeScrollView()
-        stackView = makeStackView()
+        tabsStackView = makeStackView()
+        mainStackView = makeStackView()
+        textView = makeTextField()
 
         view.addSubview(visualEffectView)
-        view.addSubview(scrollView)
+        view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(textView)
+        mainStackView.addArrangedSubview(scrollView)
+        
+        mainStackView.translatesAutoresizingMaskIntoConstraints = false
 
         let flippedView = FlippedView()
         flippedView.translatesAutoresizingMaskIntoConstraints = false
-        flippedView.addSubview(stackView)
+        flippedView.addSubview(tabsStackView)
 
         scrollView.documentView = flippedView
 
@@ -32,27 +42,29 @@ class AppKitTabHistoryView: NSViewController {
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainStackView.topAnchor.constraint(equalTo: view.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
         setBorderRadius()
+        
+        setupKeyEventMonitor()
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        self.view.window?.makeFirstResponder(self.view)
+        self.view.window?.makeFirstResponder(textView)
         scrollToTop()
     }
     
     override func viewWillAppear() {
-        stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for tab in appState.renderedTabs {
             let tabView = NSHostingView(rootView: TabItemView(tab: tab))
-            stackView?.addArrangedSubview(tabView)
+            tabsStackView?.addArrangedSubview(tabView)
             
             NSLayoutConstraint.activate([
                 tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
@@ -60,40 +72,44 @@ class AppKitTabHistoryView: NSViewController {
             ])
         }
 
-        let fittingHeight = stackView?.fittingSize.height ?? 0
+        let fittingHeight = tabsStackView?.fittingSize.height ?? 0
         scrollView.documentView?.frame.size.height = fittingHeight
     }
     
-    override func keyDown(with event: NSEvent) {
-        handleNavigationKeyPresses(event: event)
-    }
-    
-    override func flagsChanged(with event: NSEvent) {
-        handleKeyRelease(event: event)
+    private func setupKeyEventMonitor() {
+        localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { [weak self] event in
+            if event.type == .keyDown {
+                
+                guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
+                if NavigationKeys(rawValue: event.keyCode) != nil {
+                    self?.handleNavigationKeyPresses(event: event)
+                    return nil
+                }
+
+            } else if event.type == .flagsChanged {
+                self?.handleKeyRelease(event: event)
+            }
+            return event
+        }
     }
     
     private func scrollToSelectedTabWithoutAnimation() {
         /// https://kopyl.gitbook.io/tab-finder/appkit-rewrite/features/scrolling/current-implementation-specifics
-        
-        guard let scrollView = view.subviews.compactMap({ $0 as? NSScrollView }).first,
-              let stackView = scrollView.documentView?.subviews.first(where: { $0 is NSStackView }) as? NSStackView else {
-            return
-        }
 
         let index = appState.indexOfTabToSwitchTo
-        guard stackView.arrangedSubviews.indices.contains(index) else { return }
+        guard tabsStackView.arrangedSubviews.indices.contains(index) else { return }
 
-        let selectedTabView = stackView.arrangedSubviews[index]
+        let selectedTabView = tabsStackView.arrangedSubviews[index]
         let tabFrameInContentView = selectedTabView.convert(selectedTabView.bounds, to: scrollView.contentView)
         let visibleRect = scrollView.contentView.bounds
         
         DispatchQueue.main.async {
             if tabFrameInContentView.minY < visibleRect.minY {
-                scrollView.contentView.bounds.origin.y = tabFrameInContentView.minY
+                self.scrollView.contentView.bounds.origin.y = tabFrameInContentView.minY
             }
             
             if tabFrameInContentView.maxY > visibleRect.maxY {
-                scrollView.contentView.bounds.origin.y = tabFrameInContentView.maxY - visibleRect.height
+                self.scrollView.contentView.bounds.origin.y = tabFrameInContentView.maxY - visibleRect.height
             }
         }
     }

@@ -24,3 +24,21 @@ func makeStackView() -> NSStackView {
     sv.translatesAutoresizingMaskIntoConstraints = false
     return sv
 }
+
+func makeTextField() -> NSTextField {
+    let textField = NSTextField()
+    textField.isBezeled = false
+    textField.isBordered = false
+    textField.backgroundColor = nil
+    textField.focusRingType = .none
+    textField.font = NSFont.systemFont(ofSize: 26)
+    textField.isEditable = true
+    textField.isSelectable = true
+    textField.delegate = nil
+    textField.placeholderAttributedString = NSAttributedString(string: "Placeholder", attributes: [
+        .foregroundColor: NSColor.white.withAlphaComponent(0.3),
+        .font: NSFont.systemFont(ofSize: 26)
+    ])
+    textField.translatesAutoresizingMaskIntoConstraints = false
+    return textField
+}
