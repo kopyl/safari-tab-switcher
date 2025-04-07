@@ -66,7 +66,9 @@ class AppKitTabHistoryView: NSViewController {
         if !text.isEmpty {
             scrollToTop()
         }
-        renderTabs()
+        DispatchQueue.main.async {
+            self.renderTabs()
+        }
     }
     
     override func viewDidAppear() {
@@ -80,22 +82,20 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     private func renderTabs() {
-        DispatchQueue.main.async {
-            self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        for tab in appState.renderedTabs {
+            let tabView = NSHostingView(rootView: TabItemView(tab: tab))
+            self.tabsStackView?.addArrangedSubview(tabView)
             
-            for tab in appState.renderedTabs {
-                let tabView = NSHostingView(rootView: TabItemView(tab: tab))
-                self.tabsStackView?.addArrangedSubview(tabView)
-                
-                NSLayoutConstraint.activate([
-                    tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
-                    tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
-                ])
-            }
-            
-            let fittingHeight = self.tabsStackView?.fittingSize.height ?? 0
-            self.scrollView.documentView?.frame.size.height = fittingHeight
+            NSLayoutConstraint.activate([
+                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
+                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
+            ])
         }
+        
+        let fittingHeight = self.tabsStackView?.fittingSize.height ?? 0
+        self.scrollView.documentView?.frame.size.height = fittingHeight
         
     }
     
