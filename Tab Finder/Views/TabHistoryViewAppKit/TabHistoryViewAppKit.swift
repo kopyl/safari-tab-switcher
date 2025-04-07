@@ -45,15 +45,37 @@ class AppKitTabHistoryView: NSViewController {
         setBorderRadius()
         
         setupKeyEventMonitor()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(textDidChange(_:)),
+            name: NSControl.textDidChangeNotification,
+            object: textView
+        )
+    }
+    
+    @objc private func textDidChange(_ notification: Notification) {
+        let text = textView.stringValue
+        appState.searchQuery = text
+        rerenderTabs()
+        appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
+        if !text.isEmpty {
+            scrollToTop()
+        }
+        renderTabs()
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        self.view.window?.makeFirstResponder(textView)
         scrollToTop()
     }
     
     override func viewWillAppear() {
+        self.renderTabs()
+        self.textView.stringValue = ""
+    }
+    
+    private func renderTabs() {
         tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for tab in appState.renderedTabs {
@@ -154,5 +176,9 @@ class AppKitTabHistoryView: NSViewController {
         
         /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
         view.layer?.masksToBounds = true
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
