@@ -339,6 +339,11 @@ struct TabItemView: View {
         .padding(.bottom, 4)
         .contentShape(Rectangle())
         .transition(.move(edge: .bottom))
+        .onMouseMove { isHovering in
+            if isHovering {
+                state.indexOfTabToSwitchTo = tab.renderIndex
+            }
+        }
         .onTapGesture {
             state.indexOfTabToSwitchTo = tab.renderIndex
             hideTabsPanelAndSwitchTabs()
