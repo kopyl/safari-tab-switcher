@@ -16,20 +16,20 @@ class AppKitTabHistoryView: NSViewController {
         tabsStackView = makeStackView(spacing: 4)
         mainStackView = makeStackView()
         textView = makeTextField()
-
+        
         view.addSubview(visualEffectView)
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(textView)
         mainStackView.addArrangedSubview(scrollView)
         
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let flippedView = FlippedView()
         flippedView.translatesAutoresizingMaskIntoConstraints = false
         flippedView.addSubview(tabsStackView)
-
+        
         scrollView.documentView = flippedView
-
+        
         NSLayoutConstraint.activate([
             visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -91,7 +91,7 @@ class AppKitTabHistoryView: NSViewController {
                 tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
             ])
         }
-
+        
         let fittingHeight = tabsStackView?.fittingSize.height ?? 0
         scrollView.documentView?.frame.size.height = fittingHeight
     }
@@ -105,7 +105,7 @@ class AppKitTabHistoryView: NSViewController {
                     self?.handleNavigationKeyPresses(event: event)
                     return nil
                 }
-
+                
             } else if event.type == .flagsChanged {
                 self?.handleKeyRelease(event: event)
             }
@@ -115,10 +115,10 @@ class AppKitTabHistoryView: NSViewController {
     
     private func scrollToSelectedTabWithoutAnimation() {
         /// https://kopyl.gitbook.io/tab-finder/appkit-rewrite/features/scrolling/current-implementation-specifics
-
+        
         let index = appState.indexOfTabToSwitchTo
         guard tabsStackView.arrangedSubviews.indices.contains(index) else { return }
-
+        
         let selectedTabView = tabsStackView.arrangedSubviews[index]
         let tabFrameInContentView = selectedTabView.convert(selectedTabView.bounds, to: scrollView.contentView)
         let visibleRect = scrollView.contentView.bounds
@@ -144,7 +144,7 @@ class AppKitTabHistoryView: NSViewController {
         guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
         guard !appState.savedTabs.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
-
+        
         switch key {
         case .arrowUp, .backTick:
             appState.indexOfTabToSwitchTo -= 1
