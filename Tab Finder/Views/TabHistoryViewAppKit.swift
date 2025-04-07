@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 
 class FlippedView: NSView {
     override var isFlipped: Bool {
@@ -8,13 +7,8 @@ class FlippedView: NSView {
 }
 
 class AppKitTabHistoryView: NSViewController {
-    private var cancellables: Set<AnyCancellable> = []
     private var scrollView: NSScrollView!
     private var stackView: NSStackView!
-    
-    override func loadView() {
-        self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
