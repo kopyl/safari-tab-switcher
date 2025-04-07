@@ -80,20 +80,23 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     private func renderTabs() {
-        tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
-        for tab in appState.renderedTabs {
-            let tabView = NSHostingView(rootView: TabItemView(tab: tab))
-            tabsStackView?.addArrangedSubview(tabView)
+        DispatchQueue.main.async {
+            self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
             
-            NSLayoutConstraint.activate([
-                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
-                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
-            ])
+            for tab in appState.renderedTabs {
+                let tabView = NSHostingView(rootView: TabItemView(tab: tab))
+                self.tabsStackView?.addArrangedSubview(tabView)
+                
+                NSLayoutConstraint.activate([
+                    tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
+                    tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
+                ])
+            }
+            
+            let fittingHeight = self.tabsStackView?.fittingSize.height ?? 0
+            self.scrollView.documentView?.frame.size.height = fittingHeight
         }
         
-        let fittingHeight = tabsStackView?.fittingSize.height ?? 0
-        scrollView.documentView?.frame.size.height = fittingHeight
     }
     
     private func setupKeyEventMonitor() {
