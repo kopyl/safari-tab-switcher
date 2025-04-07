@@ -137,7 +137,7 @@ class AppState: ObservableObject {
     @Published var searchQuery = ""
     @Published var savedTabs = Tabs()
     @Published var renderedTabs: [Tab] = []
-    @Published var isTabsSwitcherNeededToStayOpen = false
+    @Published var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false
     @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
