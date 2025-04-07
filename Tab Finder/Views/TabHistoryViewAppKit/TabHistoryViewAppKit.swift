@@ -81,6 +81,10 @@ class AppKitTabHistoryView: NSViewController {
         self.textView.stringValue = ""
     }
     
+    override func viewDidDisappear() {
+        self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    }
+    
     private func renderTabs() {
         self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
@@ -94,9 +98,10 @@ class AppKitTabHistoryView: NSViewController {
             ])
         }
         
-        let fittingHeight = self.tabsStackView?.fittingSize.height ?? 0
-        self.scrollView.documentView?.frame.size.height = fittingHeight
-        
+        DispatchQueue.main.async {
+            let fittingHeight = self.tabsStackView?.fittingSize.height ?? 0
+            self.scrollView.documentView?.frame.size.height = fittingHeight
+        }
     }
     
     private func setupKeyEventMonitor() {
