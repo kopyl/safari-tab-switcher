@@ -99,7 +99,6 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     private func scrollToTop() {
-        guard let scrollView = view.subviews.compactMap({ $0 as? NSScrollView }).first else { return }
         scrollView.contentView.scrollToVisible(NSRect(x: 0, y: 0, width: scrollView.frame.width, height: 1))
     }
     
