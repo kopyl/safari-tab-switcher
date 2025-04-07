@@ -72,9 +72,9 @@ class AppKitTabHistoryView: NSViewController {
     
     private func setupKeyEventMonitor() {
         localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { [weak self] event in
+            guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
+            
             if event.type == .keyDown {
-                
-                guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
                 if NavigationKeys(rawValue: event.keyCode) != nil {
                     self?.handleNavigationKeyPresses(event: event)
                     return nil
