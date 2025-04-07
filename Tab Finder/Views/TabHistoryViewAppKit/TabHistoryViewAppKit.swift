@@ -172,7 +172,7 @@ class AppKitTabHistoryView: NSViewController {
     
     private func setBorderRadius() {
         view.wantsLayer = true
-        view.layer?.cornerRadius = 12
+        view.layer?.cornerRadius = 8
         
         /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
         view.layer?.masksToBounds = true
