@@ -55,8 +55,8 @@ class AppKitTabHistoryView: NSViewController {
             stackView?.addArrangedSubview(tabView)
             
             NSLayoutConstraint.activate([
-                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
+                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
             ])
         }
 
