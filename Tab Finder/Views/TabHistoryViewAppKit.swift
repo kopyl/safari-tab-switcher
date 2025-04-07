@@ -9,6 +9,8 @@ class FlippedView: NSView {
 
 class AppKitTabHistoryView: NSViewController {
     private var cancellables: Set<AnyCancellable> = []
+    private var scrollView: NSScrollView!
+    private var stackView: NSStackView!
     
     override func loadView() {
         self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
@@ -18,8 +20,8 @@ class AppKitTabHistoryView: NSViewController {
         super.viewDidLoad()
         
         let visualEffectView = makeVisualEffectView()
-        let scrollView = makeScrollView()
-        let stackView = makeStackView()
+        scrollView = makeScrollView()
+        stackView = makeStackView()
 
         view.addSubview(visualEffectView)
         view.addSubview(scrollView)
@@ -43,30 +45,95 @@ class AppKitTabHistoryView: NSViewController {
         ])
         
         setBorderRadius()
-
-        bindTabs(to: stackView, in: scrollView)
     }
     
-    private func bindTabs(to stackView: NSStackView, in scrollView: NSScrollView) {
-        appState.$renderedTabs
-            .receive(on: RunLoop.main)
-            .sink { [weak stackView] tabs in
-                stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        self.view.window?.makeFirstResponder(self.view)
+        scrollToTop()
+    }
+    
+    override func viewWillAppear() {
+        stackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        for tab in appState.renderedTabs {
+            let tabView = NSHostingView(rootView: TabItemView(tab: tab))
+            stackView?.addArrangedSubview(tabView)
+            
+            NSLayoutConstraint.activate([
+                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            ])
+        }
 
-                for tab in tabs {
-                    let tabView = NSHostingView(rootView: TabItemView(tab: tab))
-                    stackView?.addArrangedSubview(tabView)
-                    
-                    NSLayoutConstraint.activate([
-                        tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                        tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                    ])
-                }
+        let fittingHeight = stackView?.fittingSize.height ?? 0
+        scrollView.documentView?.frame.size.height = fittingHeight
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        handleNavigationKeyPresses(event: event)
+    }
+    
+    override func flagsChanged(with event: NSEvent) {
+        handleKeyRelease(event: event)
+    }
+    
+    private func scrollToSelectedTab() {
+        guard let scrollView = view.subviews.compactMap({ $0 as? NSScrollView }).first,
+              let stackView = scrollView.documentView?.subviews.first(where: { $0 is NSStackView }) as? NSStackView else {
+            return
+        }
 
-                let fittingHeight = stackView?.fittingSize.height ?? 0
-                scrollView.documentView?.frame.size.height = fittingHeight
+        let index = appState.indexOfTabToSwitchTo
+        guard stackView.arrangedSubviews.indices.contains(index) else { return }
+
+        let selectedTabView = stackView.arrangedSubviews[index]
+        let tabFrameInContentView = selectedTabView.convert(selectedTabView.bounds, to: scrollView.contentView)
+
+        DispatchQueue.main.async {
+            scrollView.contentView.scrollToVisible(tabFrameInContentView)
+        }
+    }
+    
+    private func scrollToTop() {
+        guard let scrollView = view.subviews.compactMap({ $0 as? NSScrollView }).first else { return }
+        scrollView.contentView.scrollToVisible(NSRect(x: 0, y: 0, width: scrollView.frame.width, height: 1))
+    }
+    
+    func handleNavigationKeyPresses(event: NSEvent) {
+        let isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
+        
+        guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
+        guard !appState.savedTabs.isEmpty else { return }
+        guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
+
+        switch key {
+        case .arrowUp, .backTick:
+            appState.indexOfTabToSwitchTo -= 1
+            scrollToSelectedTab()
+        case .tab:		
+            if event.modifierFlags.contains(.shift) {
+                appState.indexOfTabToSwitchTo -= 1
+            } else {
+                appState.indexOfTabToSwitchTo += 1
             }
-            .store(in: &cancellables)
+            scrollToSelectedTab()
+        case .arrowDown:
+            appState.indexOfTabToSwitchTo += 1
+            scrollToSelectedTab()
+        case .return:
+            hideTabsPanelAndSwitchTabs()
+        case .escape:
+            hideTabsPanel(withoutAnimation: true)
+        }
+    }
+    
+    func handleKeyRelease(event: NSEvent) {
+        let isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
+        
+        guard isTabsSwitcherNeededToStayOpen == false else { return }
+        guard !isUserHoldingShortcutModifiers(event: event) else { return }
+        hideTabsPanelAndSwitchTabs()
     }
     
     private func setBorderRadius() {

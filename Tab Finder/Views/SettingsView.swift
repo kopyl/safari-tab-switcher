@@ -281,6 +281,9 @@ struct SettingsView: View {
         .onChange(of: columnOrder) { val in
             appState.columnOrder = val
         }
+        .onChange(of: isTabsSwitcherNeededToStayOpen) { val in
+            appState.isTabsSwitcherNeededToStayOpen = val
+        }
         .onChange(of: addStatusBarItemWhenAppMovesInBackground) { val in
             if NSApp.activationPolicy() == .regular {
                 return
