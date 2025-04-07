@@ -1,5 +1,11 @@
 import Cocoa
 
+class FlippedView: NSView {
+    override var isFlipped: Bool {
+        return true
+    }
+}
+
 func makeVisualEffectView() -> NSVisualEffectView {
     let v = NSVisualEffectView()
     v.blendingMode = .behindWindow

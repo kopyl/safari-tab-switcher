@@ -1,11 +1,5 @@
 import SwiftUI
 
-class FlippedView: NSView {
-    override var isFlipped: Bool {
-        return true
-    }
-}
-
 class AppKitTabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsStackView: NSStackView!
