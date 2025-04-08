@@ -154,7 +154,7 @@ class AppKitTabHistoryView: NSViewController {
                 let tabView = createTabView(for: allTabs[index], at: index)
                 tabView.onTabHover = { [weak self] renderIndex in
                     appState.indexOfTabToSwitchTo = renderIndex
-                    self?.updateHighlighting(of: renderIndex)
+                    self?.updateHighlighting()
                 }
                 
                 tabsContainer.addSubview(tabView)
@@ -177,19 +177,16 @@ class AppKitTabHistoryView: NSViewController {
             height: tabHeight
         )
         
-        if index == appState.indexOfTabToSwitchTo {
-            tabView.wantsLayer = true
-            tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
-        }
+        updateHighlighting()
         
         tabView.widthAnchor.constraint(equalToConstant: tabsContainer.frame.width).isActive = true
         tabView.heightAnchor.constraint(equalToConstant: tabHeight).isActive = true
         return tabView
     }
     
-    private func updateHighlighting(of index: Int) {
+    private func updateHighlighting() {
         for (idx, tabView) in visibleTabViews {
-            if idx == index {
+            if idx == appState.indexOfTabToSwitchTo {
                 tabView.wantsLayer = true
                 tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
             } else {
@@ -213,7 +210,7 @@ class AppKitTabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
         
-        updateHighlighting(of: index)
+        updateHighlighting()
         
         DispatchQueue.main.async {
             let visibleRect = self.scrollView.contentView.bounds
@@ -321,7 +318,6 @@ final class AppKitTabItemView: NSStackView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.addArrangedSubview(titleLabel)
         self.addArrangedSubview(hostLabel)
-        
         setupTrackingArea()
     }
 
