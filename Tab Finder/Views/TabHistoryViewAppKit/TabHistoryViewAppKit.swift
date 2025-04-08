@@ -150,7 +150,13 @@ class AppKitTabHistoryView: NSViewController {
         // Add missing visible tab views
         for index in firstVisibleIndex...lastVisibleIndex {
             if visibleTabViews[index] == nil {
+                
                 let tabView = createTabView(for: allTabs[index], at: index)
+                tabView.onTabHover = { [weak self] renderIndex in
+                    appState.indexOfTabToSwitchTo = renderIndex
+                    self?.updateHighlighting(of: renderIndex)
+                }
+                
                 tabsContainer.addSubview(tabView)
                 visibleTabViews[index] = tabView
             }
@@ -158,7 +164,7 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     // Create a tab view at the specified index
-    private func createTabView(for tab: Tab, at index: Int) -> NSView {
+    private func createTabView(for tab: Tab, at index: Int) -> AppKitTabItemView {
         let tabView = AppKitTabItemView(tab: tab)
         
         // Calculate Y position based on index
@@ -181,6 +187,17 @@ class AppKitTabHistoryView: NSViewController {
         return tabView
     }
     
+    private func updateHighlighting(of index: Int) {
+        for (idx, tabView) in visibleTabViews {
+            if idx == index {
+                tabView.wantsLayer = true
+                tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
+            } else {
+                tabView.layer?.backgroundColor = NSColor.clear.cgColor
+            }
+        }
+    }
+    
     private func scrollToSelectedTabWithoutAnimation() {
         let index = appState.indexOfTabToSwitchTo
         guard index >= 0 && index < allTabs.count else { return }
@@ -196,15 +213,7 @@ class AppKitTabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
         
-        // Update highlighting for all visible tabs
-        for (idx, tabView) in visibleTabViews {
-            if idx == index {
-                tabView.wantsLayer = true
-                tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
-            } else {
-                tabView.layer?.backgroundColor = NSColor.clear.cgColor
-            }
-        }
+        updateHighlighting(of: index)
         
         DispatchQueue.main.async {
             // Scroll to make the tab visible
@@ -293,6 +302,7 @@ class AppKitTabHistoryView: NSViewController {
 
 final class AppKitTabItemView: NSStackView {
     let tab: Tab
+    var onTabHover: ((Int) -> Void)?
     
     init(tab: Tab) {
         self.tab = tab
@@ -312,6 +322,8 @@ final class AppKitTabItemView: NSStackView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.addArrangedSubview(titleLabel)
         self.addArrangedSubview(hostLabel)
+        
+        setupTrackingArea()
     }
 
     required init(coder: NSCoder) {
@@ -321,5 +333,14 @@ final class AppKitTabItemView: NSStackView {
     override func mouseDown(with event: NSEvent) {
         appState.indexOfTabToSwitchTo = tab.renderIndex
         hideTabsPanelAndSwitchTabs()
+    }
+    
+    func setupTrackingArea() {
+        let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
+        self.addTrackingArea(NSTrackingArea(rect: .zero, options: options, owner: self, userInfo: nil))
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        onTabHover?(tab.renderIndex)
     }
 }
