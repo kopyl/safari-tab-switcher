@@ -316,7 +316,6 @@ final class AppKitTabItemView: NSStackView {
         self.orientation = .horizontal
         self.spacing = 8
         self.distribution = .fillEqually
-        self.translatesAutoresizingMaskIntoConstraints = false
         self.addArrangedSubview(titleLabel)
         self.addArrangedSubview(hostLabel)
         setupTrackingArea()
