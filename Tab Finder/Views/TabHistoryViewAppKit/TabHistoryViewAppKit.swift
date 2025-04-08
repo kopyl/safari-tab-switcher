@@ -393,13 +393,12 @@ final class AppKitFavicon: NSView {
     
     public let width: CGFloat = 16
     public let height: CGFloat = 16
+    public let fontSize: CGFloat = 10
 
     init(tab: Tab) {
         self.tab = tab
         super.init(frame: .zero)
         
-        let fontSize: CGFloat = 10
-
         wantsLayer = true
         layer?.backgroundColor = NSColor.lightGrey.cgColor
         layer?.cornerRadius = 3
@@ -417,10 +416,13 @@ final class AppKitFavicon: NSView {
 
     override func layout() {
         super.layout()
+        
         guard let font = textLayer.font as? NSFont else { return }
-        textLayer.frame = bounds
+        
         let textHeight = font.ascender + abs(font.descender)
         let yOffset = (bounds.height - textHeight) / 2 + abs(font.descender) + -2
+        
+        textLayer.frame = bounds
         textLayer.frame = CGRect(x: 0, y: yOffset, width: bounds.width, height: textHeight)
     }
 
