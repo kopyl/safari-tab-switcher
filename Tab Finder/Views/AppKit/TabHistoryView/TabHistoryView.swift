@@ -96,6 +96,20 @@ class TabHistoryView: NSViewController {
             name: NSControl.textDidChangeNotification,
             object: textView
         )
+        
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            DispatchQueue.main.async {
+                appState.currentInputSourceName = getCurrentInputSourceName()
+                self?.textView.placeholderString = getSearchFieldPlaceholderText(
+                    by: appState.currentInputSourceName,
+                    tabsCount: appState.savedTabs.count
+                )
+            }
+        }
     }
     
     private func setupScrollObserver() {
@@ -141,6 +155,7 @@ class TabHistoryView: NSViewController {
         self.renderTabs()
         self.textView.stringValue = ""
         pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
     }
     
     override func viewDidDisappear() {

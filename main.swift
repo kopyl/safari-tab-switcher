@@ -60,16 +60,6 @@ NSWorkspace.shared.notificationCenter.addObserver(
     }
 }
 
-DistributedNotificationCenter.default().addObserver(
-    forName: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
-    object: nil,
-    queue: .main
-) { _ in
-    DispatchQueue.main.async {
-        appState.currentInputSourceName = getCurrentInputSourceName()
-    }
-}
-
 class TabsPanelVisibilityObserver: NSObject {
     private var panel: NSPanel
     private var observation: NSKeyValueObservation?
