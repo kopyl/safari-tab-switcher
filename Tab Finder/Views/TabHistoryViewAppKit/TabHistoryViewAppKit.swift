@@ -331,10 +331,12 @@ final class AppKitTabItemView: NSView {
         hostLabel.lineBreakMode = .byTruncatingTail
         hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         hostLabel.font = .systemFont(ofSize: 18)
+        hostLabel.textColor = .tabFg
 
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         titleLabel.font = .systemFont(ofSize: 13)
+        titleLabel.textColor = .tabFg
         
         let stackView: NSStackView = .init()
 
