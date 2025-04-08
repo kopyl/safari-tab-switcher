@@ -112,19 +112,14 @@ class AppKitTabHistoryView: NSViewController {
     
     private func renderTabs() {
         clearAllTabViews()
-        
-        // Store the full list of tabs
         allTabs = appState.renderedTabs
         
-        // Update container height based on tab count
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
         tabsContainer.frame.size.height = totalHeight
         
-        // Only render visible tabs initially
         updateVisibleTabViews()
     }
     
-    // This is the key method for lazy loading
     private func updateVisibleTabViews() {
         guard !allTabs.isEmpty else { return }
         
@@ -181,7 +176,6 @@ class AppKitTabHistoryView: NSViewController {
             height: tabHeight
         )
         
-        // Highlight the selected tab
         if index == appState.indexOfTabToSwitchTo {
             tabView.wantsLayer = true
             tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
