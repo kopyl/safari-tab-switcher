@@ -8,6 +8,7 @@ class AppKitTabHistoryView: NSViewController {
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
+    
     private var scrollObserver: NSObjectProtocol?
     
     private var allTabs: [Tab] = []
