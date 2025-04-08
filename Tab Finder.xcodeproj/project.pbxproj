@@ -83,7 +83,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		486509072D86ABD100A1D26A /* UI Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "UI Components"; sourceTree = "<group>"; };
+		486509072D86ABD100A1D26A /* SwiftUI Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "SwiftUI Components"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +132,24 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		484AED932DA57A2200C9117E /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
+				48F9D6C52D74E38B00DEE99E /* SettingsView.swift */,
+				48751CE82D8FC53B00319882 /* AboutView.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		484AED942DA57A3300C9117E /* AppKit */ = {
+			isa = PBXGroup;
+			children = (
+				484AECCF2DA4336100C9117E /* TabHistoryView */,
+			);
+			path = AppKit;
+			sourceTree = "<group>";
+		};
 		48B48FBC2D2A59620054B680 = {
 			isa = PBXGroup;
 			children = (
@@ -156,7 +174,7 @@
 		48B48FC72D2A59620054B680 /* Tab Finder */ = {
 			isa = PBXGroup;
 			children = (
-				486509072D86ABD100A1D26A /* UI Components */,
+				486509072D86ABD100A1D26A /* SwiftUI Components */,
 				48F9D6BD2D74E0A200DEE99E /* Views */,
 				48534A232D333B3D003FF94A /* Info.plist */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
@@ -179,10 +197,8 @@
 		48F9D6BD2D74E0A200DEE99E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				484AECCF2DA4336100C9117E /* TabHistoryView */,
-				48F9D6C12D74E1C200DEE99E /* GreetingView.swift */,
-				48F9D6C52D74E38B00DEE99E /* SettingsView.swift */,
-				48751CE82D8FC53B00319882 /* AboutView.swift */,
+				484AED942DA57A3300C9117E /* AppKit */,
+				484AED932DA57A2200C9117E /* SwiftUI */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -217,7 +233,7 @@
 				48B48FE42D2A59630054B680 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				486509072D86ABD100A1D26A /* UI Components */,
+				486509072D86ABD100A1D26A /* SwiftUI Components */,
 			);
 			name = "Tab Finder";
 			packageProductDependencies = (
