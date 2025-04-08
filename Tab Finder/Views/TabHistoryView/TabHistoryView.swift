@@ -120,6 +120,7 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     private func updateVisibleTabViews() {
+        
         guard !allTabs.isEmpty else { return }
         
         // Get the visible rect of the scroll view
@@ -165,6 +166,9 @@ class AppKitTabHistoryView: NSViewController {
                 visibleTabViews[index] = tabView
             }
         }
+        
+        /// without this, the first tab does not get highlighted when it's the only tab left in search results
+        updateHighlighting()
     }
     
     // Create a tab view at the specified index
