@@ -17,7 +17,7 @@ class AppKitTabHistoryView: NSViewController {
     private var scrollObserver: NSObjectProtocol?
     
     private var allTabs: [Tab] = []
-    private var visibleTabViews: [Int: NSView] = [:]
+    private var visibleTabViews: [Int: AppKitTabItemView] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -191,10 +191,14 @@ class AppKitTabHistoryView: NSViewController {
         for (idx, tabView) in visibleTabViews {
             if idx == appState.indexOfTabToSwitchTo {
                 tabView.wantsLayer = true
-                tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
+                tabView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
                 tabView.layer?.cornerRadius = 6
+                tabView.hostLabel.textColor = .currentTabFg
+                tabView.titleLabel.textColor = .currentTabFg
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
+                tabView.hostLabel.textColor = .currentTabFg.withAlphaComponent(0.65)
+                tabView.titleLabel.textColor = .currentTabFg.withAlphaComponent(0.65)
             }
         }
     }
@@ -312,26 +316,34 @@ final class AppKitTabItemView: NSView {
     let tab: Tab
     var onTabHover: ((Int) -> Void)?
     
+    public var hostLabel: NSTextField
+    public var titleLabel: NSTextField
+    
     init(tab: Tab) {
         self.tab = tab
+
+        self.hostLabel = NSTextField(labelWithString: tab.host)
+        self.titleLabel = NSTextField(labelWithString: tab.title)
         super.init(frame: .zero)
-
-        let titleLabel = NSTextField(labelWithString: tab.host)
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-        let hostLabel = NSTextField(labelWithString: tab.title)
+        if tab.host == "" {
+            hostLabel.stringValue = "No title"
+        }
         hostLabel.lineBreakMode = .byTruncatingTail
         hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        hostLabel.font = .systemFont(ofSize: 18)
+
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        titleLabel.font = .systemFont(ofSize: 13)
         
         let stackView: NSStackView = .init()
 
         stackView.orientation = .horizontal
         stackView.spacing = 8
         stackView.distribution = .fillEqually
-        stackView.edgeInsets = .init(top: 0, left: 50, bottom: 0, right: 50)
-        stackView.addArrangedSubview(titleLabel)
+        stackView.edgeInsets = .init(top: 0, left: 57, bottom: 0, right: 50)
         stackView.addArrangedSubview(hostLabel)
+        stackView.addArrangedSubview(titleLabel)
         
         let faviconPlaceholder = AppKitFavicon(tab: tab)
 
@@ -340,7 +352,7 @@ final class AppKitTabItemView: NSView {
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            faviconPlaceholder.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 6),
+            faviconPlaceholder.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 21),
             faviconPlaceholder.widthAnchor.constraint(equalToConstant: faviconPlaceholder.width),
             faviconPlaceholder.heightAnchor.constraint(equalToConstant: faviconPlaceholder.height),
             faviconPlaceholder.centerYAnchor.constraint(equalTo: self.centerYAnchor),
