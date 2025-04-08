@@ -87,3 +87,16 @@ func makeColorView(hex: String) -> NSView {
     colorView.translatesAutoresizingMaskIntoConstraints = false
     return colorView
 }
+
+func makeCloseButton(action: Selector? = nil) -> NSButton {
+    let image = NSImage(systemSymbolName: "xmark.square.fill", accessibilityDescription: "Close icon")
+    let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+    
+    guard let image = image?.withSymbolConfiguration(config) else {
+        return NSButton()
+    }
+    
+    let closeButton = NSButton(title: "", image: image, target: nil, action: action)
+    closeButton.translatesAutoresizingMaskIntoConstraints = false
+    return closeButton
+}

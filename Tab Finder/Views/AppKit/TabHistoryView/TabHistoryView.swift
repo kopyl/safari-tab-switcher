@@ -272,12 +272,17 @@ class TabHistoryView: NSViewController {
                 tabView.wantsLayer = true
                 tabView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
                 tabView.layer?.cornerRadius = 6
+                
                 tabView.hostLabel.textColor = .currentTabFg
                 tabView.titleLabel.textColor = .currentTabFg
+                
+                tabView.closeButon.isHidden = false
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
                 tabView.hostLabel.textColor = .tabFg
                 tabView.titleLabel.textColor = .tabFg
+                
+                tabView.closeButon.isHidden = true
             }
         }
     }
@@ -394,15 +399,19 @@ class TabHistoryView: NSViewController {
 final class TabItemView: NSView {
     let tab: Tab
     var onTabHover: ((Int) -> Void)?
+    var onTabClose: ((Int) -> Void)?
     
     public var hostLabel: NSTextField
     public var titleLabel: NSTextField
+    public var closeButon: NSButton
     
     init(tab: Tab) {
         self.tab = tab
 
         self.hostLabel = NSTextField(labelWithString: tab.host)
         self.titleLabel = NSTextField(labelWithString: tab.title)
+        self.closeButon = makeCloseButton()
+        
         super.init(frame: .zero)
         if tab.host == "" {
             hostLabel.stringValue = "No title"
@@ -430,6 +439,8 @@ final class TabItemView: NSView {
 
         self.addSubview(faviconView)
         self.addSubview(stackView)
+
+        self.addSubview(closeButon)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -441,7 +452,11 @@ final class TabItemView: NSView {
             stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             stackView.topAnchor.constraint(equalTo: self.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            
+            closeButon.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            closeButon.widthAnchor.constraint(equalToConstant: 50),
+            closeButon.heightAnchor.constraint(equalToConstant: 50),
         ])
         
         setupTrackingArea()
