@@ -195,7 +195,7 @@ class AppKitTabHistoryView: NSViewController {
         tabView.frame = NSRect(
             x: tabInsets.left,
             y: yPos,
-            width: tabsContainer.frame.width,
+            width: tabsContainer.frame.width - tabInsets.left - tabInsets.right,
             height: tabHeight
         )
         
