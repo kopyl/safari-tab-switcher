@@ -172,7 +172,7 @@ class AppKitTabHistoryView: NSViewController {
         tabView.frame = NSRect(
             x: tabInsets.left,
             y: yPos,
-            width: tabsContainer.frame.width - tabInsets.left - tabInsets.right,
+            width: tabsContainer.frame.width,
             height: tabHeight
         )
         
@@ -180,6 +180,8 @@ class AppKitTabHistoryView: NSViewController {
             tabView.wantsLayer = true
             tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
         }
+        
+        tabView.widthAnchor.constraint(equalToConstant: tabsContainer.frame.width).isActive = true
         
         return tabView
     }
