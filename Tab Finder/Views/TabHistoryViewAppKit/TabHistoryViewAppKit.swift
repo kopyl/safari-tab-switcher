@@ -12,7 +12,7 @@ class AppKitTabHistoryView: NSViewController {
     private var allTabs: [Tab] = []
     private var visibleTabViews: [Int: NSView] = [:]
     
-    private let tabHeight: CGFloat = 40
+    private let tabHeight: CGFloat = 57
     private let tabSpacing: CGFloat = 0
     private let tabBottomPadding: CGFloat = 4
     private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
