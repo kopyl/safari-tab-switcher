@@ -57,3 +57,9 @@ func makeSearchIcon() -> NSImageView {
     searchIcon.translatesAutoresizingMaskIntoConstraints = false
     return searchIcon
 }
+
+func makeHeaderView() -> NSView {
+    let headerView = NSView()
+    headerView.translatesAutoresizingMaskIntoConstraints = false
+    return headerView
+}

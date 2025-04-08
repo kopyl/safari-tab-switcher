@@ -24,6 +24,8 @@ class AppKitTabHistoryView: NSViewController {
         
         let visualEffectView = makeVisualEffectView()
         let searchIcon = makeSearchIcon()
+        let headerView = makeHeaderView()
+        
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
         textView = makeTextField()
@@ -32,9 +34,6 @@ class AppKitTabHistoryView: NSViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         tabsContainer.translatesAutoresizingMaskIntoConstraints = false
         textView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let headerView = NSView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(visualEffectView)
         view.addSubview(headerView)
