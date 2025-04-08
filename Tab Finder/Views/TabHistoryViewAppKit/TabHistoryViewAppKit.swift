@@ -189,6 +189,7 @@ class AppKitTabHistoryView: NSViewController {
             if idx == appState.indexOfTabToSwitchTo {
                 tabView.wantsLayer = true
                 tabView.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
+                tabView.layer?.cornerRadius = 6
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
             }
