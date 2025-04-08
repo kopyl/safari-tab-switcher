@@ -1,7 +1,6 @@
 import SwiftUI
 import KeyboardShortcuts
 import SafariServices.SFSafariExtensionManager
-import Combine
 
 func getToolTipText() -> String {
     return "Click to avoid closing this panel when you release \(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation ?? "your modifier key/s")"
