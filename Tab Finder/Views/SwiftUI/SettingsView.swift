@@ -284,6 +284,9 @@ struct SettingsView: View {
         .onChange(of: isTabsSwitcherNeededToStayOpen) { val in
             appState.isTabsSwitcherNeededToStayOpen = val
         }
+        .onChange(of: userSelectedAccentColor) { val in
+            appState.userSelectedAccentColor = val
+        }
         .onChange(of: addStatusBarItemWhenAppMovesInBackground) { val in
             if NSApp.activationPolicy() == .regular {
                 return

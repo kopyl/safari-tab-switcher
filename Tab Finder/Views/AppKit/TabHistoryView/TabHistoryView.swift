@@ -12,6 +12,7 @@ class TabHistoryView: NSViewController {
     private var mainStackView: NSStackView!
     private var textView: NSTextField!
     private var pinButton: NSButton!
+    private var tintView: NSView!
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -29,6 +30,7 @@ class TabHistoryView: NSViewController {
         let headerView = makeHeaderView()
         
         scrollView = makeScrollView()
+        tintView = makeColorView(hex: appState.userSelectedAccentColor)
         tabsContainer = FlippedView()
         textView = makeTextField()
         pinButton = makePinButton(
@@ -42,6 +44,7 @@ class TabHistoryView: NSViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(visualEffectView)
+        view.addSubview(tintView)
         view.addSubview(headerView)
         view.addSubview(scrollView)
 
@@ -57,6 +60,11 @@ class TabHistoryView: NSViewController {
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            tintView.topAnchor.constraint(equalTo: view.topAnchor),
+            tintView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tintView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tintView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -156,10 +164,20 @@ class TabHistoryView: NSViewController {
         self.textView.stringValue = ""
         pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
+        applyBackgroundTint()
     }
     
     override func viewDidDisappear() {
         clearAllTabViews()
+    }
+    
+    private func applyBackgroundTint() {
+        if appState.userSelectedAccentColor == Store.userSelectedAccentColorDefaultValue {
+            tintView.isHidden = true
+        } else {
+            tintView.isHidden = false
+            tintView.layer?.backgroundColor = hexToColor(appState.userSelectedAccentColor).cgColor
+        }
     }
     
     private func clearAllTabViews() {
