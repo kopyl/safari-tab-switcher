@@ -197,8 +197,8 @@ class AppKitTabHistoryView: NSViewController {
                 tabView.titleLabel.textColor = .currentTabFg
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
-                tabView.hostLabel.textColor = .currentTabFg.withAlphaComponent(0.65)
-                tabView.titleLabel.textColor = .currentTabFg.withAlphaComponent(0.65)
+                tabView.hostLabel.textColor = .tabFg
+                tabView.titleLabel.textColor = .tabFg
             }
         }
     }
