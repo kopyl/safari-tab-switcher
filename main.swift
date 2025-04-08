@@ -95,7 +95,7 @@ NotificationCenter.default.addObserver(
     queue: .main
 ) { notification in
     guard notification.object as? NSObject == tabsPanel else { return }
-    guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
+    guard [0, 1, 2].contains(NSEvent.pressedMouseButtons) else { return }
     hideTabsPanel(withoutAnimation: true)
 }
 
