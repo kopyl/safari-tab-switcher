@@ -11,7 +11,7 @@ class TabHistoryView: NSViewController {
     private var tabsContainer: NSView!
     private var mainStackView: NSStackView!
     private var textView: NSTextField!
-    private var pinIcon: NSImageView!
+    private var pinButton: NSButton!
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -31,7 +31,10 @@ class TabHistoryView: NSViewController {
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
         textView = makeTextField()
-        pinIcon = makePinIcon(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        pinButton = makePinButton(
+            isFilled: appState.isTabsSwitcherNeededToStayOpen,
+            action: #selector(togglePin)
+        )
         
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,7 +47,7 @@ class TabHistoryView: NSViewController {
 
         headerView.addSubview(searchIcon)
         headerView.addSubview(textView)
-        headerView.addSubview(pinIcon)
+        headerView.addSubview(pinButton)
         
         scrollView.documentView = tabsContainer
         scrollView.hasVerticalScroller = true
@@ -65,13 +68,13 @@ class TabHistoryView: NSViewController {
             searchIcon.heightAnchor.constraint(equalToConstant: headerHeight),
             searchIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
-            pinIcon.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-            pinIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-            pinIcon.widthAnchor.constraint(equalToConstant: 74),
-            pinIcon.heightAnchor.constraint(equalToConstant: headerHeight),
+            pinButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            pinButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            pinButton.widthAnchor.constraint(equalToConstant: 74),
+            pinButton.heightAnchor.constraint(equalToConstant: headerHeight),
             
             textView.leadingAnchor.constraint(equalTo: searchIcon.trailingAnchor, constant: -14),
-            textView.trailingAnchor.constraint(equalTo: pinIcon.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: pinButton.leadingAnchor),
             textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
@@ -118,6 +121,17 @@ class TabHistoryView: NSViewController {
         }
     }
     
+    @objc func togglePin() {
+        appState.isTabsSwitcherNeededToStayOpen.toggle()
+        pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        Store.isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
+        
+        if !appState.isTabsSwitcherNeededToStayOpen {
+            guard !isUserHoldingShortcutModifiers() else { return }
+            hideTabsPanel()
+        }
+    }
+    
     override func viewDidAppear() {
         super.viewDidAppear()
         scrollToTop()
@@ -126,7 +140,7 @@ class TabHistoryView: NSViewController {
     override func viewWillAppear() {
         self.renderTabs()
         self.textView.stringValue = ""
-        pinIcon.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
     }
     
     override func viewDidDisappear() {

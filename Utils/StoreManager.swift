@@ -111,7 +111,12 @@ struct Store {
         }
     
     static var isTabsSwitcherNeededToStayOpen: Bool {
-        userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        get {
+            userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        }
+        set {
+            userDefaults.set(newValue, forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        }
     }
     
     static var sortTabsBy: SortTabsBy {

@@ -71,9 +71,10 @@ func makePinImage(isFilled: Bool = false) -> NSImage? {
     return image?.withSymbolConfiguration(config)
 }
 
-func makePinIcon(isFilled: Bool = false) -> NSImageView {
-    let pinIcon = NSImageView()
-    pinIcon.image = makePinImage(isFilled: isFilled)
-    pinIcon.translatesAutoresizingMaskIntoConstraints = false
-    return pinIcon
+func makePinButton(isFilled: Bool = false, action: Selector? = nil) -> NSButton? {
+    guard let pinImage = makePinImage(isFilled: isFilled) else { return nil }
+    let pinButton = NSButton(title: "", image: pinImage, target: nil, action: action)
+    pinButton.translatesAutoresizingMaskIntoConstraints = false
+    pinButton.isBordered = false
+    return pinButton
 }
