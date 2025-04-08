@@ -386,6 +386,7 @@ final class AppKitTabItemView: NSView {
         onTabHover?(tab.renderIndex)
     }
 }
+
 final class AppKitFavicon: NSView {
     let tab: Tab
     private let textLayer = CATextLayer()
