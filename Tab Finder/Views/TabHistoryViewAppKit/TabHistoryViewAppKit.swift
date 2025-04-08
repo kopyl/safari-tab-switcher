@@ -90,24 +90,12 @@ class AppKitTabHistoryView: NSViewController {
         
         for tab in appState.renderedTabs {
             
-            let titleLabel = NSTextField(labelWithString: tab.host)
-            titleLabel.lineBreakMode = .byTruncatingTail
-            titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-            let hostLabel = NSTextField(labelWithString: tab.title)
-            hostLabel.lineBreakMode = .byTruncatingTail
-            hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-            let sw = NSStackView(views: [titleLabel, hostLabel])
-            sw.orientation = .horizontal
-            sw.spacing = 20
-            sw.distribution = .fillEqually
-            
-            self.tabsStackView?.addArrangedSubview(sw)
+            let tab = AppKitTabItemView(tab: tab)
+            self.tabsStackView?.addArrangedSubview(tab)
             
             NSLayoutConstraint.activate([
-                sw.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
-                sw.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+                tab.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
+                tab.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
             ])
         }
         
@@ -205,5 +193,32 @@ class AppKitTabHistoryView: NSViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+final class AppKitTabItemView: NSStackView {
+
+    init(tab: Tab) {
+        super.init(frame: .zero)
+
+        let titleLabel = NSTextField(labelWithString: tab.host)
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        let hostLabel = NSTextField(labelWithString: tab.title)
+        hostLabel.lineBreakMode = .byTruncatingTail
+        hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        self.orientation = .horizontal
+        self.spacing = 8
+        self.distribution = .fillEqually
+        self.translatesAutoresizingMaskIntoConstraints = false
+
+        self.addArrangedSubview(titleLabel)
+        self.addArrangedSubview(hostLabel)
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
