@@ -2,19 +2,16 @@ import Cocoa
 
 class AppKitTabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
-    private var tabsContainer: NSView! // Container for tab views instead of stack view
+    private var tabsContainer: NSView!
     private var mainStackView: NSStackView!
     private var textView: NSTextField!
     
     private var localEventMonitor: Any?
     private var scrollObserver: NSObjectProtocol?
     
-    // Store all tab data
     private var allTabs: [Tab] = []
-    // Store visible tab views (only what's needed)
     private var visibleTabViews: [Int: NSView] = [:]
     
-    // Configuration for tab views
     private let tabHeight: CGFloat = 40
     private let tabSpacing: CGFloat = 4
     private let tabBottomPadding: CGFloat = 4
@@ -25,7 +22,7 @@ class AppKitTabHistoryView: NSViewController {
         
         let visualEffectView = makeVisualEffectView()
         scrollView = makeScrollView()
-        tabsContainer = FlippedView() // Using FlippedView for natural layout order
+        tabsContainer = FlippedView()
         mainStackView = makeStackView()
         textView = makeTextField()
         
@@ -52,7 +49,6 @@ class AppKitTabHistoryView: NSViewController {
             mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        /// Set width of document view
         tabsContainer.frame = CGRect(origin: .zero, size: CGSize(width: 792, height: 0))
         
         setBorderRadius()
@@ -67,7 +63,6 @@ class AppKitTabHistoryView: NSViewController {
         )
     }
     
-    // Setup scroll observer to update visible views when scrolling
     private func setupScrollObserver() {
         scrollObserver = NotificationCenter.default.addObserver(
             forName: NSView.boundsDidChangeNotification,
