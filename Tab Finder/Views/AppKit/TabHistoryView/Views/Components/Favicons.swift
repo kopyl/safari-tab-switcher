@@ -65,7 +65,7 @@ private final class Favicons {
     }
 }
 
-final class AppKitFavicon: NSView {
+final class FaviconView: NSView {
     let tab: Tab
     private let textLayer = CATextLayer()
     private var imageLayer: CALayer?

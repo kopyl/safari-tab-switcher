@@ -6,7 +6,7 @@ private let tabBottomPadding: CGFloat = 4
 private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
 private let headerHeight: CGFloat = 72
 
-class AppKitTabHistoryView: NSViewController {
+class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
     private var mainStackView: NSStackView!
@@ -378,17 +378,17 @@ final class TabItemView: NSView {
         stackView.addArrangedSubview(hostLabel)
         stackView.addArrangedSubview(titleLabel)
         
-        let faviconPlaceholder = AppKitFavicon(tab: tab)
+        let faviconView = FaviconView(tab: tab)
 
-        self.addSubview(faviconPlaceholder)
+        self.addSubview(faviconView)
         self.addSubview(stackView)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            faviconPlaceholder.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 21),
-            faviconPlaceholder.widthAnchor.constraint(equalToConstant: faviconPlaceholder.width),
-            faviconPlaceholder.heightAnchor.constraint(equalToConstant: faviconPlaceholder.height),
-            faviconPlaceholder.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            faviconView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 21),
+            faviconView.widthAnchor.constraint(equalToConstant: faviconView.width),
+            faviconView.heightAnchor.constraint(equalToConstant: faviconView.height),
+            faviconView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             
             stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),

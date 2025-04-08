@@ -213,7 +213,7 @@ func showGreetingWindow() {
 
 func createTabsPanel() {
     tabsPanel = Panel(
-        view: AppKitTabHistoryView()
+        view: TabHistoryView()
     )
     
     tabsPanel?.backgroundColor = .clear
