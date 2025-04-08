@@ -54,12 +54,11 @@ class AppKitTabHistoryView: NSViewController {
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 50),
+            headerView.heightAnchor.constraint(equalToConstant: 76),
             
             textView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
             textView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -20),
-            textView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 10),
-            textView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -10),
+            textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
