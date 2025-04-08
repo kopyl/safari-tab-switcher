@@ -233,9 +233,16 @@ class TabHistoryView: NSViewController {
             if visibleTabViews[index] == nil {
                 
                 let tabView = createTabView(for: allTabs[index], at: index)
+                
                 tabView.onTabHover = { [weak self] renderIndex in
                     appState.indexOfTabToSwitchTo = renderIndex
                     self?.updateHighlighting()
+                }
+                
+                tabView.onTabClose = { renderIndex in
+                    print(renderIndex)
+                    
+                    print("close")
                 }
                 
                 tabsContainer.addSubview(tabView)
@@ -405,12 +412,18 @@ final class TabItemView: NSView {
     public var titleLabel: NSTextField
     public var closeButon: NSButton
     
+    @objc func closeButtonClicked() {
+        print("closeButtonClicked")
+    }
+    
     init(tab: Tab) {
         self.tab = tab
 
         self.hostLabel = NSTextField(labelWithString: tab.host)
         self.titleLabel = NSTextField(labelWithString: tab.title)
-        self.closeButon = makeCloseButton()
+        self.closeButon = NSButton(title: "Hi", target: nil, action: #selector(closeButtonClicked))
+        
+        closeButon.translatesAutoresizingMaskIntoConstraints = false
         
         super.init(frame: .zero)
         if tab.host == "" {

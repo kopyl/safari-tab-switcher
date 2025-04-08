@@ -89,10 +89,10 @@ func makeColorView(hex: String) -> NSView {
 }
 
 func makeCloseButton(action: Selector? = nil) -> NSButton {
-    let image = NSImage(systemSymbolName: "xmark.square.fill", accessibilityDescription: "Close icon")
+    let _image = NSImage(systemSymbolName: "xmark.square.fill", accessibilityDescription: "Close icon")
     let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
     
-    guard let image = image?.withSymbolConfiguration(config) else {
+    guard let image = _image?.withSymbolConfiguration(config) else {
         return NSButton()
     }
     
