@@ -6,7 +6,7 @@ class AppKitTabHistoryView: NSViewController {
     private var mainStackView: NSStackView!
     private var textView: NSTextField!
     
-    private var localEventMonitor: Any?
+    private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
     private var scrollObserver: NSObjectProtocol?
     
@@ -267,7 +267,7 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     private func setupKeyEventMonitor() {
-        localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { [weak self] event in
+        localKeyboardEventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .flagsChanged]) { [weak self] event in
             guard NSApp.keyWindow?.identifier == tabsPanelID else { return event }
             
             if event.type == .keyDown {
