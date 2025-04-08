@@ -216,7 +216,6 @@ class AppKitTabHistoryView: NSViewController {
         updateHighlighting(of: index)
         
         DispatchQueue.main.async {
-            // Scroll to make the tab visible
             let visibleRect = self.scrollView.contentView.bounds
             
             if tabRect.minY < visibleRect.minY {
