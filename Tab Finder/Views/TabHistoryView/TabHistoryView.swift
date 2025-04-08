@@ -17,7 +17,7 @@ class AppKitTabHistoryView: NSViewController {
     private var scrollObserver: NSObjectProtocol?
     
     private var allTabs: [Tab] = []
-    private var visibleTabViews: [Int: AppKitTabItemView] = [:]
+    private var visibleTabViews: [Int: TabItemView] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,8 +167,8 @@ class AppKitTabHistoryView: NSViewController {
     }
     
     // Create a tab view at the specified index
-    private func createTabView(for tab: Tab, at index: Int) -> AppKitTabItemView {
-        let tabView = AppKitTabItemView(tab: tab)
+    private func createTabView(for tab: Tab, at index: Int) -> TabItemView {
+        let tabView = TabItemView(tab: tab)
         
         // Calculate Y position based on index
         let yPos = CGFloat(index) * (tabHeight + tabSpacing)
@@ -312,7 +312,7 @@ class AppKitTabHistoryView: NSViewController {
     }
 }
 
-final class AppKitTabItemView: NSView {
+final class TabItemView: NSView {
     let tab: Tab
     var onTabHover: ((Int) -> Void)?
     
