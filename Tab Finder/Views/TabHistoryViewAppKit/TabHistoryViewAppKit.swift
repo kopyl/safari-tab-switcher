@@ -1,5 +1,10 @@
 import Cocoa
 
+private let tabHeight: CGFloat = 57
+private let tabSpacing: CGFloat = 0
+private let tabBottomPadding: CGFloat = 4
+private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
+
 class AppKitTabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
@@ -13,11 +18,6 @@ class AppKitTabHistoryView: NSViewController {
     
     private var allTabs: [Tab] = []
     private var visibleTabViews: [Int: NSView] = [:]
-    
-    private let tabHeight: CGFloat = 57
-    private let tabSpacing: CGFloat = 0
-    private let tabBottomPadding: CGFloat = 4
-    private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,7 +113,7 @@ class AppKitTabHistoryView: NSViewController {
         allTabs = appState.renderedTabs
         
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-        tabsContainer.frame.size.height = totalHeight + self.tabBottomPadding
+        tabsContainer.frame.size.height = totalHeight + tabBottomPadding
         
         updateVisibleTabViews()
     }
@@ -222,7 +222,7 @@ class AppKitTabHistoryView: NSViewController {
             if tabRect.minY < visibleRect.minY {
                 self.scrollView.contentView.bounds.origin.y = tabRect.minY
             } else if tabRect.maxY > visibleRect.maxY {
-                self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height + self.tabBottomPadding
+                self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height + tabBottomPadding
             }
         }
     }
