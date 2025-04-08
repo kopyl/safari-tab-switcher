@@ -308,7 +308,7 @@ class AppKitTabHistoryView: NSViewController {
     }
 }
 
-final class AppKitTabItemView: NSStackView {
+final class AppKitTabItemView: NSView {
     let tab: Tab
     var onTabHover: ((Int) -> Void)?
     
@@ -323,12 +323,34 @@ final class AppKitTabItemView: NSStackView {
         let hostLabel = NSTextField(labelWithString: tab.title)
         hostLabel.lineBreakMode = .byTruncatingTail
         hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
+        let stackView: NSStackView = .init()
 
-        self.orientation = .horizontal
-        self.spacing = 8
-        self.distribution = .fillEqually
-        self.addArrangedSubview(titleLabel)
-        self.addArrangedSubview(hostLabel)
+        stackView.orientation = .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        stackView.edgeInsets = .init(top: 0, left: 50, bottom: 0, right: 50)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(hostLabel)
+        
+        let faviconPlaceholder = AppKitFavicon(tab: tab)
+
+        self.addSubview(faviconPlaceholder)
+        self.addSubview(stackView)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            faviconPlaceholder.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 6),
+            faviconPlaceholder.widthAnchor.constraint(equalToConstant: faviconPlaceholder.width),
+            faviconPlaceholder.heightAnchor.constraint(equalToConstant: faviconPlaceholder.height),
+            faviconPlaceholder.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            
+            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: self.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
+        
         setupTrackingArea()
     }
 
@@ -348,5 +370,46 @@ final class AppKitTabItemView: NSStackView {
     
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
+    }
+}
+final class AppKitFavicon: NSView {
+    let tab: Tab
+    private let textLayer = CATextLayer()
+    
+    public let width: CGFloat = 16
+    public let height: CGFloat = 16
+
+    init(tab: Tab) {
+        self.tab = tab
+        super.init(frame: .zero)
+        
+        let fontSize: CGFloat = 10
+
+        wantsLayer = true
+        layer?.backgroundColor = NSColor.systemGray.cgColor
+        layer?.cornerRadius = 3
+
+        textLayer.string = tab.host.first?.uppercased() ?? "N"
+        textLayer.alignmentMode = .center
+        textLayer.foregroundColor = NSColor.white.cgColor
+        textLayer.font = NSFont.systemFont(ofSize: fontSize)
+        textLayer.fontSize = fontSize
+        textLayer.contentsScale = NSScreen.main?.backingScaleFactor ?? 2
+        layer?.addSublayer(textLayer)
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    override func layout() {
+        super.layout()
+        guard let font = textLayer.font as? NSFont else { return }
+        textLayer.frame = bounds
+        let textHeight = font.ascender + abs(font.descender)
+        let yOffset = (bounds.height - textHeight) / 2 + abs(font.descender) + -2
+        textLayer.frame = CGRect(x: 0, y: yOffset, width: bounds.width, height: textHeight)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
