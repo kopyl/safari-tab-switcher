@@ -7,6 +7,7 @@ class AppKitTabHistoryView: NSViewController {
     private var textView: NSTextField!
     
     private var localEventMonitor: Any?
+    private var globalMouseDownEventMonitor: Any?
     private var scrollObserver: NSObjectProtocol?
     
     private var allTabs: [Tab] = []
@@ -53,6 +54,7 @@ class AppKitTabHistoryView: NSViewController {
         
         setBorderRadius()
         setupKeyEventMonitor()
+        setupMouseDownEventMonitor()
         setupScrollObserver()
         
         NotificationCenter.default.addObserver(
@@ -278,6 +280,14 @@ class AppKitTabHistoryView: NSViewController {
                 self?.handleKeyRelease(event: event)
             }
             return event
+        }
+    }
+
+    private func setupMouseDownEventMonitor() {
+        globalMouseDownEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { event in
+            if appState.isTabsPanelOpen {
+                hideTabsPanel(withoutAnimation: true)
+            }
         }
     }
     

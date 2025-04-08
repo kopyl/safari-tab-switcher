@@ -89,16 +89,6 @@ class TabsPanelVisibilityObserver: NSObject {
     }
 }
 
-NotificationCenter.default.addObserver(
-    forName: NSWindow.didResignKeyNotification,
-    object: tabsPanel,
-    queue: .main
-) { notification in
-    guard notification.object as? NSObject == tabsPanel else { return }
-    guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
-    hideTabsPanel(withoutAnimation: true)
-}
-
 extension KeyboardShortcuts.Name {
     static let openTabsList = Self("openTabsList", default: .init(.tab, modifiers: [.option]))
 }
