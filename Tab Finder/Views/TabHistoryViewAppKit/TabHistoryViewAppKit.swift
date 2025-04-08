@@ -292,7 +292,10 @@ class AppKitTabHistoryView: NSViewController {
 }
 
 final class AppKitTabItemView: NSStackView {
+    let tab: Tab
+    
     init(tab: Tab) {
+        self.tab = tab
         super.init(frame: .zero)
 
         let titleLabel = NSTextField(labelWithString: tab.host)
@@ -313,5 +316,10 @@ final class AppKitTabItemView: NSStackView {
 
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        appState.indexOfTabToSwitchTo = tab.renderIndex
+        hideTabsPanelAndSwitchTabs()
     }
 }
