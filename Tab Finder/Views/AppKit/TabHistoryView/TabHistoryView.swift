@@ -31,7 +31,7 @@ class TabHistoryView: NSViewController {
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
         textView = makeTextField()
-        pinIcon = makePinIcon()
+        pinIcon = makePinIcon(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -126,6 +126,7 @@ class TabHistoryView: NSViewController {
     override func viewWillAppear() {
         self.renderTabs()
         self.textView.stringValue = ""
+        pinIcon.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
     }
     
     override func viewDidDisappear() {

@@ -64,11 +64,16 @@ func makeSearchIcon() -> NSImageView {
     return searchIcon
 }
 
-func makePinIcon() -> NSImageView {
-    let pinIcon = NSImageView()
-    let image = NSImage(systemSymbolName: "pin", accessibilityDescription: "pin icon")	
+func makePinImage(isFilled: Bool = false) -> NSImage? {
+    let symbolName = isFilled ? "pin.fill" : "pin"
+    let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "pin icon")
     let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
-    pinIcon.image = image?.withSymbolConfiguration(config)
+    return image?.withSymbolConfiguration(config)
+}
+
+func makePinIcon(isFilled: Bool = false) -> NSImageView {
+    let pinIcon = NSImageView()
+    pinIcon.image = makePinImage(isFilled: isFilled)
     pinIcon.translatesAutoresizingMaskIntoConstraints = false
     return pinIcon
 }
