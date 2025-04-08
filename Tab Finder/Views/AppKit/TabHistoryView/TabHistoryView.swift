@@ -23,6 +23,7 @@ class AppKitTabHistoryView: NSViewController {
         super.viewDidLoad()
         
         let visualEffectView = makeVisualEffectView()
+        let searchIcon = makeSearchIcon()
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
         textView = makeTextField()
@@ -40,6 +41,8 @@ class AppKitTabHistoryView: NSViewController {
         view.addSubview(visualEffectView)
         view.addSubview(headerView)
         view.addSubview(scrollView)
+
+        headerView.addSubview(searchIcon)
         headerView.addSubview(textView)
         
         scrollView.documentView = tabsContainer
@@ -54,10 +57,15 @@ class AppKitTabHistoryView: NSViewController {
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 76),
+            headerView.heightAnchor.constraint(equalToConstant: 72),
             
-            textView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
-            textView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -20),
+            searchIcon.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
+            searchIcon.widthAnchor.constraint(equalToConstant: 74),
+            searchIcon.heightAnchor.constraint(equalToConstant: 72),
+            searchIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            
+            textView.leadingAnchor.constraint(equalTo: searchIcon.trailingAnchor, constant: -14),
+            textView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
             textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),

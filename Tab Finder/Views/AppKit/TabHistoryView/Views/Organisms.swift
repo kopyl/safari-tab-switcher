@@ -48,3 +48,12 @@ func makeTextField() -> NSTextField {
     textField.translatesAutoresizingMaskIntoConstraints = false
     return textField
 }
+
+func makeSearchIcon() -> NSImageView {
+    let searchIcon = NSImageView()
+    let image = NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: "search icon")	
+    let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+    searchIcon.image = image?.withSymbolConfiguration(config)
+    searchIcon.translatesAutoresizingMaskIntoConstraints = false
+    return searchIcon
+}
