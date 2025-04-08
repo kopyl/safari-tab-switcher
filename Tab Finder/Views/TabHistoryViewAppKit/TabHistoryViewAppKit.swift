@@ -17,6 +17,7 @@ class AppKitTabHistoryView: NSViewController {
     // Configuration for tab views
     private let tabHeight: CGFloat = 40
     private let tabSpacing: CGFloat = 4
+    private let tabBottomPadding: CGFloat = 4
     private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
     
     override func viewDidLoad() {
@@ -53,7 +54,6 @@ class AppKitTabHistoryView: NSViewController {
         
         /// Set width of document view
         tabsContainer.frame = CGRect(origin: .zero, size: CGSize(width: 792, height: 0))
-        tabsContainer.autoresizingMask = [.width]
         
         setBorderRadius()
         setupKeyEventMonitor()
@@ -115,7 +115,7 @@ class AppKitTabHistoryView: NSViewController {
         allTabs = appState.renderedTabs
         
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-        tabsContainer.frame.size.height = totalHeight
+        tabsContainer.frame.size.height = totalHeight + self.tabBottomPadding
         
         updateVisibleTabViews()
     }
@@ -182,7 +182,7 @@ class AppKitTabHistoryView: NSViewController {
         }
         
         tabView.widthAnchor.constraint(equalToConstant: tabsContainer.frame.width).isActive = true
-        
+        tabView.heightAnchor.constraint(equalToConstant: tabHeight).isActive = true
         return tabView
     }
     
@@ -218,7 +218,7 @@ class AppKitTabHistoryView: NSViewController {
             if tabRect.minY < visibleRect.minY {
                 self.scrollView.contentView.bounds.origin.y = tabRect.minY
             } else if tabRect.maxY > visibleRect.maxY {
-                self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height
+                self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height + self.tabBottomPadding
             }
         }
     }
@@ -312,7 +312,6 @@ final class AppKitTabItemView: NSStackView {
         self.spacing = 8
         self.distribution = .fillEqually
         self.translatesAutoresizingMaskIntoConstraints = false
-
         self.addArrangedSubview(titleLabel)
         self.addArrangedSubview(hostLabel)
     }
