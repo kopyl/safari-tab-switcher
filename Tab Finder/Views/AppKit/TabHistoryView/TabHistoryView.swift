@@ -201,7 +201,6 @@ class AppKitTabHistoryView: NSViewController {
         
         updateHighlighting()
         
-        tabView.heightAnchor.constraint(equalToConstant: tabHeight).isActive = true
         return tabView
     }
     
