@@ -4,12 +4,14 @@ private let tabHeight: CGFloat = 57
 private let tabSpacing: CGFloat = 0
 private let tabBottomPadding: CGFloat = 4
 private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
+private let headerHeight: CGFloat = 72
 
 class AppKitTabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
     private var mainStackView: NSStackView!
     private var textView: NSTextField!
+    private var pinIcon: NSImageView!
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -29,6 +31,7 @@ class AppKitTabHistoryView: NSViewController {
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
         textView = makeTextField()
+        pinIcon = makePinIcon()
         
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -41,6 +44,7 @@ class AppKitTabHistoryView: NSViewController {
 
         headerView.addSubview(searchIcon)
         headerView.addSubview(textView)
+        headerView.addSubview(pinIcon)
         
         scrollView.documentView = tabsContainer
         scrollView.hasVerticalScroller = true
@@ -54,15 +58,20 @@ class AppKitTabHistoryView: NSViewController {
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 72),
+            headerView.heightAnchor.constraint(equalToConstant: headerHeight),
             
             searchIcon.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
             searchIcon.widthAnchor.constraint(equalToConstant: 74),
-            searchIcon.heightAnchor.constraint(equalToConstant: 72),
+            searchIcon.heightAnchor.constraint(equalToConstant: headerHeight),
             searchIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
+            pinIcon.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            pinIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            pinIcon.widthAnchor.constraint(equalToConstant: 74),
+            pinIcon.heightAnchor.constraint(equalToConstant: headerHeight),
+            
             textView.leadingAnchor.constraint(equalTo: searchIcon.trailingAnchor, constant: -14),
-            textView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            textView.trailingAnchor.constraint(equalTo: pinIcon.leadingAnchor),
             textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),

@@ -49,6 +49,12 @@ func makeTextField() -> NSTextField {
     return textField
 }
 
+func makeHeaderView() -> NSView {
+    let headerView = NSView()
+    headerView.translatesAutoresizingMaskIntoConstraints = false
+    return headerView
+}
+
 func makeSearchIcon() -> NSImageView {
     let searchIcon = NSImageView()
     let image = NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: "search icon")	
@@ -58,8 +64,11 @@ func makeSearchIcon() -> NSImageView {
     return searchIcon
 }
 
-func makeHeaderView() -> NSView {
-    let headerView = NSView()
-    headerView.translatesAutoresizingMaskIntoConstraints = false
-    return headerView
+func makePinIcon() -> NSImageView {
+    let pinIcon = NSImageView()
+    let image = NSImage(systemSymbolName: "pin", accessibilityDescription: "pin icon")	
+    let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+    pinIcon.image = image?.withSymbolConfiguration(config)
+    pinIcon.translatesAutoresizingMaskIntoConstraints = false
+    return pinIcon
 }
