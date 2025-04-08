@@ -35,8 +35,6 @@ class AppKitTabHistoryView: NSViewController {
         
         let headerView = NSView()
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.wantsLayer = true
-        headerView.layer?.backgroundColor = NSColor.clear.cgColor
         
         view.addSubview(visualEffectView)
         view.addSubview(headerView)
