@@ -89,12 +89,12 @@ class AppKitTabHistoryView: NSViewController {
         self.tabsStackView?.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for tab in appState.renderedTabs {
-            let tabView = NSHostingView(rootView: TabItemView(tab: tab))
+            let tabView = AppKitTabItemView(tab: tab)
             self.tabsStackView?.addArrangedSubview(tabView)
             
             NSLayoutConstraint.activate([
-                tabView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 4),
-                tabView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -4),
+                tabView.leadingAnchor.constraint(equalTo: tabsStackView.leadingAnchor, constant: 4),
+                tabView.trailingAnchor.constraint(equalTo: tabsStackView.trailingAnchor, constant: -4),
             ])
         }
         
@@ -192,5 +192,67 @@ class AppKitTabHistoryView: NSViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+final class AppKitTabItemView: NSView {
+    
+    private let titleLabel: NSTextField
+    private let hostLabel: NSTextField
+    
+    init(tab: Tab) {
+        titleLabel = NSTextField(labelWithString: tab.title)
+        hostLabel = NSTextField(labelWithString: tab.host)
+        
+        super.init(frame: .zero)
+        
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupViews() {
+        wantsLayer = true
+        layer?.cornerRadius = 6
+        layer?.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.7).cgColor
+        
+        // Configure title label with proper truncation
+        titleLabel.font = .boldSystemFont(ofSize: 13)
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.usesSingleLineMode = true
+        titleLabel.cell?.truncatesLastVisibleLine = true
+        
+        // Configure host label with proper truncation
+        hostLabel.font = .systemFont(ofSize: 11)
+        hostLabel.textColor = .secondaryLabelColor
+        hostLabel.lineBreakMode = .byTruncatingTail
+        hostLabel.usesSingleLineMode = true
+        hostLabel.cell?.truncatesLastVisibleLine = true
+        
+        // Set constraints on the entire view
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Create stack view with equal columns
+        let stackView = NSStackView(views: [titleLabel, hostLabel])
+        stackView.orientation = .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually // Equal width columns
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Set alignment for better text display
+        stackView.alignment = .centerY
+        
+        // Add the stack view to the main view
+        addSubview(stackView)
+        
+        // Set up constraints for the stack view
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6)
+        ])
     }
 }
