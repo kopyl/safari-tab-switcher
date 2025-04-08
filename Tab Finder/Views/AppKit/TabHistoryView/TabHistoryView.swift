@@ -25,17 +25,22 @@ class AppKitTabHistoryView: NSViewController {
         let visualEffectView = makeVisualEffectView()
         scrollView = makeScrollView()
         tabsContainer = FlippedView()
-        mainStackView = makeStackView()
         textView = makeTextField()
         
+        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         tabsContainer.translatesAutoresizingMaskIntoConstraints = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let headerView = NSView()
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        headerView.wantsLayer = true
+        headerView.layer?.backgroundColor = NSColor.clear.cgColor
         
         view.addSubview(visualEffectView)
-        view.addSubview(mainStackView)
-        mainStackView.addArrangedSubview(textView)
-        mainStackView.addArrangedSubview(scrollView)
-        
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(headerView)
+        view.addSubview(scrollView)
+        headerView.addSubview(textView)
         
         scrollView.documentView = tabsContainer
         scrollView.hasVerticalScroller = true
@@ -46,13 +51,23 @@ class AppKitTabHistoryView: NSViewController {
             visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            mainStackView.topAnchor.constraint(equalTo: view.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            headerView.topAnchor.constraint(equalTo: view.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: 50),
+            
+            textView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 20),
+            textView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -20),
+            textView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 10),
+            textView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -10),
+            
+            scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            tabsContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
-        
-        tabsContainer.frame = CGRect(origin: .zero, size: CGSize(width: 792, height: 0))
         
         setBorderRadius()
         setupKeyEventMonitor()
