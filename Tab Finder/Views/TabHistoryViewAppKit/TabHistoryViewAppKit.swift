@@ -398,12 +398,12 @@ final class AppKitFavicon: NSView {
         let fontSize: CGFloat = 10
 
         wantsLayer = true
-        layer?.backgroundColor = NSColor.systemGray.cgColor
+        layer?.backgroundColor = NSColor.lightGrey.cgColor
         layer?.cornerRadius = 3
 
         textLayer.string = tab.host.first?.uppercased() ?? "N"
         textLayer.alignmentMode = .center
-        textLayer.foregroundColor = NSColor.white.cgColor
+        textLayer.foregroundColor = NSColor.nearBlack.cgColor
         textLayer.font = NSFont.systemFont(ofSize: fontSize)
         textLayer.fontSize = fontSize
         textLayer.contentsScale = NSScreen.main?.backingScaleFactor ?? 2
