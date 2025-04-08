@@ -202,7 +202,7 @@ func rerenderTabs() {
         }
 }
 
-class Favicons: ObservableObject {
+private class Favicons: ObservableObject {
     @Published var icons: [String: NSImage] = [:]
     private var cache: Set<String> = []
     
