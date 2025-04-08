@@ -38,6 +38,7 @@ class AppKitTabHistoryView: NSViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         
         scrollView.documentView = tabsContainer
+        scrollView.hasVerticalScroller = true
         
         NSLayoutConstraint.activate([
             visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
