@@ -341,14 +341,10 @@ class TabHistoryView: NSViewController {
                 
                 tabView.hostLabel.textColor = .currentTabFg
                 tabView.titleLabel.textColor = .currentTabFg
-                
-                tabView.closeButon.isHidden = false
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
                 tabView.hostLabel.textColor = .tabFg
                 tabView.titleLabel.textColor = .tabFg
-                
-                tabView.closeButon.isHidden = true
             }
         }
     }
@@ -481,6 +477,7 @@ final class TabItemView: NSView {
         self.hostLabel = NSTextField(labelWithString: tab.host)
         self.titleLabel = NSTextField(labelWithString: tab.title)
         self.closeButon = makeCloseButton()
+        self.closeButon.isHidden = true
         
         super.init(frame: .zero)
         
@@ -552,5 +549,13 @@ final class TabItemView: NSView {
     
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        closeButon.isHidden = false
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        closeButon.isHidden = true
     }
 }
