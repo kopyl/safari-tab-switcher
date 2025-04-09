@@ -243,26 +243,19 @@ class TabHistoryView: NSViewController {
                     guard let strongSelf = self else { return }
                     guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
                     
-                    // Find the index of the tab to close
                     if let tabIndex = strongSelf.allTabs.firstIndex(where: { $0.id == tabId }),
                        let tabViewToRemove = strongSelf.visibleTabViews[tabIndex] {
                         
-                        // Handle index selection adjustment
                         if appState.indexOfTabToSwitchTo >= strongSelf.allTabs.count - 1 {
                             appState.indexOfTabToSwitchTo = max(0, strongSelf.allTabs.count - 2)
                         }
                         
-                        // Remove from data model first
                         appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
                         appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
                         
-                        // Animate tab removal
                         NSAnimationContext.runAnimationGroup({ context in
-                            // Set animation duration
                             context.duration = 0.2
-                            context.allowsImplicitAnimation = true
                             
-                            // Fade out and shrink animation
                             tabViewToRemove.animator().alphaValue = 0
                             
                             // Store original frame for reference
@@ -276,7 +269,6 @@ class TabHistoryView: NSViewController {
                                 height: 0
                             )
                             
-                            // Animate other tabs moving up
                             for (idx, otherTabView) in strongSelf.visibleTabViews {
                                 if idx > tabIndex {
                                     let currentFrame = otherTabView.frame
@@ -290,15 +282,12 @@ class TabHistoryView: NSViewController {
                             }
                             
                         }, completionHandler: {
-                            // Remove the view from hierarchy after animation completes
                             tabViewToRemove.removeFromSuperview()
                             strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
                             
-                            // Update the container height
                             let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
                             strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
                             
-                            // Re-render tabs after animation completes
                             Task {
                                 rerenderTabs()
                                 strongSelf.renderTabs()
