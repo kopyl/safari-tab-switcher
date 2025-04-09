@@ -413,7 +413,7 @@ final class TabItemView: NSView {
     public var closeButon: NSButton
     
     @objc func closeButtonClicked() {
-        print("closeButtonClicked")
+        onTabClose?(tab.id)
     }
     
     init(tab: Tab) {
@@ -421,11 +421,13 @@ final class TabItemView: NSView {
 
         self.hostLabel = NSTextField(labelWithString: tab.host)
         self.titleLabel = NSTextField(labelWithString: tab.title)
-        self.closeButon = NSButton(title: "Hi", target: nil, action: #selector(closeButtonClicked))
-        
-        closeButon.translatesAutoresizingMaskIntoConstraints = false
+        self.closeButon = makeCloseButton()
         
         super.init(frame: .zero)
+        
+        self.closeButon.target = self
+        self.closeButon.action = #selector(closeButtonClicked)
+        
         if tab.host == "" {
             hostLabel.stringValue = "No title"
         }
