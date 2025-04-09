@@ -240,19 +240,78 @@ class TabHistoryView: NSViewController {
                 }
                 
                 tabView.onTabClose = { [weak self] tabId in
-                    guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
+                    guard let strongSelf = self else { return }
+                    guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
                     
-                    if appState.indexOfTabToSwitchTo >= self?.allTabs.count ?? 0 - 1 {
-                        appState.indexOfTabToSwitchTo = max(0, (self?.allTabs.count ?? 1) - 2)
-                    }
-                    
-                    appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
-                    appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
-                    
-                    Task {
-                        rerenderTabs()
-                        self?.renderTabs()
-                        await closeTab(tab: tab)
+                    // Find the index of the tab to close
+                    if let tabIndex = strongSelf.allTabs.firstIndex(where: { $0.id == tabId }),
+                       let tabViewToRemove = strongSelf.visibleTabViews[tabIndex] {
+                        
+                        // Handle index selection adjustment
+                        if appState.indexOfTabToSwitchTo >= strongSelf.allTabs.count - 1 {
+                            appState.indexOfTabToSwitchTo = max(0, strongSelf.allTabs.count - 2)
+                        }
+                        
+                        // Remove from data model first
+                        appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
+                        appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
+                        
+                        // Animate tab removal
+                        NSAnimationContext.runAnimationGroup({ context in
+                            // Set animation duration
+                            context.duration = 0.2
+                            context.allowsImplicitAnimation = true
+                            
+                            // Fade out and shrink animation
+                            tabViewToRemove.animator().alphaValue = 0
+                            
+                            // Store original frame for reference
+                            let originalFrame = tabViewToRemove.frame
+                            
+                            // Animate the height to 0
+                            tabViewToRemove.animator().frame = NSRect(
+                                x: originalFrame.origin.x,
+                                y: originalFrame.origin.y,
+                                width: originalFrame.width,
+                                height: 0
+                            )
+                            
+                            // Animate other tabs moving up
+                            for (idx, otherTabView) in strongSelf.visibleTabViews {
+                                if idx > tabIndex {
+                                    let currentFrame = otherTabView.frame
+                                    otherTabView.animator().frame = NSRect(
+                                        x: currentFrame.origin.x,
+                                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
+                                        width: currentFrame.width,
+                                        height: currentFrame.height
+                                    )
+                                }
+                            }
+                            
+                        }, completionHandler: {
+                            // Remove the view from hierarchy after animation completes
+                            tabViewToRemove.removeFromSuperview()
+                            strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
+                            
+                            // Update the container height
+                            let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+                            strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
+                            
+                            // Re-render tabs after animation completes
+                            Task {
+                                rerenderTabs()
+                                strongSelf.renderTabs()
+                                await closeTab(tab: tab)
+                            }
+                        })
+                    } else {
+                        // Fallback if we couldn't find the tab view
+                        Task {
+                            rerenderTabs()
+                            strongSelf.renderTabs()
+                            await closeTab(tab: tab)
+                        }
                     }
                 }
                 
