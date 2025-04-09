@@ -97,6 +97,7 @@ func makeCloseButton() -> NSButton {
     }
     
     let closeButton = NSButton(title: "", image: image, target: nil, action: nil)
+    closeButton.isBordered = false
     closeButton.translatesAutoresizingMaskIntoConstraints = false
     return closeButton
 }
