@@ -549,9 +549,6 @@ final class TabItemView: NSView {
     
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
-    }
-    
-    override func mouseEntered(with event: NSEvent) {
         closeButon.isHidden = false
     }
     
