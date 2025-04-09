@@ -239,10 +239,21 @@ class TabHistoryView: NSViewController {
                     self?.updateHighlighting()
                 }
                 
-                tabView.onTabClose = { renderIndex in
-                    print(renderIndex)
+                tabView.onTabClose = { [weak self] tabId in
+                    guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
                     
-                    print("close")
+                    if appState.indexOfTabToSwitchTo >= self?.allTabs.count ?? 0 - 1 {
+                        appState.indexOfTabToSwitchTo = max(0, (self?.allTabs.count ?? 1) - 2)
+                    }
+                    
+                    appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
+                    appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
+                    
+                    Task {
+                        rerenderTabs()
+                        self?.renderTabs()
+                        await closeTab(tab: tab)
+                    }
                 }
                 
                 tabsContainer.addSubview(tabView)
