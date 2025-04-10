@@ -369,8 +369,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 74;
-				APP_VERSION = 1.73;
+				APP_BUILD = 75;
+				APP_VERSION = 1.74;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				BUNDLE_IDENTIFIER = "kopyl.tab-finder-debug";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -436,8 +436,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 74;
-				APP_VERSION = 1.73;
+				APP_BUILD = 75;
+				APP_VERSION = 1.74;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				BUNDLE_IDENTIFIER = "kopyl.tab-finder";
 				CLANG_ANALYZER_NONNULL = YES;
