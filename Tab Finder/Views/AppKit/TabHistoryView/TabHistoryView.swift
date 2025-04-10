@@ -512,8 +512,16 @@ final class TabItemView: NSView {
         let stackView: NSStackView = .init()
 
         stackView.orientation = .horizontal
-        stackView.spacing = 8
-        stackView.distribution = .fillEqually
+        
+        // Set distribution based on column order
+        if appState.columnOrder == .title_host {
+            stackView.distribution = .fill
+            stackView.spacing = 20
+        } else {
+            stackView.distribution = .fillEqually
+            stackView.spacing = 8
+        }
+        
         stackView.edgeInsets = .init(top: 0, left: 57, bottom: 0, right: 50)
         stackView.addArrangedSubview(firstColumnLabel)
         stackView.addArrangedSubview(seconColumnLabel)
@@ -526,7 +534,9 @@ final class TabItemView: NSView {
         self.addSubview(closeButon)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        
+        // Basic constraints for all layouts
+        let constraints = [
             faviconView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 21),
             faviconView.widthAnchor.constraint(equalToConstant: faviconView.width),
             faviconView.heightAnchor.constraint(equalToConstant: faviconView.height),
@@ -540,7 +550,23 @@ final class TabItemView: NSView {
             closeButon.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             closeButon.widthAnchor.constraint(equalToConstant: tabHeight),
             closeButon.heightAnchor.constraint(equalToConstant: tabHeight),
-        ])
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        
+        // Add specific width constraint for second column if in title_host mode
+        if appState.columnOrder == .title_host {
+            let secondColumnWidthConstraint = seconColumnLabel.widthAnchor.constraint(equalToConstant: 200)
+            secondColumnWidthConstraint.isActive = true
+            
+            // Make sure the first column can grow but has a minimum width
+            firstColumnLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            seconColumnLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        } else {
+            // For the equal distribution case, ensure both have same hugging priority
+            firstColumnLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            seconColumnLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        }
         
         setupTrackingArea()
     }
