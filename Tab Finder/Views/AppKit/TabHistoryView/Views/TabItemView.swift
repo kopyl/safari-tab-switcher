@@ -1,6 +1,7 @@
 import Cocoa
 
 final class TabItemView: NSView {
+    private var eventMonitor: Any?
     
     init() {
         super.init(frame: .zero)
@@ -26,6 +27,13 @@ final class TabItemView: NSView {
     func setupTrackingArea() {
         let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
         self.addTrackingArea(NSTrackingArea(rect: .zero, options: options, owner: self, userInfo: nil))
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        self.eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel]) { [weak self] scrollWheelEvent in
+            print(event	)
+            return event
+        }
     }
     
     override func mouseMoved(with event: NSEvent) {
