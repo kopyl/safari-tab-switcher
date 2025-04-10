@@ -11,7 +11,7 @@ func switchToTab(id: Int, tabs: [SFSafariTab]) async {
 
 func closeTab(id: Int, tabs: [SFSafariTab]) {
     guard tabs.indices.contains(id) else {
-        log("Previous tab ID \(id) is out of range.")
+        log("Attemp to close tab faild: tab ID \(id) is out of range.")
         return
     }
     tabs[id].close()
