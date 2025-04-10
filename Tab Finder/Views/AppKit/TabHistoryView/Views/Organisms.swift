@@ -79,10 +79,9 @@ func makePinButton(isFilled: Bool = false, action: Selector? = nil) -> NSButton?
     return pinButton
 }
 
-func makeColorView(hex: String? = "#fffff") -> NSView {
+func makeColorView() -> NSView {
     let colorView = NSView()
     colorView.wantsLayer = true
-    colorView.layer?.backgroundColor = hexToColor(hex ?? "#fffff").cgColor
     colorView.layer?.opacity = 0.15
     colorView.translatesAutoresizingMaskIntoConstraints = false
     return colorView

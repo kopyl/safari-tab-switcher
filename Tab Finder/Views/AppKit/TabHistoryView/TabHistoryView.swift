@@ -30,7 +30,7 @@ class TabHistoryView: NSViewController {
         let headerView = makeHeaderView()
         
         scrollView = makeScrollView()
-        tintView = makeColorView(hex: appState.userSelectedAccentColor)
+        tintView = makeColorView()
         tabsContainer = FlippedView()
         textView = makeTextField()
         pinButton = makePinButton(
