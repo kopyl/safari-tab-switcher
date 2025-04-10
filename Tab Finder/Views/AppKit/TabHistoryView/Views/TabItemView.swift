@@ -54,6 +54,16 @@ final class TabItemView: NSView {
         let swipeActionView = makeSwipeActionView()
         swipeActionView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
         
+        let textLabelForSwipeView = NSTextField(labelWithString: "Swipe to close tab")
+        textLabelForSwipeView.translatesAutoresizingMaskIntoConstraints = false
+        
+        swipeActionView.addSubview(textLabelForSwipeView)
+        
+        NSLayoutConstraint.activate([
+            textLabelForSwipeView.centerYAnchor.constraint(equalTo: swipeActionView.centerYAnchor),
+            textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor)
+        ])
+        
         self.addSubview(swipeActionView)
         self.addSubview(contentView)
         
