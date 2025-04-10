@@ -297,6 +297,9 @@ class TabHistoryView: NSViewController {
                                 strongSelf.renderTabs()
                                 await closeTab(tab: tab)
                                 strongSelf.updateSearchFieldPlaceholderText()
+                                if appState.savedTabs.count == 0 {
+                                    hideTabsPanel()
+                                }
                             }
                         })
                     } else {
