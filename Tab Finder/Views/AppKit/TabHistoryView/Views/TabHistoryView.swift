@@ -238,79 +238,79 @@ class TabHistoryView: NSViewController {
                 
                 let tabView = createTabView(for: allTabs[index], at: index)
                 
-                tabView.onTabHover = { [weak self] renderIndex in
-                    appState.indexOfTabToSwitchTo = renderIndex
-                    self?.updateHighlighting()
-                }
-                
-                tabView.onTabClose = { [weak self] tabId in
-                    guard let strongSelf = self else { return }
-                    guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
-                    
-                    if let tabIndex = strongSelf.allTabs.firstIndex(where: { $0.id == tabId }),
-                       let tabViewToRemove = strongSelf.visibleTabViews[tabIndex] {
-                        
-                        if appState.indexOfTabToSwitchTo >= strongSelf.allTabs.count - 1 {
-                            appState.indexOfTabToSwitchTo = max(0, strongSelf.allTabs.count - 2)
-                        }
-                        
-                        appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
-                        appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
-                        
-                        NSAnimationContext.runAnimationGroup({ context in
-                            context.duration = 0.2
-                            
-                            tabViewToRemove.animator().alphaValue = 0
-                            
-                            // Store original frame for reference
-                            let originalFrame = tabViewToRemove.frame
-                            
-                            // Animate the height to 0
-                            tabViewToRemove.animator().frame = NSRect(
-                                x: originalFrame.origin.x,
-                                y: originalFrame.origin.y,
-                                width: originalFrame.width,
-                                height: 0
-                            )
-                            
-                            for (idx, otherTabView) in strongSelf.visibleTabViews {
-                                if idx > tabIndex {
-                                    let currentFrame = otherTabView.frame
-                                    otherTabView.animator().frame = NSRect(
-                                        x: currentFrame.origin.x,
-                                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
-                                        width: currentFrame.width,
-                                        height: currentFrame.height
-                                    )
-                                }
-                            }
-                            
-                        }, completionHandler: {
-                            tabViewToRemove.removeFromSuperview()
-                            strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
-                            
-                            let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-                            strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
-                            
-                            Task {
-                                rerenderTabs()
-                                strongSelf.renderTabs()
-                                await closeTab(tab: tab)
-                                strongSelf.updateSearchFieldPlaceholderText()
-                                if appState.savedTabs.count == 0 {
-                                    hideTabsPanel()
-                                }
-                            }
-                        })
-                    } else {
-                        // Fallback if we couldn't find the tab view
-                        Task {
-                            rerenderTabs()
-                            strongSelf.renderTabs()
-                            await closeTab(tab: tab)
-                        }
-                    }
-                }
+//                tabView.onTabHover = { [weak self] renderIndex in
+//                    appState.indexOfTabToSwitchTo = renderIndex
+//                    self?.updateHighlighting()
+//                }
+//                
+//                tabView.onTabClose = { [weak self] tabId in
+//                    guard let strongSelf = self else { return }
+//                    guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
+//                    
+//                    if let tabIndex = strongSelf.allTabs.firstIndex(where: { $0.id == tabId }),
+//                       let tabViewToRemove = strongSelf.visibleTabViews[tabIndex] {
+//                        
+//                        if appState.indexOfTabToSwitchTo >= strongSelf.allTabs.count - 1 {
+//                            appState.indexOfTabToSwitchTo = max(0, strongSelf.allTabs.count - 2)
+//                        }
+//                        
+//                        appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
+//                        appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
+//                        
+//                        NSAnimationContext.runAnimationGroup({ context in
+//                            context.duration = 0.2
+//                            
+//                            tabViewToRemove.animator().alphaValue = 0
+//                            
+//                            // Store original frame for reference
+//                            let originalFrame = tabViewToRemove.frame
+//                            
+//                            // Animate the height to 0
+//                            tabViewToRemove.animator().frame = NSRect(
+//                                x: originalFrame.origin.x,
+//                                y: originalFrame.origin.y,
+//                                width: originalFrame.width,
+//                                height: 0
+//                            )
+//                            
+//                            for (idx, otherTabView) in strongSelf.visibleTabViews {
+//                                if idx > tabIndex {
+//                                    let currentFrame = otherTabView.frame
+//                                    otherTabView.animator().frame = NSRect(
+//                                        x: currentFrame.origin.x,
+//                                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
+//                                        width: currentFrame.width,
+//                                        height: currentFrame.height
+//                                    )
+//                                }
+//                            }
+//                            
+//                        }, completionHandler: {
+//                            tabViewToRemove.removeFromSuperview()
+//                            strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
+//                            
+//                            let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+//                            strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
+//                            
+//                            Task {
+//                                rerenderTabs()
+//                                strongSelf.renderTabs()
+//                                await closeTab(tab: tab)
+//                                strongSelf.updateSearchFieldPlaceholderText()
+//                                if appState.savedTabs.count == 0 {
+//                                    hideTabsPanel()
+//                                }
+//                            }
+//                        })
+//                    } else {
+//                        // Fallback if we couldn't find the tab view
+//                        Task {
+//                            rerenderTabs()
+//                            strongSelf.renderTabs()
+//                            await closeTab(tab: tab)
+//                        }
+//                    }
+//                }
                 
                 tabsContainer.addSubview(tabView)
                 visibleTabViews[index] = tabView
@@ -323,7 +323,7 @@ class TabHistoryView: NSViewController {
     
     // Create a tab view at the specified index
     private func createTabView(for tab: Tab, at index: Int) -> TabItemView {
-        let tabView = TabItemView(tab: tab)
+        let tabView = TabItemView()
         
         // Calculate Y position based on index
         let yPos = CGFloat(index) * (tabHeight + tabSpacing)
@@ -347,12 +347,12 @@ class TabHistoryView: NSViewController {
                 tabView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
                 tabView.layer?.cornerRadius = 6
                 
-                tabView.firstColumnLabel.textColor = .currentTabFg
-                tabView.seconColumnLabel.textColor = .currentTabFg
+//                tabView.firstColumnLabel.textColor = .currentTabFg
+//                tabView.seconColumnLabel.textColor = .currentTabFg
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
-                tabView.firstColumnLabel.textColor = .tabFg
-                tabView.seconColumnLabel.textColor = .tabFg
+//                tabView.firstColumnLabel.textColor = .tabFg
+//                tabView.seconColumnLabel.textColor = .tabFg
             }
         }
     }
