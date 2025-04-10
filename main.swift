@@ -269,15 +269,16 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
     })
 }
 
-func showSettingsWindow() {
+func showSettingsWindow(withTitle: String = "Settings") {
     if let settingsWindow {
+        settingsWindow.title = withTitle
         settingsWindow.makeKeyAndOrderFront(nil)
         return
     }
     
     settingsWindow = Window(view: SettingsView(appState: appState))
     
-    settingsWindow?.title = "Settings"
+    settingsWindow?.title = withTitle
     settingsWindow?.setContentSize(NSSize(width: 444, height: 424))
     settingsWindow?.center()
     settingsWindow?.makeKeyAndOrderFront(nil)
@@ -324,7 +325,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         button.image = NSImage(named: "status-bar-icon")
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(Application.openSettingsWindow), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(Application.openSettingsWindowWithTabFinderTitle), keyEquivalent: ","))
         
         menu.addItem(NSMenuItem.separator())
 
@@ -445,6 +446,12 @@ class Application: NSApplication {
         settingsWindow?.becomeKey()
         
         showSettingsWindow()
+    }
+    
+    @objc func openSettingsWindowWithTabFinderTitle() {
+        NSApp.activate(ignoringOtherApps: true)
+        settingsWindow?.becomeKey()
+        showSettingsWindow(withTitle: "Tab Finder Settings")
     }
 
     @objc func openAboutPanel() {
