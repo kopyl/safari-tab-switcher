@@ -100,3 +100,12 @@ func makeCloseButton() -> NSButton {
     closeButton.translatesAutoresizingMaskIntoConstraints = false
     return closeButton
 }
+
+func makeSwipeActionView() -> NSView {
+    let view = NSView()
+    view.wantsLayer = true
+    view.layer?.backgroundColor = NSColor.red.cgColor
+    view.layer?.cornerRadius = SwipeActionConfig.cornerRadius
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+}
