@@ -156,27 +156,13 @@ final class TabItemView: NSView {
     }
     
     func setupTrackingArea() {
-        for trackingArea in self.trackingAreas {
-            self.removeTrackingArea(trackingArea)
-        }
-        
         let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
-        self.addTrackingArea(NSTrackingArea(rect: self.bounds, options: options, owner: self, userInfo: nil))
+        self.addTrackingArea(NSTrackingArea(rect: self.contentView.bounds, options: options, owner: self, userInfo: nil))
     }
     
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
         closeButon.isHidden = false
-    }
-    
-    private var isRunningFullSwipe: Bool = false
-    private var isRunningFullSwipeFinished: Bool = false
-    
-    private func removeEventMonitor() {
-        if let monitor = scrollEventMonitor {
-            NSEvent.removeMonitor(monitor)
-            scrollEventMonitor = nil
-        }
     }
     
     override func scrollWheel(with event: NSEvent) {
@@ -195,10 +181,5 @@ final class TabItemView: NSView {
     
     override func mouseExited(with event: NSEvent) {
         closeButon.isHidden = true
-    }
-    
-    override func viewDidHide() {
-        print("removing event")
-        removeEventMonitor()
     }
 }
