@@ -155,18 +155,9 @@ final class TabItemView: NSView {
         hideTabsPanelAndSwitchTabs()
     }
     
-    func setupTrackingArea() {
-        let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
-        self.addTrackingArea(NSTrackingArea(rect: self.contentView.bounds, options: options, owner: self, userInfo: nil))
-    }
-    
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
         closeButon.isHidden = false
-    }
-    
-    private func isItVerticalScroll(_ event: NSEvent) -> Bool {
-        return abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX)
     }
     
     override func scrollWheel(with event: NSEvent) {
@@ -177,12 +168,12 @@ final class TabItemView: NSView {
         }
         
         if event.phase != .changed {
-            hideSwipeActionToRight()
+            performFullSwipeToRight()
             return
         }
         
         if isItVerticalScroll(event) {
-            hideSwipeActionToRight()
+            performFullSwipeToRight()
             super.scrollWheel(with: event)
             return
         }
@@ -205,6 +196,19 @@ final class TabItemView: NSView {
         self.contentViewTrailingConstraint.constant = newPosition - SwipeActionConfig.spacing
     }
     
+    override func mouseExited(with event: NSEvent) {
+        closeButon.isHidden = true
+    }
+    
+    private func setupTrackingArea() {
+        let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
+        self.addTrackingArea(NSTrackingArea(rect: self.contentView.bounds, options: options, owner: self, userInfo: nil))
+    }
+    
+    private func isItVerticalScroll(_ event: NSEvent) -> Bool {
+        return abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX)
+    }
+    
     private func performFullSwipeToLeft() {
         isRunningFullSwipe = true
         
@@ -219,16 +223,12 @@ final class TabItemView: NSView {
         }
     }
     
-    private func hideSwipeActionToRight() {
+    private func performFullSwipeToRight() {
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.5
             
             self.swipeActionViewLeadingConstraint.animator().constant = SwipeActionConfig.spacing
             self.contentViewTrailingConstraint.animator().constant = 0
         }
-    }
-    
-    override func mouseExited(with event: NSEvent) {
-        closeButon.isHidden = true
     }
 }
