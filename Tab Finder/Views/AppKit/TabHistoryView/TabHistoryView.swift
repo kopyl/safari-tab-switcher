@@ -163,12 +163,16 @@ class TabHistoryView: NSViewController {
         self.renderTabs()
         self.textView.stringValue = ""
         pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
-        textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
+        updateSearchFieldPlaceholderText()
         applyBackgroundTint()
     }
     
     override func viewDidDisappear() {
         clearAllTabViews()
+    }
+    
+    private func updateSearchFieldPlaceholderText() {
+        textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
     }
     
     private func applyBackgroundTint() {
@@ -292,6 +296,7 @@ class TabHistoryView: NSViewController {
                                 rerenderTabs()
                                 strongSelf.renderTabs()
                                 await closeTab(tab: tab)
+                                strongSelf.updateSearchFieldPlaceholderText()
                             }
                         })
                     } else {
