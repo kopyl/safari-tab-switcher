@@ -6,6 +6,8 @@ private let tabBottomPadding: CGFloat = 4
 private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
 private let headerHeight: CGFloat = 72
 
+let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
+
 class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!

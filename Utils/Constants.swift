@@ -5,6 +5,8 @@ let bundleID = Bundle.main.bundleIdentifier ?? ""
 let extensionBundleIdentifier = "\(bundleID).Extension"
 let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 
+let tabsPanelWidth: CGFloat = 800
+
 enum NavigationKeys: UInt16 {
     case `return` = 36
     case tab = 48

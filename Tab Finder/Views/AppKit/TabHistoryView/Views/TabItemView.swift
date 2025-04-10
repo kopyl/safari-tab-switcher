@@ -3,7 +3,7 @@ import Cocoa
 class SwipeActionConfig {
     static let fullSwipeThreshold: CGFloat = 300
     static let fullSwipeAnimationDuration: CGFloat = 0.05
-    static let spacing: CGFloat = 0
+    static let spacing: CGFloat = 4
     static let cornerRadius: CGFloat = 0
 }
 
@@ -23,8 +23,8 @@ final class TabItemView: NSView {
     let contentView = NSView()
     
     private var swipeActionViewLeadingConstraint = NSLayoutConstraint()
-    private var swipeActionViewTrailingConstraint = NSLayoutConstraint()
-    private var scrollEventMonitor: Any?
+    private var contentViewTrailingConstraint = NSLayoutConstraint()
+    private var isRunningFullSwipe = false
     
     init(tab: Tab) {
         self.tab = tab
@@ -55,9 +55,6 @@ final class TabItemView: NSView {
         
         self.addSubview(swipeActionView)
         self.addSubview(contentView)
-        
-        swipeActionViewLeadingConstraint = swipeActionView.leadingAnchor.constraint(equalTo: self.trailingAnchor)
-        swipeActionViewTrailingConstraint = swipeActionView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         
         // Configure labels
         if tab.host == "" {
@@ -97,10 +94,13 @@ final class TabItemView: NSView {
         contentView.addSubview(faviconView)
         contentView.addSubview(closeButon)
         
+        swipeActionViewLeadingConstraint = swipeActionView.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10)
+        contentViewTrailingConstraint = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        
         // Make contentView fill the parent view
         NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            contentViewTrailingConstraint,
+            contentView.widthAnchor.constraint(equalTo: self.widthAnchor),
             contentView.topAnchor.constraint(equalTo: self.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
@@ -110,7 +110,7 @@ final class TabItemView: NSView {
         // Setup constraints for stackView and other elements inside contentView
         NSLayoutConstraint.activate([
             swipeActionViewLeadingConstraint,
-            swipeActionViewTrailingConstraint,
+            swipeActionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
             swipeActionView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             swipeActionView.heightAnchor.constraint(equalTo: self.heightAnchor),
             
@@ -165,19 +165,68 @@ final class TabItemView: NSView {
         closeButon.isHidden = false
     }
     
-    override func scrollWheel(with event: NSEvent) {
-        
-        print(event)
-        super.scrollWheel(with: event)
-        
-        let changeToLeadingConstraintSwipe: CGFloat = self.swipeActionViewLeadingConstraint.constant + event.scrollingDeltaX
-        
-        self.swipeActionViewLeadingConstraint.constant = changeToLeadingConstraintSwipe
-        self.contentView.layer?.position.x = changeToLeadingConstraintSwipe
-        
-        self.layoutSubtreeIfNeeded()
+    private func isItVerticalScroll(_ event: NSEvent) -> Bool {
+        return abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX)
     }
     
+    override func scrollWheel(with event: NSEvent) {
+        
+        if isRunningFullSwipe {
+            super.scrollWheel(with: event)
+            return
+        }
+        
+        if event.phase != .changed {
+            hideSwipeActionToRight()
+            return
+        }
+        
+        if isItVerticalScroll(event) {
+            hideSwipeActionToRight()
+            super.scrollWheel(with: event)
+            return
+        }
+        
+        var newPosition: CGFloat = self.swipeActionViewLeadingConstraint.constant + event.scrollingDeltaX
+        
+        if newPosition < -SwipeActionConfig.fullSwipeThreshold {
+            performFullSwipeToLeft()
+            return
+        }
+        
+        if newPosition > 0 {
+            newPosition = 0
+        }
+        else if newPosition < -tabContentViewWidth {
+            newPosition = -tabContentViewWidth
+        }
+        
+        self.swipeActionViewLeadingConstraint.constant = newPosition
+        self.contentViewTrailingConstraint.constant = newPosition - SwipeActionConfig.spacing
+    }
+    
+    private func performFullSwipeToLeft() {
+        isRunningFullSwipe = true
+        
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.1
+
+            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            self.swipeActionViewLeadingConstraint.animator().constant = -tabContentViewWidth
+            self.contentViewTrailingConstraint.animator().constant = -tabContentViewWidth
+        } completionHandler: {
+            self.onTabClose?(self.tab.id)
+        }
+    }
+    
+    private func hideSwipeActionToRight() {
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.5
+            
+            self.swipeActionViewLeadingConstraint.animator().constant = SwipeActionConfig.spacing
+            self.contentViewTrailingConstraint.animator().constant = 0
+        }
+    }
     
     override func mouseExited(with event: NSEvent) {
         closeButon.isHidden = true
