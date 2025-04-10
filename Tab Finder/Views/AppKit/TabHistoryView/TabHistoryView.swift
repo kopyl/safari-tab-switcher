@@ -469,28 +469,25 @@ class TabHistoryView: NSViewController {
 final class TabItemView: NSView {
     let tab: Tab
     var onTabHover: ((Int) -> Void)?
-    var onTabClose: ((Int) -> Void)?
+    var onTabClose: ((Int) -> Void)? {
+        didSet {
+            self.closeButon.onTabClose = onTabClose
+        }
+    }
     
     public var hostLabel: NSTextField
     public var titleLabel: NSTextField
-    public var closeButon: NSButton
-    
-    @objc func closeButtonClicked() {
-        onTabClose?(tab.id)
-    }
+    public var closeButon: CloseButton
     
     init(tab: Tab) {
         self.tab = tab
 
         self.hostLabel = NSTextField(labelWithString: tab.host)
         self.titleLabel = NSTextField(labelWithString: tab.title)
-        self.closeButon = makeCloseButton()
+        self.closeButon = CloseButton(tab: tab)
         self.closeButon.isHidden = true
         
         super.init(frame: .zero)
-        
-        self.closeButon.target = self
-        self.closeButon.action = #selector(closeButtonClicked)
         
         if tab.host == "" {
             hostLabel.stringValue = "No title"
@@ -534,8 +531,8 @@ final class TabItemView: NSView {
             stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             
             closeButon.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            closeButon.widthAnchor.constraint(equalToConstant: 50),
-            closeButon.heightAnchor.constraint(equalToConstant: 50),
+            closeButon.widthAnchor.constraint(equalToConstant: tabHeight),
+            closeButon.heightAnchor.constraint(equalToConstant: tabHeight),
         ])
         
         setupTrackingArea()
@@ -562,5 +559,64 @@ final class TabItemView: NSView {
     
     override func mouseExited(with event: NSEvent) {
         closeButon.isHidden = true
+    }
+}
+
+final class CloseButton: NSView {
+    let button = makeCloseButton()
+    let tab: Tab
+    let hoverBackgroundView: NSView
+    
+    var onTabClose: ((Int) -> Void)?
+    
+    init(tab: Tab) {
+        self.tab = tab
+        
+        self.hoverBackgroundView = makeColorView()
+        self.hoverBackgroundView.layer?.backgroundColor = NSColor.lightGrey.cgColor
+        self.hoverBackgroundView.layer?.cornerRadius = 4
+        
+        super.init(frame: .zero)
+        
+        button.target = self
+        button.action = #selector(closeButtonPressed)
+        
+        setupTrackingArea()
+        
+        self.addSubview(button)
+        self.addSubview(hoverBackgroundView	)
+        self.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            button.widthAnchor.constraint(equalToConstant: tabHeight),
+            button.heightAnchor.constraint(equalToConstant: tabHeight),
+            
+            hoverBackgroundView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hoverBackgroundView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            hoverBackgroundView.widthAnchor.constraint(equalToConstant: 20),
+            hoverBackgroundView.heightAnchor.constraint(equalToConstant: 20),
+        ])
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        self.hoverBackgroundView.layer?.opacity = 1
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        self.hoverBackgroundView.layer?.opacity = 0
+    }
+    
+    func setupTrackingArea() {
+        let options: NSTrackingArea.Options = [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect]
+        self.addTrackingArea(NSTrackingArea(rect: .zero, options: options, owner: self, userInfo: nil))
+    }
+    
+    @objc func closeButtonPressed() {
+        onTabClose?(self.tab.id)
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
