@@ -245,6 +245,8 @@ class TabHistoryView: NSViewController {
                     self?.updateHighlighting()
                 }
                 
+                // Updated tabView.onTabClose function with proper animation
+
                 tabView.onTabClose = { [weak self] tabId in
                     guard let strongSelf = self else { return }
                     guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
@@ -259,40 +261,50 @@ class TabHistoryView: NSViewController {
                         appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
                         appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
                         
+                        // Prepare tabViewToRemove for animation
+                        tabViewToRemove.wantsLayer = true
+                        
+                        // First disable autoresizing mask to avoid constraint conflicts
+                        tabViewToRemove.translatesAutoresizingMaskIntoConstraints = false
+                        
+                        // Create height constraint for animation
+                        let heightConstraint = tabViewToRemove.heightAnchor.constraint(equalToConstant: tabHeight)
+                        let widthConstraint = tabViewToRemove.widthAnchor.constraint(equalToConstant: tabContentViewWidth)
+                        heightConstraint.isActive = true
+                        widthConstraint.isActive = true
+                        
+                        // Ensure other tab views have their layers for animation
+                        for (idx, otherTabView) in strongSelf.visibleTabViews {
+                            if idx > tabIndex {
+                                otherTabView.wantsLayer = true
+                            }
+                        }
+                        
                         NSAnimationContext.runAnimationGroup({ context in
                             context.duration = 0.2
+                            context.allowsImplicitAnimation = true
                             
-                            tabViewToRemove.animator().alphaValue = 0
+                            // Animate the height constraint to 0
+                            heightConstraint.animator().constant = 0
                             
-                            // Store original frame for reference
-                            let originalFrame = tabViewToRemove.frame
-                            
-                            // Animate the height to 0
-                            tabViewToRemove.animator().frame = NSRect(
-                                x: originalFrame.origin.x,
-                                y: originalFrame.origin.y,
-                                width: originalFrame.width,
-                                height: 0
-                            )
-                            
+                            // Adjust other tab positions
                             for (idx, otherTabView) in strongSelf.visibleTabViews {
                                 if idx > tabIndex {
+                                    // Use animator on frame's origin.y
                                     let currentFrame = otherTabView.frame
-                                    otherTabView.animator().frame = NSRect(
-                                        x: currentFrame.origin.x,
-                                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
-                                        width: currentFrame.width,
-                                        height: currentFrame.height
-                                    )
+                                    let newOrigin = NSPoint(x: currentFrame.origin.x,
+                                                           y: currentFrame.origin.y - (tabHeight + tabSpacing))
+                                    otherTabView.animator().setFrameOrigin(newOrigin)
                                 }
                             }
+                            
+                            // Update container height
+                            let newHeight = CGFloat(strongSelf.allTabs.count - 1) * (tabHeight + tabSpacing) - tabSpacing + tabBottomPadding
+                            strongSelf.tabsContainer.animator().frame.size.height = newHeight
                             
                         }, completionHandler: {
                             tabViewToRemove.removeFromSuperview()
                             strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
-                            
-                            let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-                            strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
                             
                             Task {
                                 rerenderTabs()
