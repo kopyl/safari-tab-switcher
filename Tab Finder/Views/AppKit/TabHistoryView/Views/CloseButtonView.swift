@@ -1,6 +1,6 @@
 import Cocoa
 
-final class CloseButton: NSView {
+final class CloseButtonView: NSView {
     let button = makeCloseButton()
     let tab: Tab
     let hoverBackgroundView: NSView

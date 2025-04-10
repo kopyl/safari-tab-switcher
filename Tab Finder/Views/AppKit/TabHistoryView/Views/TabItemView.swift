@@ -12,13 +12,13 @@ final class TabItemView: NSView {
     var onTabHover: ((Int) -> Void)?
     var onTabClose: ((Int) -> Void)? {
         didSet {
-            self.closeButon.onTabClose = onTabClose
+            self.closeButonView.onTabClose = onTabClose
         }
     }
     
     public var firstColumnLabel: NSTextField
     public var seconColumnLabel: NSTextField
-    public var closeButon: CloseButton
+    public var closeButonView: CloseButtonView
     
     let contentView = NSView()
     
@@ -39,38 +39,36 @@ final class TabItemView: NSView {
             self.seconColumnLabel = NSTextField(labelWithString: tab.host)
         }
         
-        self.closeButon = CloseButton(tab: tab)
-        self.closeButon.isHidden = true
+        self.closeButonView = CloseButtonView(tab: tab)
+        let swipeActionView = makeSwipeActionView()
+        let textLabelForSwipeView = NSTextField(labelWithString: "Swipe to close tab")
+        let stackView = NSStackView()
+        let faviconView = FaviconView(tab: tab)
         
         super.init(frame: .zero)
-        
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.wantsLayer = true
         
         self.clipsToBounds = true
         self.wantsLayer = true
         self.layer?.cornerRadius = 4
         
-        let swipeActionView = makeSwipeActionView()
+        self.closeButonView.isHidden = true
+        
+        
+        contentView.wantsLayer = true
+        
         swipeActionView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
         
-        let textLabelForSwipeView = NSTextField(labelWithString: "Swipe to close tab")
-        textLabelForSwipeView.translatesAutoresizingMaskIntoConstraints = false
+        
         textLabelForSwipeView.font = .systemFont(ofSize: 13, weight: .regular)
         textLabelForSwipeView.textColor = .white
         
-        swipeActionView.addSubview(textLabelForSwipeView)
-        
-        NSLayoutConstraint.activate([
-            textLabelForSwipeView.centerYAnchor.constraint(equalTo: swipeActionView.centerYAnchor),
-            textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor)
-        ])
-        
         self.addSubview(swipeActionView)
+        swipeActionView.addSubview(textLabelForSwipeView)
         self.addSubview(contentView)
+        contentView.addSubview(stackView)
+        contentView.addSubview(faviconView)
+        contentView.addSubview(closeButonView)
         
-        // Configure labels
         if tab.host == "" {
             firstColumnLabel.stringValue = "No title"
         }
@@ -83,8 +81,6 @@ final class TabItemView: NSView {
         seconColumnLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         seconColumnLabel.font = .systemFont(ofSize: 13)
         seconColumnLabel.textColor = .tabFg
-
-        let stackView = NSStackView()
         
         stackView.orientation = .horizontal
         
@@ -101,32 +97,26 @@ final class TabItemView: NSView {
         stackView.addArrangedSubview(firstColumnLabel)
         stackView.addArrangedSubview(seconColumnLabel)
         
-        let faviconView = FaviconView(tab: tab)
-
-        // Add all elements to contentView
-        contentView.addSubview(stackView)
-        contentView.addSubview(faviconView)
-        contentView.addSubview(closeButon)
-        
         swipeActionViewLeadingConstraint = swipeActionView.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10)
         contentViewTrailingConstraint = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         
-        // Make contentView fill the parent view
-        NSLayoutConstraint.activate([
-            contentViewTrailingConstraint,
-            contentView.widthAnchor.constraint(equalTo: self.widthAnchor),
-            contentView.topAnchor.constraint(equalTo: self.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-        ])
-        
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        textLabelForSwipeView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
         
-        // Setup constraints for stackView and other elements inside contentView
         NSLayoutConstraint.activate([
             swipeActionViewLeadingConstraint,
             swipeActionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
             swipeActionView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             swipeActionView.heightAnchor.constraint(equalTo: self.heightAnchor),
+            
+            textLabelForSwipeView.centerYAnchor.constraint(equalTo: swipeActionView.centerYAnchor),
+            textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor),
+            
+            contentViewTrailingConstraint,
+            contentView.widthAnchor.constraint(equalTo: self.widthAnchor),
+            contentView.topAnchor.constraint(equalTo: self.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -138,9 +128,9 @@ final class TabItemView: NSView {
             faviconView.heightAnchor.constraint(equalToConstant: faviconView.height),
             faviconView.centerYAnchor.constraint(equalTo: stackView.centerYAnchor),
             
-            closeButon.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            closeButon.widthAnchor.constraint(equalToConstant: tabHeight),
-            closeButon.heightAnchor.constraint(equalToConstant: tabHeight),
+            closeButonView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            closeButonView.widthAnchor.constraint(equalToConstant: tabHeight),
+            closeButonView.heightAnchor.constraint(equalToConstant: tabHeight),
         ])
         
         // Add specific width constraint for second column if in title_host mode
@@ -171,7 +161,7 @@ final class TabItemView: NSView {
     
     override func mouseMoved(with event: NSEvent) {
         onTabHover?(tab.renderIndex)
-        closeButon.isHidden = false
+        closeButonView.isHidden = false
     }
     
     override func scrollWheel(with event: NSEvent) {
@@ -213,7 +203,7 @@ final class TabItemView: NSView {
     }
     
     override func mouseExited(with event: NSEvent) {
-        closeButon.isHidden = true
+        closeButonView.isHidden = true
         isUserTryingToSwipeToCloseTab = false
     }
     
