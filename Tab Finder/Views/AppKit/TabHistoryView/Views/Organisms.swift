@@ -1,4 +1,5 @@
 import Cocoa
+import SwiftUI
 
 class FlippedView: NSView {
     override var isFlipped: Bool {
@@ -104,7 +105,7 @@ func makeCloseButton() -> NSButton {
 func makeSwipeActionView() -> NSView {
     let view = NSView()
     view.wantsLayer = true
-    view.layer?.backgroundColor = NSColor.red.cgColor
+    view.layer?.backgroundColor = NSColor.customRed.cgColor
     view.layer?.cornerRadius = SwipeActionConfig.cornerRadius
     view.translatesAutoresizingMaskIntoConstraints = false
     return view

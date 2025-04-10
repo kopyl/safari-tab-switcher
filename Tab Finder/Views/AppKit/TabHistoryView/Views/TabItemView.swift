@@ -58,6 +58,7 @@ final class TabItemView: NSView {
         let textLabelForSwipeView = NSTextField(labelWithString: "Swipe to close tab")
         textLabelForSwipeView.translatesAutoresizingMaskIntoConstraints = false
         textLabelForSwipeView.font = .systemFont(ofSize: 16, weight: .regular)
+        textLabelForSwipeView.textColor = .white
         
         swipeActionView.addSubview(textLabelForSwipeView)
         
