@@ -4,7 +4,7 @@ class SwipeActionConfig {
     static let fullSwipeThreshold: CGFloat = 300
     static let fullSwipeAnimationDuration: CGFloat = 0.05
     static let spacing: CGFloat = 4
-    static let cornerRadius: CGFloat = 4
+    static let cornerRadius: CGFloat = 6
 }
 
 final class TabItemView: NSView {
