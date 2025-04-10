@@ -347,12 +347,12 @@ class TabHistoryView: NSViewController {
                 tabView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
                 tabView.layer?.cornerRadius = 6
                 
-                tabView.hostLabel.textColor = .currentTabFg
-                tabView.titleLabel.textColor = .currentTabFg
+                tabView.firstColumnLabel.textColor = .currentTabFg
+                tabView.seconColumnLabel.textColor = .currentTabFg
             } else {
                 tabView.layer?.backgroundColor = NSColor.clear.cgColor
-                tabView.hostLabel.textColor = .tabFg
-                tabView.titleLabel.textColor = .tabFg
+                tabView.firstColumnLabel.textColor = .tabFg
+                tabView.seconColumnLabel.textColor = .tabFg
             }
         }
     }
@@ -475,32 +475,39 @@ final class TabItemView: NSView {
         }
     }
     
-    public var hostLabel: NSTextField
-    public var titleLabel: NSTextField
+    public var firstColumnLabel: NSTextField
+    public var seconColumnLabel: NSTextField
     public var closeButon: CloseButton
     
     init(tab: Tab) {
         self.tab = tab
-
-        self.hostLabel = NSTextField(labelWithString: tab.host)
-        self.titleLabel = NSTextField(labelWithString: tab.title)
+        
+        switch appState.columnOrder {
+        case .host_title:
+                self.firstColumnLabel = NSTextField(labelWithString: tab.host)
+                self.seconColumnLabel = NSTextField(labelWithString: tab.title)
+            case .title_host:
+                self.firstColumnLabel = NSTextField(labelWithString: tab.title)
+                self.seconColumnLabel = NSTextField(labelWithString: tab.host)
+        }
+        
         self.closeButon = CloseButton(tab: tab)
         self.closeButon.isHidden = true
         
         super.init(frame: .zero)
         
         if tab.host == "" {
-            hostLabel.stringValue = "No title"
+            firstColumnLabel.stringValue = "No title"
         }
-        hostLabel.lineBreakMode = .byTruncatingTail
-        hostLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        hostLabel.font = .systemFont(ofSize: 18)
-        hostLabel.textColor = .tabFg
+        firstColumnLabel.lineBreakMode = .byTruncatingTail
+        firstColumnLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        firstColumnLabel.font = .systemFont(ofSize: 18)
+        firstColumnLabel.textColor = .tabFg
 
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        titleLabel.font = .systemFont(ofSize: 13)
-        titleLabel.textColor = .tabFg
+        seconColumnLabel.lineBreakMode = .byTruncatingTail
+        seconColumnLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        seconColumnLabel.font = .systemFont(ofSize: 13)
+        seconColumnLabel.textColor = .tabFg
         
         let stackView: NSStackView = .init()
 
@@ -508,8 +515,8 @@ final class TabItemView: NSView {
         stackView.spacing = 8
         stackView.distribution = .fillEqually
         stackView.edgeInsets = .init(top: 0, left: 57, bottom: 0, right: 50)
-        stackView.addArrangedSubview(hostLabel)
-        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(firstColumnLabel)
+        stackView.addArrangedSubview(seconColumnLabel)
         
         let faviconView = FaviconView(tab: tab)
 
