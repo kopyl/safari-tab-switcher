@@ -298,6 +298,7 @@ class TabHistoryView: NSViewController {
                             let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
                             strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
                             
+                            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
                             rerenderTabs()
                             strongSelf.renderTabs()
                             
@@ -309,6 +310,7 @@ class TabHistoryView: NSViewController {
                     } else {
                         // Fallback if we couldn't find the tab view
                         Task {
+                            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
                             rerenderTabs()
                             strongSelf.renderTabs()
                             print("Fallback")
