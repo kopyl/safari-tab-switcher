@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		480202122D8060CB00979EEC /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 480202112D8060CB00979EEC /* KeyboardShortcuts */; };
+		48123BFD2DA81B1A0053E6C4 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48123BFC2DA81B160053E6C4 /* TabItemView.swift */; };
+		48123BFF2DA81B620053E6C4 /* CloseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */; };
 		4849CB5E2D4889F4000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		4849CB602D488A96000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		484AECD12DA4337100C9117E /* Organisms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484AECD02DA4336F00C9117E /* Organisms.swift */; };
@@ -57,6 +59,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		48123BFC2DA81B160053E6C4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
+		48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		484AECD02DA4336F00C9117E /* Organisms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisms.swift; sourceTree = "<group>"; };
 		484AED852DA573A500C9117E /* Favicons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicons.swift; sourceTree = "<group>"; };
@@ -110,7 +114,6 @@
 			children = (
 				48F9D6BE2D74E0D400DEE99E /* Utils.swift */,
 				484AED832DA5736000C9117E /* Views */,
-				48731FB52D9F854D001AE594 /* TabHistoryView.swift */,
 			);
 			path = TabHistoryView;
 			sourceTree = "<group>";
@@ -120,6 +123,9 @@
 			children = (
 				484AED842DA5739500C9117E /* Components */,
 				484AECD02DA4336F00C9117E /* Organisms.swift */,
+				48731FB52D9F854D001AE594 /* TabHistoryView.swift */,
+				48123BFC2DA81B160053E6C4 /* TabItemView.swift */,
+				48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -337,6 +343,8 @@
 				48F9D6BF2D74E0D800DEE99E /* Utils.swift in Sources */,
 				48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */,
 				48E9EE422D33E20B007BC086 /* Math.swift in Sources */,
+				48123BFD2DA81B1A0053E6C4 /* TabItemView.swift in Sources */,
+				48123BFF2DA81B620053E6C4 /* CloseButtonView.swift in Sources */,
 				48F9D6C22D74E1C400DEE99E /* GreetingView.swift in Sources */,
 				4849CB5E2D4889F4000BCA77 /* Constants.swift in Sources */,
 			);
