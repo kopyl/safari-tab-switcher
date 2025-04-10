@@ -60,16 +60,6 @@ NSWorkspace.shared.notificationCenter.addObserver(
     }
 }
 
-DistributedNotificationCenter.default().addObserver(
-    forName: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
-    object: nil,
-    queue: .main
-) { _ in
-    DispatchQueue.main.async {
-        appState.currentInputSourceName = getCurrentInputSourceName()
-    }
-}
-
 class TabsPanelVisibilityObserver: NSObject {
     private var panel: NSPanel
     private var observation: NSKeyValueObservation?
@@ -87,16 +77,6 @@ class TabsPanelVisibilityObserver: NSObject {
     deinit {
         observation?.invalidate()
     }
-}
-
-NotificationCenter.default.addObserver(
-    forName: NSWindow.didResignKeyNotification,
-    object: tabsPanel,
-    queue: .main
-) { notification in
-    guard notification.object as? NSObject == tabsPanel else { return }
-    guard [1, 2].contains(NSEvent.pressedMouseButtons) else { return }
-    hideTabsPanel(withoutAnimation: true)
 }
 
 extension KeyboardShortcuts.Name {
@@ -137,13 +117,14 @@ class AppState: ObservableObject {
     @Published var searchQuery = ""
     @Published var savedTabs = Tabs()
     @Published var renderedTabs: [Tab] = []
-    @Published var isTabsSwitcherNeededToStayOpen = false
+    @Published var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false
     @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
     @Published var columnOrder: ColumnOrder = Store.columnOrder
     @Published var currentInputSourceName = getCurrentInputSourceName()
     @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
+    @Published var userSelectedAccentColor = Store.userSelectedAccentColor
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
@@ -189,6 +170,17 @@ class Panel: NSPanel {
         self.contentViewController = NSHostingController(rootView: view)
     }
     
+    init(view: some NSViewController, styleMask: NSWindow.StyleMask = [.nonactivatingPanel]) {
+        super.init(
+            contentRect: .zero,
+            styleMask: styleMask,
+            backing: .buffered,
+            defer: false
+        )
+        self.titlebarAppearsTransparent = true
+        self.contentViewController = view
+    }
+    
     override var canBecomeKey: Bool {
         return true
     }
@@ -212,16 +204,10 @@ func showGreetingWindow() {
 
 func createTabsPanel() {
     tabsPanel = Panel(
-        view: TabHistoryView(
-            appState: appState
-        )
+        view: TabHistoryView()
     )
     
     tabsPanel?.backgroundColor = .clear
-    tabsPanel?.contentView?.layer?.cornerRadius = 8
-    
-    /// without this corner radius is not set on macOS 13.0. On 15.0 it works without masksToBounds
-    tabsPanel?.contentView?.layer?.masksToBounds = true
     
     tabsPanel?.setContentSize(NSSize(width: 800, height: 500))
     tabsPanel?.center()

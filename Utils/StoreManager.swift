@@ -28,7 +28,7 @@ func formatHost(_ host: String) -> String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
-struct Tab: Codable, Identifiable {
+struct Tab: Codable, Identifiable, Hashable {
     var id: Int
     var renderIndex: Int
     var title: String = ""
@@ -111,7 +111,12 @@ struct Store {
         }
     
     static var isTabsSwitcherNeededToStayOpen: Bool {
-        userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        get {
+            userDefaults.bool(forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        }
+        set {
+            userDefaults.set(newValue, forKey: isTabsSwitcherNeededToStayOpenStoreKey)
+        }
     }
     
     static var sortTabsBy: SortTabsBy {
@@ -128,5 +133,9 @@ struct Store {
     
     static var addStatusBarItemWhenAppMovesInBackground: Bool {
         userDefaults.bool(forKey: addStatusBarItemWhenAppMovesInBackgroundStoreKey)
+    }
+    
+    static var userSelectedAccentColor: String {
+        userDefaults.string(forKey: userSelectedAccentColorStoreKey) ?? userSelectedAccentColorDefaultValue
     }
 }
