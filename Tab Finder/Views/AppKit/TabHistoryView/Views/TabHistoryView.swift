@@ -263,21 +263,21 @@ class TabHistoryView: NSViewController {
                             await closeTab(tab: tab)
                         }
                         
+                        /// animation prep start
+//                        tabViewToRemove.wantsLayer = true
+                        tabViewToRemove.translatesAutoresizingMaskIntoConstraints = false
+                        let heightConstraint = tabViewToRemove.heightAnchor.constraint(equalToConstant: tabHeight)
+                        
+                        let widthConstraint = tabViewToRemove.widthAnchor.constraint(equalToConstant: tabContentViewWidth)
+                        heightConstraint.isActive = true
+                        widthConstraint.isActive = true
+                        
+                        /// animation prep end
+                        
                         NSAnimationContext.runAnimationGroup({ context in
                             context.duration = 0.2
                             
-                            tabViewToRemove.animator().alphaValue = 0
-                            
-                            // Store original frame for reference
-                            let originalFrame = tabViewToRemove.frame
-                            
-                            // Animate the height to 0
-                            tabViewToRemove.animator().frame = NSRect(
-                                x: originalFrame.origin.x,
-                                y: originalFrame.origin.y,
-                                width: originalFrame.width,
-                                height: 0
-                            )
+                            heightConstraint.animator().constant = 0
                             
                             for (idx, otherTabView) in strongSelf.visibleTabViews {
                                 if idx > tabIndex {
