@@ -399,14 +399,15 @@ class TabHistoryView: NSViewController {
         let isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
         
         guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
-        guard !allTabs.isEmpty else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
         
         switch key {
         case .arrowUp, .backTick:
+            guard !allTabs.isEmpty else { return }
             appState.indexOfTabToSwitchTo -= 1
             scrollToSelectedTabWithoutAnimation()
         case .tab:
+            guard !allTabs.isEmpty else { return }
             if event.modifierFlags.contains(.shift) {
                 appState.indexOfTabToSwitchTo -= 1
             } else {
@@ -414,9 +415,11 @@ class TabHistoryView: NSViewController {
             }
             scrollToSelectedTabWithoutAnimation()
         case .arrowDown:
+            guard !allTabs.isEmpty else { return }
             appState.indexOfTabToSwitchTo += 1
             scrollToSelectedTabWithoutAnimation()
         case .return:
+            guard !allTabs.isEmpty else { return }
             hideTabsPanelAndSwitchTabs()
         case .escape:
             hideTabsPanel(withoutAnimation: true)
