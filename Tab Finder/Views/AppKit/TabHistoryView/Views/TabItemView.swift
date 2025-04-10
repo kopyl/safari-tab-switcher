@@ -25,6 +25,7 @@ final class TabItemView: NSView {
     private var swipeActionViewLeadingConstraint = NSLayoutConstraint()
     private var contentViewTrailingConstraint = NSLayoutConstraint()
     private var isRunningFullSwipe = false
+    private var isUserTryingToSwipeToCloseTab = false
     
     init(tab: Tab) {
         self.tab = tab
@@ -184,11 +185,13 @@ final class TabItemView: NSView {
             return
         }
         
-        if isItVerticalScroll(event) {
+        if isItVerticalScroll(event) && !isUserTryingToSwipeToCloseTab {
             performFullSwipeToRight()
             super.scrollWheel(with: event)
             return
         }
+        
+        isUserTryingToSwipeToCloseTab = true
         
         var newPosition: CGFloat = self.swipeActionViewLeadingConstraint.constant + event.scrollingDeltaX
         
@@ -210,6 +213,7 @@ final class TabItemView: NSView {
     
     override func mouseExited(with event: NSEvent) {
         closeButon.isHidden = true
+        isUserTryingToSwipeToCloseTab = false
     }
     
     private func setupTrackingArea() {
@@ -236,6 +240,8 @@ final class TabItemView: NSView {
     }
     
     private func performFullSwipeToRight() {
+        isUserTryingToSwipeToCloseTab = false
+        
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.5
             
