@@ -35,6 +35,10 @@ final class TabItemView: NSView {
     /// need to lock on swipe-to-close-tab scroll and avoid letting user to swipe vertically
     private var isUserTryingToSwipeToCloseTab = false
     
+    @objc private func onTabCloseFromSwipeActionPressed() {
+        onTabClose?(tab.id)
+    }
+    
     init(tab: Tab) {
         self.tab = tab
         
@@ -48,12 +52,13 @@ final class TabItemView: NSView {
         }
         
         self.closeButonView = CloseButtonView(tab: tab)
-        let swipeActionView = makeSwipeActionView()
         let textLabelForSwipeView = NSTextField(labelWithString: Copy.TabsPanel.closeButtonTitle)
         let stackView = NSStackView()
         let faviconView = FaviconView(tab: tab)
         
         super.init(frame: .zero)
+        
+        let swipeActionView = makeSwipeActionView(target: self, acton: #selector(onTabCloseFromSwipeActionPressed))
         
         self.clipsToBounds = true
         self.wantsLayer = true
