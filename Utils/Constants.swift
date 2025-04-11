@@ -36,7 +36,7 @@ class Copy {
         static let inputSource = "Click to change the language of your input to a previous one. You can also change it by pressing \"space\" key when you haven't enetered your search query yet"
     }
     class TabsPanel {
-        static let closeButtonTitle = "Close tab"
+        static let closeButtonTitle = "Close"
     }
 }
 
