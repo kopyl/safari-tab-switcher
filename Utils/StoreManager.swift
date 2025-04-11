@@ -132,7 +132,12 @@ struct Store {
     }
     
     static var addStatusBarItemWhenAppMovesInBackground: Bool {
-        userDefaults.bool(forKey: addStatusBarItemWhenAppMovesInBackgroundStoreKey)
+        get {
+            userDefaults.bool(forKey: addStatusBarItemWhenAppMovesInBackgroundStoreKey)
+        }
+        set {
+            userDefaults.set(newValue, forKey: addStatusBarItemWhenAppMovesInBackgroundStoreKey)
+        }
     }
     
     static var userSelectedAccentColor: String {

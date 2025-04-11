@@ -126,6 +126,7 @@ class AppState: ObservableObject {
     @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
     @Published var userSelectedAccentColor = Store.userSelectedAccentColor
     @Published var tabsWithOpenSwipeViews: [TabItemView] = []
+    @Published var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
@@ -304,6 +305,11 @@ func showAboutPanel() {
 class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState
     var panelObserver: TabsPanelVisibilityObserver?
+    var isStatusBarItemVisibleMenuItem = NSMenuItem(
+        title: "Show status bar item",
+        action: nil,
+        keyEquivalent: ""
+    )
     
     init(
         appState: AppState
@@ -326,6 +332,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         button.image = NSImage(named: "status-bar-icon")
 
         let menu = NSMenu()
+       
+        isStatusBarItemVisibleMenuItem.action = #selector(hideStatusBarItem)
+        isStatusBarItemVisibleMenuItem.state = .on
+        isStatusBarItemVisibleMenuItem.target = self
+        
+        menu.addItem(isStatusBarItemVisibleMenuItem)
         menu.addItem(NSMenuItem(title: "Open Settings", action: #selector(Application.openSettingsWindowWithTabFinderTitle), keyEquivalent: ","))
         
         menu.addItem(NSMenuItem.separator())
@@ -355,9 +367,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }
+    
+    @objc func hideStatusBarItem() {
+        statusBarItem?.isVisible = false
+        appState.addStatusBarItemWhenAppMovesInBackground = false
+        Store.addStatusBarItemWhenAppMovesInBackground = false
+    }
 }
 
 class Application: NSApplication {
+    
     private func createMenu() {
         self.mainMenu = NSMenu()
 
@@ -374,6 +393,7 @@ class Application: NSApplication {
            action: #selector(openSettingsWindow),
            keyEquivalent: ",")
         )
+        
         
         appMenu.addItem(.separator())
         Application.addLinkMenuItem(to: appMenu, title: "Contribute on GitHub", webURL: "https://github.com/kopyl/safari-tab-switcher")
