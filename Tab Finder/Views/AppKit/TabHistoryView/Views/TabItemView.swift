@@ -215,6 +215,10 @@ final class TabItemView: NSView {
             isRunningPartialFullSwipe = false
         }
         
+        if distance < -tabContentViewWidth {
+            distance = -tabContentViewWidth
+        }
+        
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
             
