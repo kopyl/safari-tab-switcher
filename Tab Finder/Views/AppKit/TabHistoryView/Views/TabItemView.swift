@@ -7,6 +7,9 @@ class SwipeActionConfig {
     static let fullSwipeAnimationDuration: CGFloat = 0.05
     static let spacing: CGFloat = 4
     static let cornerRadius: CGFloat = 6
+    
+    static let textXShift: CGFloat = -SwipeActionConfig.spacing - 2
+    static let textLeftInsetWhenAlmostFullSwipe: CGFloat = 40
 }
 
 final class TabItemView: NSView {
@@ -34,6 +37,8 @@ final class TabItemView: NSView {
     
     /// need to lock on swipe-to-close-tab scroll and avoid letting user to swipe vertically
     private var isUserTryingToSwipeToCloseTab = false
+    
+    private var textLabelForSwipeViewXConstraint = NSLayoutConstraint()
     
     @objc private func onTabCloseFromSwipeActionPressed() {
         onTabClose?(tab.id)
@@ -112,6 +117,7 @@ final class TabItemView: NSView {
         
         swipeActionViewLeadingConstraint = swipeActionView.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10)
         contentViewTrailingConstraint = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        textLabelForSwipeViewXConstraint = textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor, constant: SwipeActionConfig.textXShift)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         textLabelForSwipeView.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +130,7 @@ final class TabItemView: NSView {
             swipeActionView.heightAnchor.constraint(equalTo: self.heightAnchor),
             
             textLabelForSwipeView.centerYAnchor.constraint(equalTo: swipeActionView.centerYAnchor),
-            textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor, constant: -SwipeActionConfig.spacing - 2),
+            textLabelForSwipeViewXConstraint,
             
             contentViewTrailingConstraint,
             contentView.widthAnchor.constraint(equalTo: self.widthAnchor),
@@ -224,6 +230,11 @@ final class TabItemView: NSView {
         }
         
         var distance: CGFloat = self.totalSwipeDistance
+        var textDistance: CGFloat = SwipeActionConfig.textXShift
+        
+        if distance < -tabContentViewWidth {
+            distance = -tabContentViewWidth
+        }
         
         if distance < -SwipeActionConfig.fullSwipeThreshold {
 
@@ -234,16 +245,16 @@ final class TabItemView: NSView {
             isRunningPartialFullSwipe = true
             distance -= 300
             
+            textDistance = distance / 2 + SwipeActionConfig.textLeftInsetWhenAlmostFullSwipe
+            
         } else {
             if isRunningPartialFullSwipe {
                 NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
             }
             
+            textDistance = SwipeActionConfig.textXShift
+            
             isRunningPartialFullSwipe = false
-        }
-        
-        if distance < -tabContentViewWidth {
-            distance = -tabContentViewWidth
         }
         
         NSAnimationContext.runAnimationGroup { context in
@@ -251,6 +262,8 @@ final class TabItemView: NSView {
             
             self.swipeActionViewLeadingConstraint.animator().constant = distance
             self.contentViewTrailingConstraint.animator().constant = distance - SwipeActionConfig.spacing
+            
+            self.textLabelForSwipeViewXConstraint.animator().constant = textDistance
         }
 
     }
