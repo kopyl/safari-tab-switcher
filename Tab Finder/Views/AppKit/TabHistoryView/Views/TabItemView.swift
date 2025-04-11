@@ -25,6 +25,8 @@ final class TabItemView: NSView {
     private var swipeActionViewLeadingConstraint = NSLayoutConstraint()
     private var contentViewTrailingConstraint = NSLayoutConstraint()
     private var isRunningFullSwipe = false
+    
+    /// need to lock on swipe-to-close-tab scroll and avoid letting user to swipe vertically
     private var isUserTryingToSwipeToCloseTab = false
     
     init(tab: Tab) {
