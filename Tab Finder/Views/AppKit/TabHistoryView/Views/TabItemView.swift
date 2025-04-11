@@ -25,11 +25,9 @@ final class TabItemView: NSView {
     private var swipeActionViewLeadingConstraint = NSLayoutConstraint()
     private var contentViewTrailingConstraint = NSLayoutConstraint()
     private var isRunningFullSwipe = false
-    private var totalSwipeDistance: CGFloat = 0 {
-        didSet {
-            print(totalSwipeDistance)
-        }
-    }
+    private var isRunningPartialFullSwipe = false
+    
+    private var totalSwipeDistance: CGFloat = 0
     
     /// need to lock on swipe-to-close-tab scroll and avoid letting user to swipe vertically
     private var isUserTryingToSwipeToCloseTab = false
@@ -178,11 +176,6 @@ final class TabItemView: NSView {
             return
         }
         
-        if event.phase != .changed {
-            performFullSwipeToRight()
-            return
-        }
-        
         if isItVerticalScroll(event) && !isUserTryingToSwipeToCloseTab {
             performFullSwipeToRight()
             super.scrollWheel(with: event)
@@ -193,13 +186,42 @@ final class TabItemView: NSView {
         
         setTotalSwipeDistance(currentScrollingDeltaX: event.scrollingDeltaX)
         
-        if self.totalSwipeDistance < -SwipeActionConfig.fullSwipeThreshold {
-            performFullSwipeToLeft()
+        if event.phase != .changed {
+            if self.totalSwipeDistance < -SwipeActionConfig.fullSwipeThreshold {
+                performFullSwipeToLeft()
+                
+            } else {
+                performFullSwipeToRight()
+            }
             return
         }
         
-        self.swipeActionViewLeadingConstraint.constant = self.totalSwipeDistance
-        self.contentViewTrailingConstraint.constant = self.totalSwipeDistance - SwipeActionConfig.spacing
+        var distance: CGFloat = self.totalSwipeDistance
+        
+        if distance < -SwipeActionConfig.fullSwipeThreshold {
+
+            if !isRunningPartialFullSwipe {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            }
+            
+            isRunningPartialFullSwipe = true
+            distance -= 300
+            
+        } else {
+            if isRunningPartialFullSwipe {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            }
+            
+            isRunningPartialFullSwipe = false
+        }
+        
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.1
+            
+            self.swipeActionViewLeadingConstraint.animator().constant = distance
+            self.contentViewTrailingConstraint.animator().constant = distance - SwipeActionConfig.spacing
+        }
+
     }
     
     override func mouseExited(with event: NSEvent) {
@@ -250,6 +272,7 @@ final class TabItemView: NSView {
     
     private func performFullSwipeToRight() {
         isUserTryingToSwipeToCloseTab = false
+        isRunningPartialFullSwipe = false
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.5
