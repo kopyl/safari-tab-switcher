@@ -58,7 +58,7 @@ final class TabItemView: NSView {
         
         super.init(frame: .zero)
         
-        let swipeActionView = makeSwipeActionView(target: self, acton: #selector(onTabCloseFromSwipeActionPressed))
+        let swipeActionView = makeSwipeActionView(target: self, action: #selector(onTabCloseFromSwipeActionPressed))
         
         self.clipsToBounds = true
         self.wantsLayer = true
