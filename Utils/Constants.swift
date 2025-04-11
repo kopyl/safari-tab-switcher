@@ -35,6 +35,9 @@ class Copy {
     class Tooltips {
         static let inputSource = "Click to change the language of your input to a previous one. You can also change it by pressing \"space\" key when you haven't enetered your search query yet"
     }
+    class TabsPanel {
+        static let closeButtonTitle = "Swipe to close tab"
+    }
 }
 
 class AssetNames {

@@ -49,7 +49,7 @@ final class TabItemView: NSView {
         
         self.closeButonView = CloseButtonView(tab: tab)
         let swipeActionView = makeSwipeActionView()
-        let textLabelForSwipeView = NSTextField(labelWithString: "Swipe to close tab")
+        let textLabelForSwipeView = NSTextField(labelWithString: Copy.TabsPanel.closeButtonTitle)
         let stackView = NSStackView()
         let faviconView = FaviconView(tab: tab)
         
