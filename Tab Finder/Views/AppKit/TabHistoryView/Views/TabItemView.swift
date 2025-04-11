@@ -174,6 +174,15 @@ final class TabItemView: NSView {
     
     override func scrollWheel(with event: NSEvent) {
         
+        if !appState.tabsWithOpenSwipeViews.isEmpty {
+            for tab in appState.tabsWithOpenSwipeViews {
+                if tab.tab.id != self.tab.id {
+                    tab.performFullSwipeToRight()
+                }
+            }
+            appState.tabsWithOpenSwipeViews.removeAll()
+        }
+        
         if isRunningFullSwipe {
             super.scrollWheel(with: event)
             return
@@ -187,15 +196,6 @@ final class TabItemView: NSView {
         }
         
         isUserTryingToSwipeToCloseTab = true
-        
-        if !appState.tabsWithOpenSwipeViews.isEmpty {
-            for tab in appState.tabsWithOpenSwipeViews {
-                if tab.tab.id != self.tab.id {
-                    tab.performFullSwipeToRight()
-                }
-            }
-            appState.tabsWithOpenSwipeViews.removeAll()
-        }
         
         setTotalSwipeDistance(currentScrollingDeltaX: event.scrollingDeltaX)
         
