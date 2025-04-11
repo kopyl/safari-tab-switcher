@@ -1,7 +1,7 @@
 import Cocoa
 
 class SwipeActionConfig {
-    static let partialRightSwipeThreshold: CGFloat = 200
+    static let partialRightSwipeThreshold: CGFloat = 150
     
     static let fullSwipeThreshold: CGFloat = 300
     static let fullSwipeAnimationDuration: CGFloat = 0.05
