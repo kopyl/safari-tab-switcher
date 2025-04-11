@@ -1,6 +1,8 @@
 import Cocoa
 
 class SwipeActionConfig {
+    static let partialRightSwipeThreshold: CGFloat = 200
+    
     static let fullSwipeThreshold: CGFloat = 300
     static let fullSwipeAnimationDuration: CGFloat = 0.05
     static let spacing: CGFloat = 4
@@ -191,7 +193,13 @@ final class TabItemView: NSView {
                 performFullSwipeToLeft()
                 
             } else {
-                performFullSwipeToRight()
+                
+                if self.totalSwipeDistance < -SwipeActionConfig.partialRightSwipeThreshold {
+                    performPartialSwipeToRight()
+                } else {
+                    performFullSwipeToRight()
+                }
+                
             }
             return
         }
@@ -271,6 +279,20 @@ final class TabItemView: NSView {
             self.contentViewTrailingConstraint.animator().constant = -tabContentViewWidth
         } completionHandler: {
             self.onTabClose?(self.tab.id)
+        }
+    }
+    
+    private func performPartialSwipeToRight() {
+        isUserTryingToSwipeToCloseTab = false
+        isRunningPartialFullSwipe = false
+        
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.1
+            
+            self.swipeActionViewLeadingConstraint.animator().constant = -SwipeActionConfig.partialRightSwipeThreshold + SwipeActionConfig.spacing
+            self.contentViewTrailingConstraint.animator().constant = -SwipeActionConfig.partialRightSwipeThreshold
+        } completionHandler: {
+            self.totalSwipeDistance = -SwipeActionConfig.partialRightSwipeThreshold
         }
     }
     
