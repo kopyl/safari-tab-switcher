@@ -186,6 +186,11 @@ final class TabItemView: NSView {
         
         isUserTryingToSwipeToCloseTab = true
         
+        if let tab = appState.lastTabWithOpenSwipeViews {
+            tab.performFullSwipeToRight()
+            appState.lastTabWithOpenSwipeViews = nil
+        }
+        
         setTotalSwipeDistance(currentScrollingDeltaX: event.scrollingDeltaX)
         
         if event.phase != .changed {
@@ -196,6 +201,7 @@ final class TabItemView: NSView {
                 
                 if self.totalSwipeDistance < -SwipeActionConfig.partialRightSwipeThreshold {
                     performPartialSwipeToRight()
+                    appState.lastTabWithOpenSwipeViews = self
                 } else {
                     performFullSwipeToRight()
                 }
