@@ -28,6 +28,7 @@ final class TabItemView: NSView {
     private var contentViewTrailingConstraint = NSLayoutConstraint()
     private var isRunningFullSwipe = false
     private var isRunningPartialFullSwipe = false
+    private var isRunningAnyAnimation = false
     
     private var totalSwipeDistance: CGFloat = 0
     
@@ -180,15 +181,20 @@ final class TabItemView: NSView {
         
         if isItVerticalScroll(event) && !isUserTryingToSwipeToCloseTab {
             performFullSwipeToRight()
+            
             super.scrollWheel(with: event)
             return
         }
         
         isUserTryingToSwipeToCloseTab = true
         
-        if let tab = appState.lastTabWithOpenSwipeViews {
-            tab.performFullSwipeToRight()
-            appState.lastTabWithOpenSwipeViews = nil
+        if !appState.tabsWithOpenSwipeViews.isEmpty {
+            for tab in appState.tabsWithOpenSwipeViews {
+                if tab.tab.id != self.tab.id {
+                    tab.performFullSwipeToRight()
+                }
+            }
+            appState.tabsWithOpenSwipeViews.removeAll()
         }
         
         setTotalSwipeDistance(currentScrollingDeltaX: event.scrollingDeltaX)
@@ -196,18 +202,20 @@ final class TabItemView: NSView {
         if event.phase != .changed {
             if self.totalSwipeDistance < -SwipeActionConfig.fullSwipeThreshold {
                 performFullSwipeToLeft()
-                
+                return
             } else {
                 
-                if self.totalSwipeDistance < -SwipeActionConfig.partialRightSwipeThreshold {
+                if self.totalSwipeDistance < -SwipeActionConfig.partialRightSwipeThreshold / 2 {
                     performPartialSwipeToRight()
-                    appState.lastTabWithOpenSwipeViews = self
+                    
+                    appState.tabsWithOpenSwipeViews.append(self)
+                    return
                 } else {
                     performFullSwipeToRight()
+                    return
                 }
                 
             }
-            return
         }
         
         var distance: CGFloat = self.totalSwipeDistance
@@ -277,6 +285,11 @@ final class TabItemView: NSView {
         isRunningFullSwipe = true
         self.totalSwipeDistance = 0
         
+        if isRunningAnyAnimation {
+            return
+        }
+        isRunningAnyAnimation = true
+        
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
 
@@ -285,12 +298,19 @@ final class TabItemView: NSView {
             self.contentViewTrailingConstraint.animator().constant = -tabContentViewWidth
         } completionHandler: {
             self.onTabClose?(self.tab.id)
+            self.isRunningAnyAnimation = false
         }
     }
     
     private func performPartialSwipeToRight() {
         isUserTryingToSwipeToCloseTab = false
         isRunningPartialFullSwipe = false
+        self.totalSwipeDistance = -SwipeActionConfig.partialRightSwipeThreshold
+        
+        if isRunningAnyAnimation {
+            return
+        }
+        isRunningAnyAnimation = true
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
@@ -298,21 +318,27 @@ final class TabItemView: NSView {
             self.swipeActionViewLeadingConstraint.animator().constant = -SwipeActionConfig.partialRightSwipeThreshold + SwipeActionConfig.spacing
             self.contentViewTrailingConstraint.animator().constant = -SwipeActionConfig.partialRightSwipeThreshold
         } completionHandler: {
-            self.totalSwipeDistance = -SwipeActionConfig.partialRightSwipeThreshold
+            self.isRunningAnyAnimation = false
         }
     }
     
     private func performFullSwipeToRight() {
         isUserTryingToSwipeToCloseTab = false
         isRunningPartialFullSwipe = false
+        self.totalSwipeDistance = 0
+        
+        if isRunningAnyAnimation {
+            return
+        }
+        isRunningAnyAnimation = true
         
         NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.5
+            context.duration = 0.1
             
             self.swipeActionViewLeadingConstraint.animator().constant = SwipeActionConfig.spacing
             self.contentViewTrailingConstraint.animator().constant = 0
         } completionHandler: {
-            self.totalSwipeDistance = 0
+            self.isRunningAnyAnimation = false
         }
     }
 }

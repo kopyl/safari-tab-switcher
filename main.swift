@@ -125,7 +125,7 @@ class AppState: ObservableObject {
     @Published var currentInputSourceName = getCurrentInputSourceName()
     @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
     @Published var userSelectedAccentColor = Store.userSelectedAccentColor
-    @Published var lastTabWithOpenSwipeViews: TabItemView? = nil
+    @Published var tabsWithOpenSwipeViews: [TabItemView] = []
     
     @Published private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
