@@ -232,10 +232,6 @@ final class TabItemView: NSView {
         var distance: CGFloat = self.totalSwipeDistance
         var textDistance: CGFloat = SwipeActionConfig.textXShift
         
-        if distance < -tabContentViewWidth {
-            distance = -tabContentViewWidth
-        }
-        
         if distance < -SwipeActionConfig.fullSwipeThreshold {
 
             if !isRunningPartialFullSwipe {
@@ -245,6 +241,9 @@ final class TabItemView: NSView {
             isRunningPartialFullSwipe = true
             distance -= 300
             
+            if distance < -tabContentViewWidth {
+                distance = -tabContentViewWidth
+            }
             textDistance = distance / 2 + SwipeActionConfig.textLeftInsetWhenAlmostFullSwipe
             
         } else {
@@ -255,6 +254,10 @@ final class TabItemView: NSView {
             textDistance = SwipeActionConfig.textXShift
             
             isRunningPartialFullSwipe = false
+        }
+        
+        if distance < -tabContentViewWidth {
+            distance = -tabContentViewWidth
         }
         
         NSAnimationContext.runAnimationGroup { context in
