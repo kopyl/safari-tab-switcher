@@ -313,8 +313,6 @@ final class TabItemView: NSView {
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
-
-            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
             self.swipeActionViewLeadingConstraint.animator().constant = -tabContentViewWidth
             self.contentViewTrailingConstraint.animator().constant = -tabContentViewWidth
         } completionHandler: {
