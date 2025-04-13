@@ -108,15 +108,12 @@ class TabHistoryView: NSViewController {
         )
         
         DistributedNotificationCenter.default().addObserver(
-            forName: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
+            self,
+            selector: #selector(handleInputSourceChange),
+            name: NSNotification.Name("com.apple.Carbon.TISNotifySelectedKeyboardInputSourceChanged"),
             object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            DispatchQueue.main.async {
-                appState.currentInputSourceName = getCurrentInputSourceName()
-                self?.updateSearchFieldPlaceholderText()
-            }
-        }
+            suspensionBehavior: .deliverImmediately
+        )
     }
     
     private func setupScrollObserver() {
@@ -127,6 +124,11 @@ class TabHistoryView: NSViewController {
         ) { [weak self] _ in
             self?.updateVisibleTabViews()
         }
+    }
+    
+    @objc func handleInputSourceChange(notification: Notification) {
+        appState.currentInputSourceName = getCurrentInputSourceName()
+        self.updateSearchFieldPlaceholderText()
     }
     
     @objc private func textDidChange(_ notification: Notification) {
