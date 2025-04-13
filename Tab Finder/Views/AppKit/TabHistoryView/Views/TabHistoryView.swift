@@ -134,7 +134,7 @@ class TabHistoryView: NSViewController {
     @objc private func textDidChange(_ notification: Notification) {
         let text = textView.stringValue
         appState.searchQuery = text
-        rerenderTabs()
+        prepareTabsForRender()
         appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
         if !text.isEmpty {
             scrollToTop()
@@ -298,7 +298,7 @@ class TabHistoryView: NSViewController {
                             strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
                             
                             appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                            rerenderTabs()
+                            prepareTabsForRender()
                             strongSelf.renderTabs()
                             
                             strongSelf.updateSearchFieldPlaceholderText()
@@ -310,7 +310,7 @@ class TabHistoryView: NSViewController {
                         // Fallback if we couldn't find the tab view
                         Task {
                             appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                            rerenderTabs()
+                            prepareTabsForRender()
                             strongSelf.renderTabs()
                             print("Fallback")
                             await closeTab(tab: tab)

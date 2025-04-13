@@ -100,7 +100,7 @@ func handleHotKeyPress() {
     guard let tabs = Store.windows.windows.last?.tabs else { return }
     appState.savedTabs = tabs
     appState.searchQuery = ""
-    rerenderTabs()
+    prepareTabsForRender()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
     appState.currentInputSourceName = getCurrentInputSourceName()
     appState.isTabsPanelOpen = true

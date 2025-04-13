@@ -88,7 +88,7 @@ func renderTabsWithoutSearchQuery() {
     }
 }
 
-func rerenderTabs() {
+func prepareTabsForRender() {
     if appState.searchQuery.isEmpty {
         renderTabsWithoutSearchQuery()
         return
