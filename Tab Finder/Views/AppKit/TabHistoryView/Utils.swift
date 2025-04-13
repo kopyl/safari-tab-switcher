@@ -140,6 +140,10 @@ func prepareTabsForRender() {
         score += scoreForMatch(in: host) * 1
         score += scoreForMatch(in: title + " " + host)
         
+        if title.starts(with: searchQuery) {
+            score += 5
+        }
+        
         let hostParts = host.split(separator: ".")
         let domainZone = hostParts.last ?? ""
         
