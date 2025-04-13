@@ -114,10 +114,7 @@ class TabHistoryView: NSViewController {
         ) { [weak self] _ in
             DispatchQueue.main.async {
                 appState.currentInputSourceName = getCurrentInputSourceName()
-                self?.textView.placeholderString = getSearchFieldPlaceholderText(
-                    by: appState.currentInputSourceName,
-                    tabsCount: appState.savedTabs.count
-                )
+                self?.updateSearchFieldPlaceholderText()
             }
         }
     }

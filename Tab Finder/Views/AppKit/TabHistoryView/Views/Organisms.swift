@@ -42,10 +42,6 @@ func makeTextField() -> NSTextField {
     textField.isEditable = true
     textField.isSelectable = true
     textField.delegate = nil
-    textField.placeholderAttributedString = NSAttributedString(string: "Placeholder", attributes: [
-        .foregroundColor: NSColor.white.withAlphaComponent(0.3),
-        .font: NSFont.systemFont(ofSize: 26)
-    ])
     textField.translatesAutoresizingMaskIntoConstraints = false
     return textField
 }
