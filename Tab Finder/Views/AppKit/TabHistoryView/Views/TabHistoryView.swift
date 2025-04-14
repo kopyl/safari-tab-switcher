@@ -497,7 +497,7 @@ class TabHistoryView: NSViewController {
     }
     
     deinit {
-        if let scrollObserver = scrollObserver {
+        if let scrollObserver {
             NotificationCenter.default.removeObserver(scrollObserver)
         }
         NotificationCenter.default.removeObserver(self)
