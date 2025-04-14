@@ -44,10 +44,7 @@ class TabHistoryView: NSViewController {
             action: #selector(togglePin)
         )
         
-        visualEffectView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         tabsContainer.translatesAutoresizingMaskIntoConstraints = false
-        textView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(visualEffectView)
         view.addSubview(tintView)
