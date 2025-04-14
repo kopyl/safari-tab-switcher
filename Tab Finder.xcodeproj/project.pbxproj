@@ -28,7 +28,7 @@
 		48E9EE3F2D33C3B8007BC086 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */; };
 		48E9EE402D33DF16007BC086 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48A033D72D2DC75600BB6F8C /* DataStructures.swift */; };
 		48E9EE422D33E20B007BC086 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E9EE412D33E20B007BC086 /* Math.swift */; };
-		48F265CC2D89EC24005F5AD7 /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F265CB2D89EC24005F5AD7 /* InputSource.swift */; };
+		48F265CC2D89EC24005F5AD7 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F265CB2D89EC24005F5AD7 /* Language.swift */; };
 		48F9D6BF2D74E0D800DEE99E /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6BE2D74E0D400DEE99E /* Utils.swift */; };
 		48F9D6C22D74E1C400DEE99E /* GreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6C12D74E1C200DEE99E /* GreetingView.swift */; };
 		48F9D6C62D74E39B00DEE99E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F9D6C52D74E38B00DEE99E /* SettingsView.swift */; };
@@ -83,7 +83,7 @@
 		48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tab_finder_Extension.entitlements; sourceTree = "<group>"; };
 		48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		48E9EE412D33E20B007BC086 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
-		48F265CB2D89EC24005F5AD7 /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
+		48F265CB2D89EC24005F5AD7 /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		48F9D6BE2D74E0D400DEE99E /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		48F9D6C12D74E1C200DEE99E /* GreetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingView.swift; sourceTree = "<group>"; };
 		48F9D6C52D74E38B00DEE99E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -113,6 +113,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4813C4B92DAD88F7004457D3 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				48F265CB2D89EC24005F5AD7 /* Language.swift */,
+				48E9EE412D33E20B007BC086 /* Math.swift */,
+				4813C4B62DAD8871004457D3 /* Color.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		484AECCF2DA4336100C9117E /* TabHistoryView */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,7 +173,6 @@
 		48B48FBC2D2A59620054B680 = {
 			isa = PBXGroup;
 			children = (
-				48F265CB2D89EC24005F5AD7 /* InputSource.swift */,
 				48FEE0F82D71FB3A007704A0 /* main.swift */,
 				48F9D6C42D74E30300DEE99E /* Utils */,
 				48B48FC72D2A59620054B680 /* Tab Finder */,
@@ -184,6 +193,7 @@
 		48B48FC72D2A59620054B680 /* Tab Finder */ = {
 			isa = PBXGroup;
 			children = (
+				4813C4B92DAD88F7004457D3 /* Utils */,
 				486509072D86ABD100A1D26A /* SwiftUI Components */,
 				48F9D6BD2D74E0A200DEE99E /* Views */,
 				48534A232D333B3D003FF94A /* Info.plist */,
@@ -222,8 +232,6 @@
 				48E9EE3D2D33C3B8007BC086 /* StoreManager.swift */,
 				48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */,
 				48A033D72D2DC75600BB6F8C /* DataStructures.swift */,
-				48E9EE412D33E20B007BC086 /* Math.swift */,
-				4813C4B62DAD8871004457D3 /* Color.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -344,7 +352,7 @@
 				48A0338D2D2CD81F00BB6F8C /* FileLogger.swift in Sources */,
 				484AECD12DA4337100C9117E /* Organisms.swift in Sources */,
 				484AED862DA573AB00C9117E /* Favicons.swift in Sources */,
-				48F265CC2D89EC24005F5AD7 /* InputSource.swift in Sources */,
+				48F265CC2D89EC24005F5AD7 /* Language.swift in Sources */,
 				48751CE92D8FC53B00319882 /* AboutView.swift in Sources */,
 				48731FB62D9F854D001AE594 /* TabHistoryView.swift in Sources */,
 				48F9D6BF2D74E0D800DEE99E /* Utils.swift in Sources */,
