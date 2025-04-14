@@ -116,7 +116,21 @@ var statusBarItem: NSStatusItem?
 class AppState: ObservableObject {
     @Published var searchQuery = ""
     @Published var savedTabs = Tabs()
-    @Published var renderedTabs: [Tab] = []
+
+    @Published var _renderedTabs: [Tab] = []
+    var renderedTabs: [Tab] {
+        get {
+            #if TRIAL
+                return Array(_renderedTabs.prefix(5))
+            #else
+                return _renderedTabs
+            #endif
+        }
+        set {
+            _renderedTabs = newValue
+        }
+    }
+    
     @Published var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
     @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
     @Published var isTabsPanelOpen: Bool = false

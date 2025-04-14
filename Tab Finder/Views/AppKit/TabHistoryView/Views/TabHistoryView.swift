@@ -216,12 +216,7 @@ class TabHistoryView: NSViewController {
     
     private func renderTabs() {
         clearAllTabViews()
-        allTabs = appState.renderedTabs
-        
-        #if TRIAL
-        allTabs = Array(allTabs.prefix(5))
-        #endif
-        
+        allTabs = appState.renderedTabs        
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
         tabsContainer.frame.size.height = totalHeight + tabBottomPadding
         

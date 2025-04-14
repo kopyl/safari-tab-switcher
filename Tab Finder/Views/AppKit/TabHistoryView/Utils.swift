@@ -61,10 +61,10 @@ func hideTabsPanelAndSwitchTabs() {
     Task{ await switchTabs() }
 }
 
-func renderTabsWithoutSearchQuery() {
+func getTabsDependingOnSorting() -> [Tab] {
     switch(appState.sortTabsBy) {
     case .asTheyAppearInBrowser:
-        appState.renderedTabs = appState.savedTabs
+        return appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -74,7 +74,7 @@ func renderTabsWithoutSearchQuery() {
             .sorted { $0.id < $1.id }
     case .asTheyAppearInBrowserReversed:
         let tabsCount = appState.savedTabs.count
-        appState.renderedTabs = appState.savedTabs
+        return appState.savedTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -84,20 +84,26 @@ func renderTabsWithoutSearchQuery() {
             .sorted { $0.id < $1.id }
             .reversed()
     case .lastSeen:
-        appState.renderedTabs = appState.savedTabs.reversed()
+        return appState.savedTabs.reversed()
     }
 }
 
 func prepareTabsForRender() {
     if appState.searchQuery.isEmpty {
-        renderTabsWithoutSearchQuery()
+        appState.renderedTabs = getTabsDependingOnSorting()
         return
     }
     
     let searchQuery = appState.searchQuery.lowercased()
     let searchWords = searchQuery.split(separator: " ").map { String($0) }
     
-    let matchingTabs = appState.savedTabs.filter { tab in
+    var visibleTabsToPerformSearchOn = appState.savedTabs
+    
+    #if TRIAL
+        visibleTabsToPerformSearchOn = Tabs(Array(getTabsDependingOnSorting().prefix(5)))
+    #endif
+    
+    let matchingTabs = visibleTabsToPerformSearchOn.filter { tab in
         var title = tab.title
         if tab.host == "" && tab.title == "" {
             title = "no title"
