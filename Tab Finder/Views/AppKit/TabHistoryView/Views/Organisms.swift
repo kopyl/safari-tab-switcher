@@ -169,7 +169,7 @@ func makeAdButtonView() -> NSView {
         button.topAnchor.constraint(equalTo: buttonContainerView.topAnchor),
         button.bottomAnchor.constraint(equalTo: buttonContainerView.bottomAnchor),
         
-        linkIcon.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor, constant: -8),
+        linkIcon.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor, constant: -13),
         linkIcon.centerYAnchor.constraint(equalTo: buttonContainerView.centerYAnchor),
     ])
     
