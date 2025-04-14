@@ -4,12 +4,10 @@ struct OnboardingImage: View {
     var name: String
     
     var body: some View {
-        if let onboardingImageLeft = NSImage(named: name) {
-            Image(nsImage: onboardingImageLeft)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 458)
-        }
+        Image(name)
+            .resizable()
+            .scaledToFit()
+            .frame(height: 458)
     }
 }
 
