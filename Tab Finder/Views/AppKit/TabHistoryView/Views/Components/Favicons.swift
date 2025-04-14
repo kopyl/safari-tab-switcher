@@ -83,17 +83,12 @@ final class FaviconView: NSView {
     
     private func setupView() {
         wantsLayer = true
-
-        app.effectiveAppearance.performAsCurrentDrawingAppearance {
-            layer?.backgroundColor = NSColor.lightGrey.cgColor
-        }
+        layer?.backgroundColor = NSColor.lightGrey.cgColorAppearanceFix
         layer?.cornerRadius = 3
         
         textLayer.string = tab.host.first?.uppercased() ?? "N"
         textLayer.alignmentMode = .center
-        app.effectiveAppearance.performAsCurrentDrawingAppearance {
-            textLayer.foregroundColor = NSColor.nearBlack.cgColor
-        }
+        textLayer.foregroundColor = NSColor.nearBlack.cgColorAppearanceFix
         textLayer.font = NSFont.systemFont(ofSize: fontSize)
         textLayer.fontSize = fontSize
         textLayer.contentsScale = NSScreen.main?.backingScaleFactor ?? 2
@@ -134,9 +129,7 @@ final class FaviconView: NSView {
         imageLayer = imgLayer
         
         // Reset background
-        app.effectiveAppearance.performAsCurrentDrawingAppearance {
-            layer?.backgroundColor = NSColor.clear.cgColor
-        }
+        layer?.backgroundColor = NSColor.clear.cgColorAppearanceFix
     }
     
     private func displayPlaceholder() {
@@ -150,9 +143,7 @@ final class FaviconView: NSView {
         imageLayer = nil
         
         // Set background color
-        app.effectiveAppearance.performAsCurrentDrawingAppearance {
-            layer?.backgroundColor = NSColor.lightGrey.cgColor
-        }
+        layer?.backgroundColor = NSColor.lightGrey.cgColorAppearanceFix
         
         // Update text layout
         if let font = textLayer.font as? NSFont {

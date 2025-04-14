@@ -8,6 +8,19 @@ private let headerHeight: CGFloat = 72
 
 let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
 
+extension NSColor {
+
+    public var cgColorAppearanceFix: CGColor {
+        var color = CGColor(gray: 0, alpha: 0)
+        
+        app.effectiveAppearance.performAsCurrentDrawingAppearance {
+            color = self.cgColor
+        }
+
+        return color
+    }
+}
+
 class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
@@ -379,17 +392,13 @@ class TabHistoryView: NSViewController {
     private func updateHighlighting() {
         for (idx, tabView) in visibleTabViews {
             if idx == appState.indexOfTabToSwitchTo {
-                app.effectiveAppearance.performAsCurrentDrawingAppearance {
-                    tabView.contentView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
-                }
+                tabView.contentView.layer?.backgroundColor = NSColor.currentTabBg.cgColorAppearanceFix
                 tabView.contentView.layer?.cornerRadius = 6
                 
                 tabView.firstColumnLabel.textColor = .currentTabFg
                 tabView.seconColumnLabel.textColor = .currentTabFg
             } else {
-                app.effectiveAppearance.performAsCurrentDrawingAppearance {
-                    tabView.contentView.layer?.backgroundColor = NSColor.clear.cgColor
-                }
+                tabView.contentView.layer?.backgroundColor = NSColor.clear.cgColorAppearanceFix
                 tabView.firstColumnLabel.textColor = .tabFg
                 tabView.seconColumnLabel.textColor = .tabFg
             }
