@@ -379,13 +379,17 @@ class TabHistoryView: NSViewController {
     private func updateHighlighting() {
         for (idx, tabView) in visibleTabViews {
             if idx == appState.indexOfTabToSwitchTo {
-                tabView.contentView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
+                app.effectiveAppearance.performAsCurrentDrawingAppearance {
+                    tabView.contentView.layer?.backgroundColor = NSColor.currentTabBg.cgColor
+                }
                 tabView.contentView.layer?.cornerRadius = 6
                 
                 tabView.firstColumnLabel.textColor = .currentTabFg
                 tabView.seconColumnLabel.textColor = .currentTabFg
             } else {
-                tabView.contentView.layer?.backgroundColor = NSColor.clear.cgColor
+                app.effectiveAppearance.performAsCurrentDrawingAppearance {
+                    tabView.contentView.layer?.backgroundColor = NSColor.clear.cgColor
+                }
                 tabView.firstColumnLabel.textColor = .tabFg
                 tabView.seconColumnLabel.textColor = .tabFg
             }

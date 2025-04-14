@@ -11,10 +11,14 @@ final class CloseButtonView: NSView {
         self.tab = tab
         
         self.hoverBackgroundView = makeColorView()
-        self.hoverBackgroundView.layer?.backgroundColor = NSColor.lightGrey.cgColor
+        
         self.hoverBackgroundView.layer?.cornerRadius = 4
         
         super.init(frame: .zero)
+        
+        app.effectiveAppearance.performAsCurrentDrawingAppearance {
+            self.hoverBackgroundView.layer?.backgroundColor = NSColor.lightGrey.cgColor
+        }
         
         button.target = self
         button.action = #selector(closeButtonPressed)

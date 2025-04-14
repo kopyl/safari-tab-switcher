@@ -110,7 +110,9 @@ func makeCloseButton() -> NSButton {
 func makeSwipeActionView(target: Any, action: Selector) -> NSView {
     let buttonContainerView = NSView()
     buttonContainerView.wantsLayer = true
-    buttonContainerView.layer?.backgroundColor = NSColor.customRed.cgColor
+    app.effectiveAppearance.performAsCurrentDrawingAppearance {
+        buttonContainerView.layer?.backgroundColor = NSColor.customRed.cgColor
+    }
     buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
     buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
     
@@ -137,7 +139,9 @@ func makeSwipeActionView(target: Any, action: Selector) -> NSView {
 func makeAdButtonView() -> NSView {
     let buttonContainerView = NSView()
     buttonContainerView.wantsLayer = true
-    buttonContainerView.layer?.backgroundColor = NSColor.nearInvisible.cgColor
+    app.effectiveAppearance.performAsCurrentDrawingAppearance {
+        buttonContainerView.layer?.backgroundColor = NSColor.nearInvisible.cgColor
+    }
     buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
     buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
     
