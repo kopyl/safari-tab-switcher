@@ -159,7 +159,14 @@ class TabHistoryView: NSViewController {
         let text = textView.stringValue
         appState.searchQuery = text
         prepareTabsForRender()
-        appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
+        
+        if appState.sortTabsBy == .lastSeen {
+            appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
+        }
+        else {
+            appState.indexOfTabToSwitchTo = 0
+        }
+        
         if !text.isEmpty {
             scrollToTop()
         }
