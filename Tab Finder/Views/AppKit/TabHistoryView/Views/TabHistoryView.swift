@@ -94,10 +94,30 @@ class TabHistoryView: NSViewController {
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             tabsContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
+        
+        #if TRIAL
+            scrollView.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor,
+                constant: -adButtonHeight-tabBottomPadding-tabBottomPadding
+            ).isActive = true
+        #else
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        #endif
+
+        #if TRIAL
+            let adButton = makeAdButtonView()
+            view.addSubview(adButton)
+        
+            NSLayoutConstraint.activate([
+                adButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -4),
+                adButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
+                adButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+                adButton.heightAnchor.constraint(equalToConstant: adButtonHeight)
+            ])
+        #endif
         
         setBorderRadius()
         setupKeyEventMonitor()

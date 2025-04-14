@@ -8,6 +8,8 @@ let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 let tabsPanelWidth: CGFloat = 800
 let tabsPanelHeight: CGFloat = 500
 
+let adButtonHeight: CGFloat = 43
+
 enum NavigationKeys: UInt16 {
     case `return` = 36
     case tab = 48

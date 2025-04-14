@@ -61,6 +61,15 @@ func makeSearchIcon() -> NSImageView {
     return searchIcon
 }
 
+func makeLinkIcon() -> NSImageView {
+    let searchIcon = NSImageView()
+    let image = NSImage(systemSymbolName: "arrow.up.forward.app.fill", accessibilityDescription: "link icon")
+    let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+    searchIcon.image = image?.withSymbolConfiguration(config)
+    searchIcon.translatesAutoresizingMaskIntoConstraints = false
+    return searchIcon
+}
+
 func makePinImage(isFilled: Bool = false) -> NSImage? {
     let symbolName = isFilled ? "pin.fill" : "pin"
     let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "pin icon")
@@ -121,6 +130,49 @@ func makeSwipeActionView(target: Any, action: Selector) -> NSView {
         button.topAnchor.constraint(equalTo: buttonContainerView.topAnchor),
         button.bottomAnchor.constraint(equalTo: buttonContainerView.bottomAnchor)
     ])
+    
+    return buttonContainerView
+}
+
+func makeAdButtonView() -> NSView {
+    let buttonContainerView = NSView()
+    buttonContainerView.wantsLayer = true
+    buttonContainerView.layer?.backgroundColor = NSColor.nearInvisible.cgColor
+    buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
+    buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
+    
+    let button = NSButton(title: "", target: nil, action: nil)
+    button.isBordered = false
+    button.alignment = .left
+    
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.firstLineHeadIndent = 15
+
+    let attributedTitle = NSAttributedString(
+        string: "Buy full version in App Store to get unlimited tabs and get rid of this message",
+        attributes: [
+            .paragraphStyle: paragraphStyle
+        ]
+    )
+    button.attributedTitle = attributedTitle
+    
+    button.translatesAutoresizingMaskIntoConstraints = false
+    
+    let linkIcon = makeLinkIcon()
+    
+    buttonContainerView.addSubview(button)
+    buttonContainerView.addSubview(linkIcon)
+    
+    NSLayoutConstraint.activate([
+        button.leadingAnchor.constraint(equalTo: buttonContainerView.leadingAnchor),
+        button.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor),
+        button.topAnchor.constraint(equalTo: buttonContainerView.topAnchor),
+        button.bottomAnchor.constraint(equalTo: buttonContainerView.bottomAnchor),
+        
+        linkIcon.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor, constant: -8),
+        linkIcon.centerYAnchor.constraint(equalTo: buttonContainerView.centerYAnchor),
+    ])
+    
     
     return buttonContainerView
 }
