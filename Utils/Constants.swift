@@ -41,6 +41,9 @@ class Copy {
     class TabsPanel {
         static let closeButtonTitle = "Close"
     }
+    class Ads {
+        static let adButtonTitle = "Buy full version in App Store to see unlimited tabs and get rid of this message"
+    }
 }
 
 class AssetNames {
