@@ -112,9 +112,9 @@ class TabHistoryView: NSViewController {
             view.addSubview(adButton)
         
             NSLayoutConstraint.activate([
-                adButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -4),
-                adButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
-                adButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+                adButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBottomPadding),
+                adButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tabInsets.left),
+                adButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tabInsets.right),
                 adButton.heightAnchor.constraint(equalToConstant: adButtonHeight)
             ])
         #endif
