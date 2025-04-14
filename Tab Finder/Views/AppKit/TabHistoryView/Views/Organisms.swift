@@ -149,7 +149,7 @@ func makeAdButtonView() -> NSView {
     paragraphStyle.firstLineHeadIndent = 15
 
     let attributedTitle = NSAttributedString(
-        string: "Buy full version in App Store to get unlimited tabs and get rid of this message",
+        string: "Buy full version in App Store to see unlimited tabs and get rid of this message",
         attributes: [
             .paragraphStyle: paragraphStyle
         ]
