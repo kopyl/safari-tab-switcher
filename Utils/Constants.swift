@@ -26,6 +26,7 @@ enum TypingKeys: UInt16 {
 }
 
 let appGroup = "9QNMAN8CT6.tabfinder.sharedgroup"
+let appStoreURL = "https://apps.apple.com/ua/app/tab-finder-switcher-for-safari/id6741719894"
 
 class Copy {
     class Onboarding {    

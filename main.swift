@@ -485,6 +485,12 @@ class Application: NSApplication {
         showGreetingWindow()
     }
     
+    @objc func openAppStoreLink() {
+        if let url = URL(string: appStoreURL) {
+            NSWorkspace.shared.open(url)
+        }
+    }
+    
     override init() {
         super.init()
         createMenu()

@@ -141,7 +141,7 @@ func makeAdButtonView() -> NSView {
     buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
     buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
     
-    let button = NSButton(title: "", target: nil, action: nil)
+    let button = NSButton(title: "", target: nil, action: #selector(Application.openAppStoreLink))
     button.isBordered = false
     button.alignment = .left
     
