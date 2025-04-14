@@ -290,7 +290,6 @@ class TabHistoryView: NSViewController {
                         }
                         
                         /// animation prep start
-//                        tabViewToRemove.wantsLayer = true
                         tabViewToRemove.translatesAutoresizingMaskIntoConstraints = false
                         let heightConstraint = tabViewToRemove.heightAnchor.constraint(equalToConstant: tabHeight)
                         
