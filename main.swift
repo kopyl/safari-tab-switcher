@@ -135,7 +135,11 @@ class AppState: ObservableObject {
             if renderedTabs.isEmpty {
                 _indexOfTabToSwitchTo = 0
             } else {
-                _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)
+                #if TRIAL
+                    _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.prefix(5).count)
+                #else
+                    _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)
+                #endif
             }
         }
     }
