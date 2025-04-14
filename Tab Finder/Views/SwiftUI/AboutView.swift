@@ -11,7 +11,7 @@ struct AboutView: View {
                 Image(nsImage: NSApp.applicationIconImage)
                     .resizable()
                     .frame(width: 41, height: 41)
-                Text("Tab Finder")
+                Text(appName)
                     .font(.system(size: 28, weight: .regular))
             }
             .offset(x: -2)

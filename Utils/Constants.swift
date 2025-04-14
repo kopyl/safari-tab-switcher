@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 let bundleID = Bundle.main.bundleIdentifier ?? ""
+let appName = (Bundle.main.bundleIdentifier ?? "").hasSuffix(".trial") ? "Tab Finder Trial" : "Tab Finder"
 let extensionBundleIdentifier = "\(bundleID).Extension"
 let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 
@@ -31,8 +32,8 @@ let appStoreURL = "https://apps.apple.com/ua/app/tab-finder-switcher-for-safari/
 class Copy {
     class Onboarding {    
         static let description = "Switch easily between last open tabs in the same way you switch between last open apps"
-        static let title = "Welcome to Tab Finder"
-        static let hideThisWindowButton = "Hide Tab Finder in Background"
+        static let title = "Welcome to \(appName)"
+        static let hideThisWindowButton = "Hide \(appName) in Background"
         static let configureShortcutButton = "Change shortcut"
         static let buttonHint = "This app must be running for the extension to work. To reopen the app, click on the extension icon in Safari"
     }

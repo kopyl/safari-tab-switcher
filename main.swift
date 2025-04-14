@@ -368,7 +368,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
-        menu.addItem(NSMenuItem(title: "Quit Tab Finder", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit \(appName)", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusBarItem?.menu = menu
         statusBarItem?.isVisible = false
     }
@@ -431,7 +431,7 @@ class Application: NSApplication {
 
         windowMenu.addItem(.separator())
         let openGreetingWindowMenuItem = NSMenuItem(
-            title: "Welcome to Tab Finder",
+            title: "Welcome to \(appName)",
             action: #selector(openGreetingWindow),
             keyEquivalent: "1"
         )
@@ -488,7 +488,7 @@ class Application: NSApplication {
     @objc func openSettingsWindowWithTabFinderTitle() {
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.becomeKey()
-        showSettingsWindow(withTitle: "Tab Finder Settings")
+        showSettingsWindow(withTitle: "\(appName) Settings")
     }
 
     @objc func openAboutPanel() {
