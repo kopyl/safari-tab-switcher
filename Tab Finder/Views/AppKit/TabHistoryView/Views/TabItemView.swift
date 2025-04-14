@@ -129,8 +129,8 @@ final class TabItemView: NSView {
         
         NSLayoutConstraint.activate([
             swipeActionViewLeadingConstraint,
-            swipeActionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
             swipeActionViewCenterYAnchorConstraint,
+            swipeActionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10),
             swipeActionView.heightAnchor.constraint(equalTo: self.heightAnchor),
             
             textLabelForSwipeView.centerYAnchor.constraint(equalTo: swipeActionView.centerYAnchor),
