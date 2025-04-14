@@ -62,6 +62,7 @@
 		48123BFC2DA81B160053E6C4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
 		4813C48F2DACF550004457D3 /* InfoTrial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoTrial.plist; sourceTree = "<group>"; };
+		4813C4902DACFD96004457D3 /* InfoTrial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoTrial.plist; sourceTree = "<group>"; };
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		484AECD02DA4336F00C9117E /* Organisms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisms.swift; sourceTree = "<group>"; };
 		484AED852DA573A500C9117E /* Favicons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicons.swift; sourceTree = "<group>"; };
@@ -196,6 +197,7 @@
 			children = (
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
+				4813C4902DACFD96004457D3 /* InfoTrial.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
 				48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */,
 			);
@@ -638,7 +640,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Tab Finder Extension/Info.plist";
+				INFOPLIST_FILE = "Tab Finder Extension/InfoTrial.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Trial";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
