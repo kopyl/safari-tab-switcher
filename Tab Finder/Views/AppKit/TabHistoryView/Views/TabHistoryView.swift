@@ -8,19 +8,6 @@ private let headerHeight: CGFloat = 72
 
 let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
 
-extension NSColor {
-
-    public var cgColorAppearanceFix: CGColor {
-        var color = CGColor(gray: 0, alpha: 0)
-        
-        app.effectiveAppearance.performAsCurrentDrawingAppearance {
-            color = self.cgColor
-        }
-
-        return color
-    }
-}
-
 class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
