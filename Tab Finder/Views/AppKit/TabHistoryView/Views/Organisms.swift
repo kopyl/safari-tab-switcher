@@ -134,45 +134,58 @@ func makeSwipeActionView(target: Any, action: Selector) -> NSView {
     return buttonContainerView
 }
 
-func makeAdButtonView() -> NSView {
-    let buttonContainerView = NSView()
-    buttonContainerView.wantsLayer = true
-    buttonContainerView.layer?.backgroundColor = NSColor.nearInvisible.cgColorAppearanceFix
-    buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
-    buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
+class AdButtonView: NSView {
+    private let backgroundColor = NSColor.nearInvisible
+    private let linkIcon: NSView
+    private let button: NSButton
     
-    let button = NSButton(title: "", target: nil, action: #selector(Application.openAppStoreLink))
-    button.isBordered = false
-    button.alignment = .left
-    
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.firstLineHeadIndent = 15
-
-    let attributedTitle = NSAttributedString(
-        string: Copy.Ads.adButtonTitle,
-        attributes: [
-            .paragraphStyle: paragraphStyle
-        ]
-    )
-    button.attributedTitle = attributedTitle
-    
-    button.translatesAutoresizingMaskIntoConstraints = false
-    
-    let linkIcon = makeLinkIcon()
-    
-    buttonContainerView.addSubview(button)
-    buttonContainerView.addSubview(linkIcon)
-    
-    NSLayoutConstraint.activate([
-        button.leadingAnchor.constraint(equalTo: buttonContainerView.leadingAnchor),
-        button.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor),
-        button.topAnchor.constraint(equalTo: buttonContainerView.topAnchor),
-        button.bottomAnchor.constraint(equalTo: buttonContainerView.bottomAnchor),
+    override init(frame frameRect: NSRect) {
+        button = NSButton(title: "", target: nil, action: #selector(Application.openAppStoreLink))
+        button.isBordered = false
+        button.alignment = .left
         
-        linkIcon.trailingAnchor.constraint(equalTo: buttonContainerView.trailingAnchor, constant: -13),
-        linkIcon.centerYAnchor.constraint(equalTo: buttonContainerView.centerYAnchor),
-    ])
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.firstLineHeadIndent = 15
+        
+        let attributedTitle = NSAttributedString(
+            string: Copy.Ads.adButtonTitle,
+            attributes: [
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+        button.attributedTitle = attributedTitle
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        linkIcon = makeLinkIcon()
+        
+        super.init(frame: frameRect)
+        
+        self.wantsLayer = true
+        self.layer?.cornerRadius = SwipeActionConfig.cornerRadius
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.layer?.backgroundColor = backgroundColor.cgColorAppearanceFix
+        
+        addSubview(button)
+        addSubview(linkIcon)
+        
+        NSLayoutConstraint.activate([
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            linkIcon.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -13),
+            linkIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    return buttonContainerView
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        self.layer?.backgroundColor = backgroundColor.cgColorAppearanceFix
+    }
 }

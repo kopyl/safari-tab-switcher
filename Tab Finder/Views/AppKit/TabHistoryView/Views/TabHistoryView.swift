@@ -108,7 +108,7 @@ class TabHistoryView: NSViewController {
         #endif
 
         #if TRIAL
-            let adButton = makeAdButtonView()
+            let adButton = AdButtonView()
             view.addSubview(adButton)
         
             NSLayoutConstraint.activate([
