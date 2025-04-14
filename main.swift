@@ -113,11 +113,11 @@ var settingsWindow: NSWindow?
 var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
 
-class AppState: ObservableObject {
-    @Published var searchQuery = ""
-    @Published var savedTabs = Tabs()
+class AppState {
+    var searchQuery = ""
+    var savedTabs = Tabs()
 
-    @Published var _renderedTabs: [Tab] = []
+    var _renderedTabs: [Tab] = []
     var renderedTabs: [Tab] {
         get {
             #if TRIAL
@@ -131,18 +131,18 @@ class AppState: ObservableObject {
         }
     }
     
-    @Published var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
-    @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
-    @Published var isTabsPanelOpen: Bool = false
-    @Published var sortTabsBy: SortTabsBy = Store.sortTabsBy
-    @Published var columnOrder: ColumnOrder = Store.columnOrder
-    @Published var currentInputSourceName = getCurrentInputSourceName()
-    @Published var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
-    @Published var userSelectedAccentColor = Store.userSelectedAccentColor
-    @Published var tabsWithOpenSwipeViews: [TabItemView] = []
-    @Published var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
+    var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
+    var isShortcutRecorderNeedsToBeFocused: Bool = false
+    var isTabsPanelOpen: Bool = false
+    var sortTabsBy: SortTabsBy = Store.sortTabsBy
+    var columnOrder: ColumnOrder = Store.columnOrder
+    var currentInputSourceName = getCurrentInputSourceName()
+    var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
+    var userSelectedAccentColor = Store.userSelectedAccentColor
+    var tabsWithOpenSwipeViews: [TabItemView] = []
+    var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
     
-    @Published private var _indexOfTabToSwitchTo = -1
+    private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
         get { _indexOfTabToSwitchTo }
         set {
@@ -207,9 +207,7 @@ class Panel: NSPanel {
 }
 
 func createGreetingWindow() {
-    greetingWindow = Window(view: GreetingView(
-        appState: appState
-    ))
+    greetingWindow = Window(view: GreetingView())
     
     greetingWindow?.backgroundColor = .greetingBg
     greetingWindow?.title = Copy.Onboarding.title
@@ -294,7 +292,7 @@ func showSettingsWindow(withTitle: String = "Settings") {
         return
     }
     
-    settingsWindow = Window(view: SettingsView(appState: appState))
+    settingsWindow = Window(view: SettingsView())
     
     settingsWindow?.title = withTitle
     settingsWindow?.setContentSize(NSSize(width: 444, height: 424))

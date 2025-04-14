@@ -160,7 +160,6 @@ struct SettingsView: View {
     var shortcutModifiers =
     KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
     
-    @ObservedObject var appState: AppState
     @FocusState private var isFocused: Bool
 
     var colorName: String {

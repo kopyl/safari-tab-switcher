@@ -12,7 +12,6 @@ struct OnboardingImage: View {
 }
 
 struct GreetingView: View {
-    @ObservedObject var appState: AppState
     
     var body: some View {
         VStack {
