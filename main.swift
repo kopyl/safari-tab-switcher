@@ -210,8 +210,6 @@ func createTabsPanel() {
     )
     
     tabsPanel?.backgroundColor = .clear
-    
-    tabsPanel?.setContentSize(NSSize(width: tabsPanelWidth, height: 500))
     tabsPanel?.center()
     tabsPanel?.identifier = tabsPanelID
     

@@ -6,6 +6,7 @@ let extensionBundleIdentifier = "\(bundleID).Extension"
 let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 
 let tabsPanelWidth: CGFloat = 800
+let tabsPanelHeight: CGFloat = 500
 
 enum NavigationKeys: UInt16 {
     case `return` = 36

@@ -24,6 +24,10 @@ class TabHistoryView: NSViewController {
     private var allTabs: [Tab] = []
     private var visibleTabViews: [Int: TabItemView] = [:]
     
+    override func loadView() {
+        self.view = NSView(frame: NSRect(x: 0, y: 0, width: tabsPanelWidth, height: tabsPanelHeight))
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
