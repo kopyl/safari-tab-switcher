@@ -61,6 +61,7 @@
 /* Begin PBXFileReference section */
 		48123BFC2DA81B160053E6C4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
+		4813C48F2DACF550004457D3 /* InfoTrial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoTrial.plist; sourceTree = "<group>"; };
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		484AECD02DA4336F00C9117E /* Organisms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisms.swift; sourceTree = "<group>"; };
 		484AED852DA573A500C9117E /* Favicons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicons.swift; sourceTree = "<group>"; };
@@ -183,6 +184,7 @@
 				486509072D86ABD100A1D26A /* SwiftUI Components */,
 				48F9D6BD2D74E0A200DEE99E /* Views */,
 				48534A232D333B3D003FF94A /* Info.plist */,
+				4813C48F2DACF550004457D3 /* InfoTrial.plist */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
 			);
@@ -597,8 +599,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Tab Finder/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder";
+				INFOPLIST_FILE = "Tab Finder/InfoTrial.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Trial";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -615,7 +617,7 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_IDENTIFIER)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME) Trial";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -637,7 +639,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Tab Finder Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Trial";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
