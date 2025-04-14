@@ -30,7 +30,6 @@ final class TabItemView: NSView {
     private var swipeActionViewLeadingConstraint = NSLayoutConstraint()
     private var contentViewTrailingConstraint = NSLayoutConstraint()
 
-    public var contentViewCenterYAnchorConstraint = NSLayoutConstraint()
     public var swipeActionViewCenterYAnchorConstraint = NSLayoutConstraint()
     
     private var isRunningFullSwipe = false
@@ -122,7 +121,6 @@ final class TabItemView: NSView {
         swipeActionViewLeadingConstraint = swipeActionView.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: 10)
         swipeActionViewCenterYAnchorConstraint = swipeActionView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         contentViewTrailingConstraint = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
-        contentViewCenterYAnchorConstraint = contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         textLabelForSwipeViewXConstraint = textLabelForSwipeView.centerXAnchor.constraint(equalTo: swipeActionView.centerXAnchor, constant: SwipeActionConfig.textXShift)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -141,9 +139,7 @@ final class TabItemView: NSView {
             contentViewTrailingConstraint,
             contentView.widthAnchor.constraint(equalTo: self.widthAnchor),
             contentView.heightAnchor.constraint(equalTo: self.heightAnchor),
-            contentViewCenterYAnchorConstraint,
-//            contentView.topAnchor.constraint(equalTo: self.topAnchor),
-//            contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),

@@ -292,7 +292,6 @@ class TabHistoryView: NSViewController {
                         NSAnimationContext.runAnimationGroup({ context in
                             context.duration = 0.2
                             
-                            tabViewToRemove.contentViewCenterYAnchorConstraint.animator().constant = -tabHeight
                             tabViewToRemove.swipeActionViewCenterYAnchorConstraint.animator().constant = -tabHeight
                             
                             for (idx, otherTabView) in strongSelf.visibleTabViews {
