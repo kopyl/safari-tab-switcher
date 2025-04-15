@@ -95,7 +95,7 @@ class TabHistoryView: NSViewController {
             tabsContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
-        #if TRIAL
+        #if LITE
             scrollView.bottomAnchor.constraint(
                 equalTo: view.bottomAnchor,
                 constant: -adButtonHeight-tabBottomPadding-tabBottomPadding
@@ -104,7 +104,7 @@ class TabHistoryView: NSViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         #endif
 
-        #if TRIAL
+        #if LITE
             let adButton = AdButtonView()
             view.addSubview(adButton)
         

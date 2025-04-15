@@ -62,8 +62,8 @@
 /* Begin PBXFileReference section */
 		48123BFC2DA81B160053E6C4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		48123BFE2DA81B5E0053E6C4 /* CloseButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButtonView.swift; sourceTree = "<group>"; };
-		4813C48F2DACF550004457D3 /* InfoTrial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoTrial.plist; sourceTree = "<group>"; };
-		4813C4902DACFD96004457D3 /* InfoTrial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoTrial.plist; sourceTree = "<group>"; };
+		4813C48F2DACF550004457D3 /* InfoLite.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoLite.plist; sourceTree = "<group>"; };
+		4813C4902DACFD96004457D3 /* InfoLite.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoLite.plist; sourceTree = "<group>"; };
 		4813C4B62DAD8871004457D3 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		4849CB5D2D4889F4000BCA77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		484AECD02DA4336F00C9117E /* Organisms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisms.swift; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 				486509072D86ABD100A1D26A /* SwiftUI Components */,
 				48F9D6BD2D74E0A200DEE99E /* Views */,
 				48534A232D333B3D003FF94A /* Info.plist */,
-				4813C48F2DACF550004457D3 /* InfoTrial.plist */,
+				4813C48F2DACF550004457D3 /* InfoLite.plist */,
 				48B48FD92D2A59630054B680 /* Assets.xcassets */,
 				48B48FDC2D2A59630054B680 /* tab_finder.entitlements */,
 			);
@@ -209,7 +209,7 @@
 			children = (
 				48B48FE62D2A59630054B680 /* SafariExtensionHandler.swift */,
 				48B48FF22D2A59630054B680 /* Info.plist */,
-				4813C4902DACFD96004457D3 /* InfoTrial.plist */,
+				4813C4902DACFD96004457D3 /* InfoLite.plist */,
 				48B48FF32D2A59630054B680 /* tab_finder_Extension.entitlements */,
 				48B48FED2D2A59630054B680 /* ToolbarItemIcon.pdf */,
 			);
@@ -389,14 +389,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		48B3D1622DACC2A7007ADBAC /* Trial */ = {
+		48B3D1622DACC2A7007ADBAC /* Lite */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_BUILD = 80;
 				APP_VERSION = 1.79;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_IDENTIFIER = "kopyl.tab-finder.trial";
+				BUNDLE_IDENTIFIER = "kopyl.tab-finder.lite";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -445,12 +445,12 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TRIAL;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = LITE;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
-			name = Trial;
+			name = Lite;
 		};
-		48B3D1632DACC2A7007ADBAC /* Trial */ = {
+		48B3D1632DACC2A7007ADBAC /* Lite */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APP_BUILD = "$(APP_BUILD)";
@@ -466,8 +466,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Tab Finder/InfoTrial.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Trial";
+				INFOPLIST_FILE = "Tab Finder/InfoLite.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Lite";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -484,14 +484,14 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_IDENTIFIER)";
-				PRODUCT_NAME = "$(TARGET_NAME) Trial";
+				PRODUCT_NAME = "$(TARGET_NAME) Lite";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
-			name = Trial;
+			name = Lite;
 		};
-		48B3D1642DACC2A7007ADBAC /* Trial */ = {
+		48B3D1642DACC2A7007ADBAC /* Lite */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APP_BUILD = "$(APP_BUILD)";
@@ -505,8 +505,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Tab Finder Extension/InfoTrial.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Trial";
+				INFOPLIST_FILE = "Tab Finder Extension/InfoLite.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tab Finder Lite";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -526,7 +526,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
-			name = Trial;
+			name = Lite;
 		};
 		48B48FF42D2A59630054B680 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -821,7 +821,7 @@
 			buildConfigurations = (
 				48B48FF42D2A59630054B680 /* Debug */,
 				48B48FF52D2A59630054B680 /* Release */,
-				48B3D1622DACC2A7007ADBAC /* Trial */,
+				48B3D1622DACC2A7007ADBAC /* Lite */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -831,7 +831,7 @@
 			buildConfigurations = (
 				48B48FF72D2A59630054B680 /* Debug */,
 				48B48FF82D2A59630054B680 /* Release */,
-				48B3D1642DACC2A7007ADBAC /* Trial */,
+				48B3D1642DACC2A7007ADBAC /* Lite */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -841,7 +841,7 @@
 			buildConfigurations = (
 				48B48FFB2D2A59630054B680 /* Debug */,
 				48B48FFC2D2A59630054B680 /* Release */,
-				48B3D1632DACC2A7007ADBAC /* Trial */,
+				48B3D1632DACC2A7007ADBAC /* Lite */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

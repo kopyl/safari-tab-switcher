@@ -120,7 +120,7 @@ class AppState {
     var _renderedTabs: [Tab] = []
     var renderedTabs: [Tab] {
         get {
-            #if TRIAL
+            #if LITE
                 return Array(_renderedTabs.prefix(5))
             #else
                 return _renderedTabs
@@ -149,7 +149,7 @@ class AppState {
             if renderedTabs.isEmpty {
                 _indexOfTabToSwitchTo = 0
             } else {
-                #if TRIAL
+                #if LITE
                     _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.prefix(5).count)
                 #else
                     _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)

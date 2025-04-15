@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 let bundleID = Bundle.main.bundleIdentifier ?? ""
-let appName = (Bundle.main.bundleIdentifier ?? "").hasSuffix(".trial") ? "Tab Finder Trial" : "Tab Finder"
+let appName = (Bundle.main.bundleIdentifier ?? "").hasSuffix(".lite") ? "Tab Finder Lite" : "Tab Finder"
 let extensionBundleIdentifier = "\(bundleID).Extension"
 let tabsPanelID = NSUserInterfaceItemIdentifier("tabsPanel")
 

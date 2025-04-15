@@ -99,7 +99,7 @@ func prepareTabsForRender() {
     
     var visibleTabsToPerformSearchOn = appState.savedTabs
     
-    #if TRIAL
+    #if LITE
         visibleTabsToPerformSearchOn = Tabs(Array(getTabsDependingOnSorting().prefix(5)))
     #endif
     
