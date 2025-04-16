@@ -113,7 +113,9 @@ var settingsWindow: NSWindow?
 var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
 
-class AppState {
+class AppState: ObservableObject {
+    @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
+    
     var searchQuery = ""
     var savedTabs = Tabs()
 
@@ -132,7 +134,6 @@ class AppState {
     }
     
     var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
-    var isShortcutRecorderNeedsToBeFocused: Bool = false
     var isTabsPanelOpen: Bool = false
     var sortTabsBy: SortTabsBy = Store.sortTabsBy
     var columnOrder: ColumnOrder = Store.columnOrder
@@ -292,7 +293,7 @@ func showSettingsWindow(withTitle: String = "Settings") {
         return
     }
     
-    settingsWindow = Window(view: SettingsView())
+    settingsWindow = Window(view: SettingsView(appState: appState))
     
     settingsWindow?.title = withTitle
     settingsWindow?.setContentSize(NSSize(width: 444, height: 424))
