@@ -33,12 +33,7 @@ func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHist
         }
     }
     
-    let existingIDs = tabsFromNavigationHistoryMutated.map { $0.id }
-    tabsToPrepend = tabsToPrepend.filter { tab in
-        existingIDs.contains(tab?.id ?? -1) == true
-    }
-
-    tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend.compactMap { $0 })
+    tabsFromNavigationHistoryMutated.append(contentsOf: tabsToPrepend.compactMap { $0 })
     return tabsFromNavigationHistoryMutated
 }
 

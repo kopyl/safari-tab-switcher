@@ -93,15 +93,15 @@ struct Tabs: Sequence, Codable {
         seenIDs.insert(tab.id)
     }
     
-    mutating func prepend(contentsOf _tabs: [Tab]) {
-        var tabsToPrepend: [Tab] = []
+    mutating func append(contentsOf _tabs: [Tab]) {
+        var tabsToAppend: [Tab] = []
         for tab in _tabs {
             if seenIDs.contains(tab.id) {
                 continue
             }
-            tabsToPrepend.append(tab)
+            tabsToAppend.append(tab)
         }
-        tabs.insert(contentsOf: _tabs, at: 0)
+        tabs.insert(contentsOf: tabsToAppend, at: tabs.count)
     }
     
     func filter(_ tab: (Tab) -> Bool) -> Tabs {
