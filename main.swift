@@ -114,10 +114,19 @@ var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
 
 class AppState: ObservableObject {
-    @Published var isShortcutRecorderNeedsToBeFocused: Bool = false
+    @Published var isShortcutRecorderNeedsToBeFocused = false
     
     var searchQuery = ""
     var savedTabs = Tabs()
+    var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
+    var isTabsPanelOpen = false
+    var sortTabsBy = Store.sortTabsBy
+    var columnOrder = Store.columnOrder
+    var currentInputSourceName = getCurrentInputSourceName()
+    var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
+    var userSelectedAccentColor = Store.userSelectedAccentColor
+    var tabsWithOpenSwipeViews: [TabItemView] = []
+    var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
 
     var _renderedTabs: [Tab] = []
     var renderedTabs: [Tab] {
@@ -132,16 +141,6 @@ class AppState: ObservableObject {
             _renderedTabs = newValue
         }
     }
-    
-    var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
-    var isTabsPanelOpen: Bool = false
-    var sortTabsBy: SortTabsBy = Store.sortTabsBy
-    var columnOrder: ColumnOrder = Store.columnOrder
-    var currentInputSourceName = getCurrentInputSourceName()
-    var modifierKeysString = KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
-    var userSelectedAccentColor = Store.userSelectedAccentColor
-    var tabsWithOpenSwipeViews: [TabItemView] = []
-    var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
     
     private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
