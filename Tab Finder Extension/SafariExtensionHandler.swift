@@ -32,6 +32,11 @@ func addAllExistingTabsToHistory(_ tabs: [SFSafariTab], _ tabsFromNavigationHist
             tabsToPrepend[index] = tab
         }
     }
+    
+    let existingIDs = tabsFromNavigationHistoryMutated.map { $0.id }
+    tabsToPrepend = tabsToPrepend.filter { tab in
+        existingIDs.contains(tab?.id ?? -1) == true
+    }
 
     tabsFromNavigationHistoryMutated.prepend(contentsOf: tabsToPrepend.compactMap { $0 })
     return tabsFromNavigationHistoryMutated
@@ -63,20 +68,25 @@ func removeNonExistentTabsFromHistory(_ tabs: [SFSafariTab], _ tabsFromNavigatio
 func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
     var allTabsInfoUpdated = Array<Tab?>(repeating: nil, count: tabsFromNavigationHistory.count)
 
-    await withTaskGroup(of: (Int, Tab?)?.self) { group in
+    await withTaskGroup(of: (Int, Tab).self) { group in
         for (index, historyTab) in tabsFromNavigationHistory.enumerated() {
+            guard tabs.indices.contains(historyTab.id) else {
+                fatalError("tabs[historyTab.id] is out of range")
+            }
+
+            let safariTab = tabs[historyTab.id]
             group.addTask {
-                guard tabs.indices.contains(historyTab.id) else { return (index, nil) }
-                return (index, await Tab(id: historyTab.id, tab: tabs[historyTab.id]))
+                let tab = await Tab(id: historyTab.id, tab: safariTab)
+                return (index, tab)
             }
         }
 
-        for await (index, tab) in group.compactMap({ $0 }) {
+        for await (index, tab) in group {
             allTabsInfoUpdated[index] = tab
         }
     }
 
-    return Tabs(allTabsInfoUpdated.compactMap { $0 })
+    return Tabs(allTabsInfoUpdated.map { $0! })
 }
 
 func tabsCleanup(_ tabs: [SFSafariTab], _ tabsFromNavigationHistory: Tabs) async -> Tabs {
