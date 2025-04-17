@@ -1,5 +1,18 @@
 import SwiftUI
 import KeyboardShortcuts
+import SafariServices.SFSafariExtensionManager
+
+func changeTransparencyOfExtensionIconInSafariToolbar(shouldBeTransparent: Bool) {
+    Task {
+        do {
+            try await SFSafariApplication.dispatchMessage(
+                withName: "changetoolbaricontransparency",
+                toExtensionWithIdentifier: extensionBundleIdentifier,
+                userInfo: ["shouldBeTransparent": shouldBeTransparent ? "1" : "0"]
+            )
+        } catch {}
+    }
+}
 
 let description = """
 When enabled, the tabs panel won't disappear when you release the Option key.
@@ -154,6 +167,11 @@ struct SettingsView: View {
         store: Store.userDefaults
     ) private var addStatusBarItemWhenAppMovesInBackground: Bool = Store.addStatusBarItemWhenAppMovesInBackgroundDefaultValue
     
+    @AppStorage(
+        Store.shallSafariIconBeTransparentStoreKey,
+        store: Store.userDefaults
+    ) private var shallSafariIconBeTransparent: Bool = Store.shallSafariIconBeTransparentDefaultValue
+    
     @State private var displayedColorName: String = ""
     
     @State
@@ -225,6 +243,11 @@ struct SettingsView: View {
                     styledText("Keep app in background when Safari closes")
                         .padding(.leading, 5)
                 }
+                
+                Toggle(isOn: $shallSafariIconBeTransparent) {
+                    styledText("Make Safari toolbar icon transparent")
+                        .padding(.leading, 5)
+                }
             }
             .padding(.horizontal, 30)
             
@@ -293,6 +316,9 @@ struct SettingsView: View {
             }
             appState.addStatusBarItemWhenAppMovesInBackground = val
             statusBarItem?.isVisible = val
+        }
+        .onChange(of: shallSafariIconBeTransparent) { val in
+            changeTransparencyOfExtensionIconInSafariToolbar(shouldBeTransparent: val)
         }
         .padding(.top, 74)
         .padding(.bottom, 71)

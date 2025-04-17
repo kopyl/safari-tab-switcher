@@ -1,6 +1,30 @@
 import SwiftUI
 import SafariServices
 
+var shallSafariIconBeTransparent = Store.shallSafariIconBeTransparent
+
+func createTransparentIcon() -> NSImage {
+    let size = NSSize(width: 1, height: 1)
+    
+    let image = NSImage(size: size)
+    image.lockFocus()
+
+    NSColor.clear.set()
+    NSRect(origin: .zero, size: size).fill()
+
+    image.unlockFocus()
+    return image
+}
+
+func getToolbarIcon() -> NSImage {
+    guard let imagePath = Bundle.main.path(forResource: "ToolbarItemIcon", ofType: "pdf") else { return NSImage() }
+    guard let image = NSImage(contentsOfFile: imagePath) else { return NSImage() }
+    return image
+}
+
+let transparentToolbarIconImage = createTransparentIcon()
+let toolbarIconImage = getToolbarIcon()
+
 func switchToTab(id: Int, tabs: [SFSafariTab]) async {
     guard tabs.indices.contains(id) else {
         log("Previous tab ID \(id) is out of range.")
@@ -114,6 +138,7 @@ func saveWindows(tabs: Tabs) async {
 enum AppCommands: String {
     case switchtabto
     case closetab
+    case changetoolbaricontransparency
 }
 
 class SafariExtensionViewController: SFSafariExtensionViewController {
@@ -142,7 +167,26 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tabs = await activeWindow.allTabs()
                 closeTab(id: tabId, tabs: tabs)
             }
+        case .changetoolbaricontransparency:
+            guard let shouldBeTransparent = userInfo?["shouldBeTransparent"] as? String else { return }
+
+            var imageToSet: NSImage
+            if shouldBeTransparent == "1" {
+                imageToSet = transparentToolbarIconImage
+                shallSafariIconBeTransparent = true
+            }
+            else {
+                imageToSet = toolbarIconImage
+                shallSafariIconBeTransparent = false
+            }
             
+            Task {
+                let allWindows = await SFSafariApplication.allWindows()
+                for window in allWindows {
+                    let toolbarItem = await window.toolbarItem()
+                    toolbarItem?.setImage(imageToSet)
+                }
+            }
         }
     }
     
@@ -154,6 +198,11 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
         Task{
+            if shallSafariIconBeTransparent {
+                let toolbarItem = await window.toolbarItem()
+                toolbarItem?.setImage(transparentToolbarIconImage)
+            }
+            
             var tabsFromNavigationHistory =
                 await Store.windows.get(SFWindow: window)?.tabs
                 ?? Store.windows.windows.last?.tabs

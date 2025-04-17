@@ -98,6 +98,9 @@ struct Store {
     public static let addStatusBarItemWhenAppMovesInBackgroundStoreKey = "addStatusBarItemWhenAppMovesInBackground"
     public static let addStatusBarItemWhenAppMovesInBackgroundDefaultValue = true
 
+    public static let shallSafariIconBeTransparentStoreKey = "shallSafariIconBeTransparent"
+    public static let shallSafariIconBeTransparentDefaultValue = false
+
     static var windows: Windows {
             get {
                 guard let data = userDefaults.data(forKey: windowsStoreKey) else { return Windows() }
@@ -142,5 +145,14 @@ struct Store {
     
     static var userSelectedAccentColor: String {
         userDefaults.string(forKey: userSelectedAccentColorStoreKey) ?? userSelectedAccentColorDefaultValue
+    }
+    
+    static var shallSafariIconBeTransparent: Bool {
+        get {
+            userDefaults.bool(forKey: shallSafariIconBeTransparentStoreKey)
+        }
+        set {
+            userDefaults.set(newValue, forKey: shallSafariIconBeTransparentStoreKey)
+        }
     }
 }
