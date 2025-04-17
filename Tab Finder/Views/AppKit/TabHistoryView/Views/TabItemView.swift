@@ -212,7 +212,7 @@ final class TabItemView: NSView {
         
         isUserTryingToSwipeToCloseTab = true
         
-        setTotalSwipeDistance(currentScrollingDeltaX: event.scrollingDeltaX)
+        setTotalSwipeDistance(event: event)
         
         if event.phase != .changed {
             if self.totalSwipeDistance < -SwipeActionConfig.fullSwipeThreshold {
@@ -280,10 +280,12 @@ final class TabItemView: NSView {
         isUserTryingToSwipeToCloseTab = false
     }
     
-    private func setTotalSwipeDistance(currentScrollingDeltaX: CGFloat) {
+    private func setTotalSwipeDistance(event: NSEvent) {
+        let fixedDeltaX = event.isDirectionInvertedFromDevice ? event.scrollingDeltaX : -event.scrollingDeltaX
+        
         var distance: CGFloat = 0
         
-        distance = totalSwipeDistance + currentScrollingDeltaX
+        distance = totalSwipeDistance + fixedDeltaX
         
         if distance > 0 {
             distance = 0
