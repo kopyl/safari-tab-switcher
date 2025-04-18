@@ -145,6 +145,32 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 }
 
+func changeTransparencyOfExtensionIconInToolbar(in window: SFSafariWindow) {
+    Task {
+        if shallSafariIconBeTransparent {
+            let toolbarItem = await window.toolbarItem()
+            toolbarItem?.setImage(transparentToolbarIconImage)
+        }
+    }
+}
+
+func updateSavedTabs(in window: SFSafariWindow) {
+    Task{
+        var tabsFromNavigationHistory =
+            await Store.windows.get(SFWindow: window)?.tabs
+            ?? Store.windows.windows.last?.tabs
+            ?? _Window(tabs: Tabs()).tabs
+        
+        let tabs = await window.allTabs()
+        
+        tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
+        tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
+        
+        /// takes moderate amount of time
+        await saveWindows(tabs: tabsFromNavigationHistory)
+    }
+}
+
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
@@ -197,25 +223,9 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-        Task{
-            if shallSafariIconBeTransparent {
-                let toolbarItem = await window.toolbarItem()
-                toolbarItem?.setImage(transparentToolbarIconImage)
-            }
-            
-            var tabsFromNavigationHistory =
-                await Store.windows.get(SFWindow: window)?.tabs
-                ?? Store.windows.windows.last?.tabs
-                ?? _Window(tabs: Tabs()).tabs
-            
-            let tabs = await window.allTabs()
-            
-            tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
-            tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
-            
-            /// takes moderate amount of time
-            await saveWindows(tabs: tabsFromNavigationHistory)
-        }
+        changeTransparencyOfExtensionIconInToolbar(in: window)
+        updateSavedTabs(in: window)
+
         validationHandler(true, "")
     }
 
