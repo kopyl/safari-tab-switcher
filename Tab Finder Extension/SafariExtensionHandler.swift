@@ -145,30 +145,26 @@ class SafariExtensionViewController: SFSafariExtensionViewController {
     static let shared = SafariExtensionViewController()
 }
 
-func changeTransparencyOfExtensionIconInToolbar(in window: SFSafariWindow) {
-    Task {
-        if shallSafariIconBeTransparent {
-            let toolbarItem = await window.toolbarItem()
-            toolbarItem?.setImage(transparentToolbarIconImage)
-        }
+func changeTransparencyOfExtensionIconInToolbar(in window: SFSafariWindow) async {
+    if shallSafariIconBeTransparent {
+        let toolbarItem = await window.toolbarItem()
+        toolbarItem?.setImage(transparentToolbarIconImage)
     }
 }
 
-func updateSavedTabs(in window: SFSafariWindow) {
-    Task{
-        var tabsFromNavigationHistory =
-            await Store.windows.get(SFWindow: window)?.tabs
-            ?? Store.windows.windows.last?.tabs
-            ?? _Window(tabs: Tabs()).tabs
-        
-        let tabs = await window.allTabs()
-        
-        tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
-        tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
-        
-        /// takes moderate amount of time
-        await saveWindows(tabs: tabsFromNavigationHistory)
-    }
+func updateSavedTabs(in window: SFSafariWindow) async {
+    var tabsFromNavigationHistory =
+        await Store.windows.get(SFWindow: window)?.tabs
+        ?? Store.windows.windows.last?.tabs
+        ?? _Window(tabs: Tabs()).tabs
+    
+    let tabs = await window.allTabs()
+    
+    tabsFromNavigationHistory = await addNewTabToHistory(window, tabs, tabsFromNavigationHistory)
+    tabsFromNavigationHistory = await tabsCleanup(tabs, tabsFromNavigationHistory)
+    
+    /// takes moderate amount of time
+    await saveWindows(tabs: tabsFromNavigationHistory)
 }
 
 class SafariExtensionHandler: SFSafariExtensionHandler {
@@ -223,8 +219,10 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
     }
 
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping (Bool, String) -> Void) {
-        changeTransparencyOfExtensionIconInToolbar(in: window)
-        updateSavedTabs(in: window)
+        Task {
+            await changeTransparencyOfExtensionIconInToolbar(in: window)
+            await updateSavedTabs(in: window)
+        }
 
         validationHandler(true, "")
     }
