@@ -135,6 +135,13 @@ class TabHistoryView: NSViewController {
             object: nil,
             suspensionBehavior: .deliverImmediately
         )
+        
+        DistributedNotificationCenter.default().addObserver(
+            self,
+            selector: #selector(reactOnTabCloseNotification),
+            name: Notifications.tabClosed,
+            object: nil
+        )
     }
     
     private func setupScrollObserver() {
@@ -144,6 +151,66 @@ class TabHistoryView: NSViewController {
             queue: nil
         ) { [weak self] _ in
             self?.updateVisibleTabViews()
+        }
+    }
+    
+    @objc func reactOnTabCloseNotification(_ notification: Notification) {
+        guard let object = notification.object as? String else { return }
+        guard let tabIdRemoved = Int(object) else { return }
+        guard let tabRemoved = allTabs.first(where: { $0.id == tabIdRemoved }) else { return }
+        
+        if let tabIndex = allTabs.firstIndex(where: { $0.id == tabIdRemoved }),
+           let tabViewToRemove = visibleTabViews[tabIndex] {
+            
+            if appState.indexOfTabToSwitchTo >= allTabs.count - 1 {
+                appState.indexOfTabToSwitchTo = max(0, allTabs.count - 2)
+            }
+            
+            appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabIdRemoved }
+            appState.savedTabs = appState.savedTabs.filter { $0.id != tabIdRemoved }
+            
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+                
+                tabViewToRemove.swipeActionViewCenterYAnchorConstraint.animator().constant = -tabHeight
+                
+                for (idx, otherTabView) in visibleTabViews {
+                    if idx > tabIndex {
+                        let currentFrame = otherTabView.frame
+                        otherTabView.animator().frame = NSRect(
+                            x: currentFrame.origin.x,
+                            y: currentFrame.origin.y - (tabHeight + tabSpacing),
+                            width: currentFrame.width,
+                            height: currentFrame.height
+                        )
+                    }
+                }
+                
+            }, completionHandler: {
+                tabViewToRemove.removeFromSuperview()
+                self.visibleTabViews.removeValue(forKey: tabIndex)
+                
+                let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+                self.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
+                
+                appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
+                prepareTabsForRender()
+                self.renderTabs()
+                
+                self.updateSearchFieldPlaceholderText()
+                if appState.savedTabs.count == 0 {
+                    hideTabsPanel()
+                }
+            })
+        } else {
+            // Fallback if we couldn't find the tab view
+            Task {
+                appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
+                prepareTabsForRender()
+                renderTabs()
+                print("Fallback")
+                await closeTab(tab: tabRemoved)
+            }
         }
     }
     
@@ -272,65 +339,9 @@ class TabHistoryView: NSViewController {
                 }
                 
                 tabView.onTabClose = { [weak self] tabId in
-                    guard let strongSelf = self else { return }
-                    guard let tab = strongSelf.allTabs.first(where: { $0.id == tabId }) else { return }
-                    
-                    if let tabIndex = strongSelf.allTabs.firstIndex(where: { $0.id == tabId }),
-                       let tabViewToRemove = strongSelf.visibleTabViews[tabIndex] {
-                        
-                        if appState.indexOfTabToSwitchTo >= strongSelf.allTabs.count - 1 {
-                            appState.indexOfTabToSwitchTo = max(0, strongSelf.allTabs.count - 2)
-                        }
-                        
-                        appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabId }
-                        appState.savedTabs = appState.savedTabs.filter { $0.id != tabId }
-                        
-                        Task {
-                            await closeTab(tab: tab)
-                        }
-                        
-                        NSAnimationContext.runAnimationGroup({ context in
-                            context.duration = 0.2
-                            
-                            tabViewToRemove.swipeActionViewCenterYAnchorConstraint.animator().constant = -tabHeight
-                            
-                            for (idx, otherTabView) in strongSelf.visibleTabViews {
-                                if idx > tabIndex {
-                                    let currentFrame = otherTabView.frame
-                                    otherTabView.animator().frame = NSRect(
-                                        x: currentFrame.origin.x,
-                                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
-                                        width: currentFrame.width,
-                                        height: currentFrame.height
-                                    )
-                                }
-                            }
-                            
-                        }, completionHandler: {
-                            tabViewToRemove.removeFromSuperview()
-                            strongSelf.visibleTabViews.removeValue(forKey: tabIndex)
-                            
-                            let totalHeight = CGFloat(strongSelf.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-                            strongSelf.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
-                            
-                            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                            prepareTabsForRender()
-                            strongSelf.renderTabs()
-                            
-                            strongSelf.updateSearchFieldPlaceholderText()
-                            if appState.savedTabs.count == 0 {
-                                hideTabsPanel()
-                            }
-                        })
-                    } else {
-                        // Fallback if we couldn't find the tab view
-                        Task {
-                            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                            prepareTabsForRender()
-                            strongSelf.renderTabs()
-                            print("Fallback")
-                            await closeTab(tab: tab)
-                        }
+                    guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
+                    Task {
+                        await closeTab(tab: tab)
                     }
                 }
                 

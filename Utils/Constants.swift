@@ -1,6 +1,10 @@
 import Foundation
 import SwiftUI
 
+class Notifications {
+    static let tabClosed = NSNotification.Name("com.tabfinder.tabRemovalNotification")
+}
+
 let bundleID = Bundle.main.bundleIdentifier ?? ""
 let appName = (Bundle.main.bundleIdentifier ?? "").hasSuffix(".lite") ? "Tab Finder Lite" : "Tab Finder"
 let extensionBundleIdentifier = "\(bundleID).Extension"

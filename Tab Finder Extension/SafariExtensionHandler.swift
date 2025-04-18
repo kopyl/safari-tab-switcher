@@ -167,6 +167,15 @@ func updateSavedTabs(in window: SFSafariWindow) async {
     await saveWindows(tabs: tabsFromNavigationHistory)
 }
 
+func informMainAppAboutTabRemoval(tabIdRemoved: Int) {
+    DistributedNotificationCenter.default().postNotificationName(
+        Notifications.tabClosed,
+        object: String(tabIdRemoved),
+        userInfo: nil,
+        deliverImmediately: true
+    )
+}
+
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
@@ -189,6 +198,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tabs = await activeWindow.allTabs()
                 closeTab(id: tabId, tabs: tabs)
                 await updateSavedTabs(in: activeWindow)
+                informMainAppAboutTabRemoval(tabIdRemoved: tabId)
             }
         case .changetoolbaricontransparency:
             guard let shouldBeTransparent = userInfo?["shouldBeTransparent"] as? String else { return }
