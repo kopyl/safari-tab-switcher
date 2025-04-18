@@ -16,10 +16,11 @@ class FileLogger {
         }
     }
 
-    func log(_ message: Any?) {
+    func log(_ message: Any...) {
         let timestamp = Date().description(with: .current)
-        let logMessage = "[\(timestamp)] \(String(describing: message))\n"
-        os_log("%{public}@", "\(String(describing: message ?? ""))")
+        let messageText = message.map { String(describing: $0) }.joined(separator: " ")
+        let logMessage = "[\(timestamp)] \(messageText)\n"
+        os_log("%{public}@", "\(messageText )")
         appendToFile(logMessage)
     }
 
