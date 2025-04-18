@@ -74,11 +74,9 @@ final class TabItemView: NSView {
         
         self.closeButonView.isHidden = true
         
-        
         contentView.wantsLayer = true
         
         swipeActionView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
-        
         
         textLabelForSwipeView.font = .systemFont(ofSize: 13, weight: .regular)
         textLabelForSwipeView.textColor = .white
