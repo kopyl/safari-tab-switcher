@@ -188,6 +188,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
                 let tabs = await activeWindow.allTabs()
                 closeTab(id: tabId, tabs: tabs)
+                await updateSavedTabs(in: activeWindow)
             }
         case .changetoolbaricontransparency:
             guard let shouldBeTransparent = userInfo?["shouldBeTransparent"] as? String else { return }
