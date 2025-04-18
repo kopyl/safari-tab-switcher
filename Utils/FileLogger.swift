@@ -20,7 +20,7 @@ class FileLogger {
         let timestamp = Date().description(with: .current)
         let messageText = message.map { String(describing: $0) }.joined(separator: " ")
         let logMessage = "[\(timestamp)] \(messageText)\n"
-        os_log("%{public}@", "\(messageText )")
+        os_log("%{public}@", "\(messageText)")
         appendToFile(logMessage)
     }
 
