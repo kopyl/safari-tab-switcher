@@ -208,7 +208,6 @@ class TabHistoryView: NSViewController {
                 appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
                 prepareTabsForRender()
                 renderTabs()
-                print("Fallback")
                 await closeTab(tab: tabRemoved)
             }
         }
