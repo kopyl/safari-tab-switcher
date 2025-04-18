@@ -144,16 +144,6 @@ class TabHistoryView: NSViewController {
         )
     }
     
-    private func setupScrollObserver() {
-        scrollObserver = NotificationCenter.default.addObserver(
-            forName: NSView.boundsDidChangeNotification,
-            object: scrollView.contentView,
-            queue: nil
-        ) { [weak self] _ in
-            self?.updateVisibleTabViews()
-        }
-    }
-    
     @objc func reactOnTabCloseNotification(_ notification: Notification) {
         guard let object = notification.object as? String else { return }
         guard let tabIdRemoved = Int(object) else { return }
@@ -264,6 +254,16 @@ class TabHistoryView: NSViewController {
     
     override func viewDidDisappear() {
         clearAllTabViews()
+    }
+    
+    private func setupScrollObserver() {
+        scrollObserver = NotificationCenter.default.addObserver(
+            forName: NSView.boundsDidChangeNotification,
+            object: scrollView.contentView,
+            queue: nil
+        ) { [weak self] _ in
+            self?.updateVisibleTabViews()
+        }
     }
     
     private func updateSearchFieldPlaceholderText() {
