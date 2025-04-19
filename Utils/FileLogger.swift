@@ -38,3 +38,4 @@ final class _Logger {
 }
 
 let log = _Logger.shared.log
+let setupLoggingFromSafariExtension = _Logger.shared.setupLoggingFromSafariExtension
