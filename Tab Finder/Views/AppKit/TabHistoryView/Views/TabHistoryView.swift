@@ -11,7 +11,6 @@ let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
 class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
     private var tabsContainer: NSView!
-    private var mainStackView: NSStackView!
     private var textView: NSTextField!
     private var pinButton: NSButton!
     private var tintView: NSView!
