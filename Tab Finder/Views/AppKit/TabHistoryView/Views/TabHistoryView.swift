@@ -451,6 +451,27 @@ class TabHistoryView: NSViewController {
         }
     }
     
+    func handleAppShortcutKeyPresses(event: NSEvent) {
+        guard let key = AppShortcutKeys(rawValue: event.keyCode) else { return }
+        
+        switch key {
+        case .a:
+            NSApp.sendAction(#selector(NSResponder.selectAll(_:)), to: nil, from: self)
+        case .z:
+            if event.shiftIsHolding {
+                NSApp.sendAction(Selector(("redo:")), to: nil, from: self)
+                return
+            }
+            NSApp.sendAction(Selector(("undo:")), to: nil, from: self)
+        case .x:
+            NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: self)
+        case .c:
+            NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: self)
+        case .v:
+            NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: self)
+        }
+    }
+    
     func handleKeyRelease(event: NSEvent) {
         let isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
         
@@ -466,6 +487,11 @@ class TabHistoryView: NSViewController {
             if event.type == .keyDown {
                 if NavigationKeys(rawValue: event.keyCode) != nil {
                     self?.handleNavigationKeyPresses(event: event)
+                    return nil
+                }
+                
+                if event.appShortcutIsPressed {
+                    self?.handleAppShortcutKeyPresses(event: event)
                     return nil
                 }
                 

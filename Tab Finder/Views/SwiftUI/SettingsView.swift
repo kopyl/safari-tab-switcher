@@ -50,6 +50,16 @@ extension NSEvent.ModifierFlags {
     }
 }
 
+extension NSEvent {
+    var appShortcutIsPressed: Bool {
+        modifierFlags.contains(.command) && AppShortcutKeys(rawValue: keyCode) != nil
+    }
+    
+    var shiftIsHolding: Bool {
+        modifierFlags.contains(.shift)
+    }
+}
+
 let colors: [Color] = [
     Color(red: 25/255, green: 25/255, blue: 25/255),
     Color(red: 0/255, green: 122/255, blue: 255/255),

@@ -24,6 +24,14 @@ enum NavigationKeys: UInt16 {
     case arrowUp = 126
 }
 
+enum AppShortcutKeys: UInt16 {
+    case a = 0
+    case z = 6
+    case x = 7
+    case c = 8
+    case v = 9
+}
+
 enum TypingKeys: UInt16 {
     case arrowLeft = 123
     case arrowRight = 124
