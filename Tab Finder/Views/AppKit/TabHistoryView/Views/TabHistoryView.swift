@@ -30,7 +30,7 @@ class TabHistoryView: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let visualEffectView = makeVisualEffectView()
+        let visualEffectView = backgroundBlurView()
         let searchIcon = makeSearchIcon()
         let headerView = makeHeaderView()
         

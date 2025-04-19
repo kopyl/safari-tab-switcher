@@ -7,7 +7,7 @@ class FlippedView: NSView {
     }
 }
 
-func makeVisualEffectView() -> NSVisualEffectView {
+func backgroundBlurView() -> NSVisualEffectView {
     let v = NSVisualEffectView()
     v.blendingMode = .behindWindow
     v.material = .sidebar
