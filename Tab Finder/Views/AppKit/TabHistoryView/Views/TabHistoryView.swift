@@ -10,9 +10,9 @@ let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
 
 class TabHistoryView: NSViewController {
     private var scrollView: NSScrollView!
-    private var tabsContainer: NSView!
+    private var tabsContainerView: NSView!
     private var textView: NSTextField!
-    private var pinButton: NSButton!
+    private var pinButtonView: NSButton!
     private var tintView: NSView!
     
     private var localKeyboardEventMonitor: Any?
@@ -30,38 +30,38 @@ class TabHistoryView: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let visualEffectView = backgroundBlurView()
-        let searchIcon = makeSearchIcon()
+        let backgroundBlurView = makeBackgroundBlurView()
+        let searchIconView = makeSearchIconView()
         let headerView = makeHeaderView()
         
         scrollView = makeScrollView()
         tintView = makeColorView()
-        tabsContainer = FlippedView()
-        textView = makeTextField()
-        pinButton = makePinButton(
+        tabsContainerView = FlippedView()
+        textView = makeTextFieldView()
+        pinButtonView = makePinButtonView(
             isFilled: appState.isTabsSwitcherNeededToStayOpen,
-            action: #selector(togglePin)
+            action: #selector(togglePinIconFill)
         )
         
-        tabsContainer.translatesAutoresizingMaskIntoConstraints = false
+        tabsContainerView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(visualEffectView)
+        view.addSubview(backgroundBlurView)
         view.addSubview(tintView)
         view.addSubview(headerView)
         view.addSubview(scrollView)
 
-        headerView.addSubview(searchIcon)
+        headerView.addSubview(searchIconView)
         headerView.addSubview(textView)
-        headerView.addSubview(pinButton)
+        headerView.addSubview(pinButtonView)
         
-        scrollView.documentView = tabsContainer
+        scrollView.documentView = tabsContainerView
         scrollView.hasVerticalScroller = true
         
         NSLayoutConstraint.activate([
-            visualEffectView.topAnchor.constraint(equalTo: view.topAnchor),
-            visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            visualEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundBlurView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundBlurView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundBlurView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundBlurView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             tintView.topAnchor.constraint(equalTo: view.topAnchor),
             tintView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -73,25 +73,25 @@ class TabHistoryView: NSViewController {
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             headerView.heightAnchor.constraint(equalToConstant: headerHeight),
             
-            searchIcon.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-            searchIcon.widthAnchor.constraint(equalToConstant: 74),
-            searchIcon.heightAnchor.constraint(equalToConstant: headerHeight),
-            searchIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            searchIconView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
+            searchIconView.widthAnchor.constraint(equalToConstant: 74),
+            searchIconView.heightAnchor.constraint(equalToConstant: headerHeight),
+            searchIconView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
-            pinButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-            pinButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-            pinButton.widthAnchor.constraint(equalToConstant: 74),
-            pinButton.heightAnchor.constraint(equalToConstant: headerHeight),
+            pinButtonView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
+            pinButtonView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            pinButtonView.widthAnchor.constraint(equalToConstant: 74),
+            pinButtonView.heightAnchor.constraint(equalToConstant: headerHeight),
             
-            textView.leadingAnchor.constraint(equalTo: searchIcon.trailingAnchor, constant: -14),
-            textView.trailingAnchor.constraint(equalTo: pinButton.leadingAnchor),
+            textView.leadingAnchor.constraint(equalTo: searchIconView.trailingAnchor, constant: -14),
+            textView.trailingAnchor.constraint(equalTo: pinButtonView.leadingAnchor),
             textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            tabsContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+            tabsContainerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
         #if LITE
@@ -104,18 +104,19 @@ class TabHistoryView: NSViewController {
         #endif
 
         #if LITE
-            let adButton = AdButtonView()
-            view.addSubview(adButton)
+            let adButtonView = AdButtonView()
+            view.addSubview(adButtonView)
         
             NSLayoutConstraint.activate([
-                adButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBottomPadding),
-                adButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tabInsets.left),
-                adButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tabInsets.right),
-                adButton.heightAnchor.constraint(equalToConstant: adButtonHeight)
+                adButtonView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -tabBottomPadding),
+                adButtonView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: tabInsets.left),
+                adButtonView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -tabInsets.right),
+                adButtonView.heightAnchor.constraint(equalToConstant: adButtonHeight)
             ])
         #endif
         
-        setBorderRadius()
+        setTabsPanelBorderRadius()
+        
         setupKeyEventMonitor()
         setupMouseDownEventMonitor()
         setupScrollObserver()
@@ -180,7 +181,7 @@ class TabHistoryView: NSViewController {
                 self.visibleTabViews.removeValue(forKey: tabIndex)
                 
                 let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-                self.tabsContainer.frame.size.height = totalHeight + tabBottomPadding
+                self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
                 
                 appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
                 prepareTabsForRender()
@@ -227,9 +228,9 @@ class TabHistoryView: NSViewController {
         }
     }
     
-    @objc func togglePin() {
+    @objc func togglePinIconFill() {
         appState.isTabsSwitcherNeededToStayOpen.toggle()
-        pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         Store.isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
         
         if !appState.isTabsSwitcherNeededToStayOpen {
@@ -246,7 +247,7 @@ class TabHistoryView: NSViewController {
     override func viewWillAppear() {
         self.renderTabs()
         self.textView.stringValue = ""
-        pinButton.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
+        pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         updateSearchFieldPlaceholderText()
         applyBackgroundTint()
     }
@@ -279,7 +280,7 @@ class TabHistoryView: NSViewController {
     }
     
     private func clearAllTabViews() {
-        tabsContainer.subviews.forEach { $0.removeFromSuperview() }
+        tabsContainerView.subviews.forEach { $0.removeFromSuperview() }
         visibleTabViews.removeAll()
     }
     
@@ -287,7 +288,7 @@ class TabHistoryView: NSViewController {
         clearAllTabViews()
         allTabs = appState.renderedTabs
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-        tabsContainer.frame.size.height = totalHeight + tabBottomPadding
+        tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
         
         updateVisibleTabViews()
     }
@@ -343,7 +344,7 @@ class TabHistoryView: NSViewController {
                     }
                 }
                 
-                tabsContainer.addSubview(tabView)
+                tabsContainerView.addSubview(tabView)
                 visibleTabViews[index] = tabView
             }
         }
@@ -362,7 +363,7 @@ class TabHistoryView: NSViewController {
         tabView.frame = NSRect(
             x: tabInsets.left,
             y: yPos,
-            width: tabsContainer.frame.width - tabInsets.left - tabInsets.right,
+            width: tabsContainerView.frame.width - tabInsets.left - tabInsets.right,
             height: tabHeight
         )
         
@@ -393,12 +394,12 @@ class TabHistoryView: NSViewController {
         
         // Calculate the rect for the selected tab
         let yPos = CGFloat(index) * (tabHeight + tabSpacing)
-        let tabRect = NSRect(x: 0, y: yPos, width: tabsContainer.frame.width, height: tabHeight)
+        let tabRect = NSRect(x: 0, y: yPos, width: tabsContainerView.frame.width, height: tabHeight)
         
         // Make sure the tab view for selected tab exists
         if visibleTabViews[index] == nil {
             let tabView = createTabView(for: allTabs[index], at: index)
-            tabsContainer.addSubview(tabView)
+            tabsContainerView.addSubview(tabView)
             visibleTabViews[index] = tabView
         }
         
@@ -509,7 +510,7 @@ class TabHistoryView: NSViewController {
         }
     }
     
-    private func setBorderRadius() {
+    private func setTabsPanelBorderRadius() {
         view.wantsLayer = true
         view.layer?.cornerRadius = 8
         

@@ -7,7 +7,7 @@ class FlippedView: NSView {
     }
 }
 
-func backgroundBlurView() -> NSVisualEffectView {
+func makeBackgroundBlurView() -> NSVisualEffectView {
     let v = NSVisualEffectView()
     v.blendingMode = .behindWindow
     v.material = .sidebar
@@ -32,7 +32,7 @@ func makeStackView(spacing: CGFloat = 0) -> NSStackView {
     return sv
 }
 
-func makeTextField() -> NSTextField {
+func makeTextFieldView() -> NSTextField {
     let textField = NSTextField()
     textField.isBezeled = false
     textField.isBordered = false
@@ -52,7 +52,7 @@ func makeHeaderView() -> NSView {
     return headerView
 }
 
-func makeSearchIcon() -> NSImageView {
+func makeSearchIconView() -> NSImageView {
     let searchIcon = NSImageView()
     let image = NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: "search icon")	
     let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
@@ -77,7 +77,7 @@ func makePinImage(isFilled: Bool = false) -> NSImage? {
     return image?.withSymbolConfiguration(config)
 }
 
-func makePinButton(isFilled: Bool = false, action: Selector? = nil) -> NSButton? {
+func makePinButtonView(isFilled: Bool = false, action: Selector? = nil) -> NSButton? {
     guard let pinImage = makePinImage(isFilled: isFilled) else { return nil }
     let pinButton = NSButton(title: "", image: pinImage, target: nil, action: action)
     pinButton.translatesAutoresizingMaskIntoConstraints = false
