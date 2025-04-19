@@ -39,11 +39,11 @@ final class Logger {
     }
 }
 
-let log = Logger.shared.log as (String...) -> Void
+let log = Logger.shared.log as (Any...) -> Void
 let setupLoggingFromSafariExtension = Logger.shared.setupLoggingFromSafariExtension
 
 #else
 
-let log = { (_: String) in }
+let log = { (_: Any...) in }
 
 #endif
