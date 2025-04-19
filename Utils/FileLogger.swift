@@ -1,3 +1,5 @@
+#if DEBUG
+
 import Foundation
 import os.log
 
@@ -39,3 +41,9 @@ final class _Logger {
 
 let log = _Logger.shared.log
 let setupLoggingFromSafariExtension = _Logger.shared.setupLoggingFromSafariExtension
+
+#else
+
+let log = { (_: String) in }
+
+#endif
