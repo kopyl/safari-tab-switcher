@@ -337,6 +337,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         createTabsPanel()
         panelObserver = TabsPanelVisibilityObserver(panel: tabsPanel!)
         addStatusBarItem()
+        setupLoggingFromSafariExtension()
     }
     
     private func addStatusBarItem() {
