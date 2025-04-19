@@ -3,21 +3,21 @@
 import Foundation
 import os.log
 
-final class _Logger {
-    static let shared = _Logger()
+final class Logger {
+    static let shared = Logger()
     let bundleID = Bundle.main.bundleIdentifier ?? ""
     let notificationName = NSNotification.Name("com.tabfinder.safariLoggingNotification")
     
     public func setupLoggingFromSafariExtension() {
         DistributedNotificationCenter.default().addObserver(
             self,
-            selector: #selector(reactOnTabCloseNotification),
+            selector: #selector(log),
             name: notificationName,
             object: nil
         )
     }
     
-    @objc func reactOnTabCloseNotification(_ notification: Notification) {
+    @objc func log(_ notification: Notification) {
         guard let messageText = notification.object as? String else { return }
         log(messageText)
     }
@@ -39,8 +39,8 @@ final class _Logger {
     }
 }
 
-let log = _Logger.shared.log
-let setupLoggingFromSafariExtension = _Logger.shared.setupLoggingFromSafariExtension
+let log = Logger.shared.log as (String...) -> Void
+let setupLoggingFromSafariExtension = Logger.shared.setupLoggingFromSafariExtension
 
 #else
 
