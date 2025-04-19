@@ -88,7 +88,7 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
     var allTabsInfoUpdated = Array<Tab?>(repeating: nil, count: tabsFromNavigationHistory.count)
 
     await withTaskGroup(of: (Int, Tab).self) { group in
-        for historyTab in tabsFromNavigationHistory {
+        for (index, historyTab) in tabsFromNavigationHistory.enumerated() {
             guard tabs.indices.contains(historyTab.id) else {
                 fatalError("tabs[historyTab.id] is out of range")
             }
@@ -96,7 +96,7 @@ func makeSureEveryOtherTabInfoIsCorrect(_ tabs: [SFSafariTab], _ tabsFromNavigat
             let safariTab = tabs[historyTab.id]
             group.addTask {
                 let tab = await Tab(id: historyTab.id, tab: safariTab)
-                return (historyTab.id, tab)
+                return (index, tab)
             }
         }
 
