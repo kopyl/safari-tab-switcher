@@ -147,7 +147,6 @@ class TabHistoryView: NSViewController {
     @objc func reactOnTabCloseNotificationFromSafari(_ notification: Notification) {
         guard let object = notification.object as? String else { return }
         guard let tabIdRemoved = Int(object) else { return }
-        guard let tabRemoved = allTabs.first(where: { $0.id == tabIdRemoved }) else { return }
         guard let tabIndex = allTabs.firstIndex(where: { $0.id == tabIdRemoved }) else { return}
         guard let tabViewToRemove = visibleTabViews[tabIndex] else { return }
         
