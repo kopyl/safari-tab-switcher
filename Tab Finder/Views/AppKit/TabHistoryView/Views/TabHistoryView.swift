@@ -138,13 +138,13 @@ class TabHistoryView: NSViewController {
         
         DistributedNotificationCenter.default().addObserver(
             self,
-            selector: #selector(reactOnTabCloseNotification),
+            selector: #selector(reactOnTabCloseNotificationFromSafari),
             name: Notifications.tabClosed,
             object: nil
         )
     }
     
-    @objc func reactOnTabCloseNotification(_ notification: Notification) {
+    @objc func reactOnTabCloseNotificationFromSafari(_ notification: Notification) {
         guard let object = notification.object as? String else { return }
         guard let tabIdRemoved = Int(object) else { return }
         guard let tabRemoved = allTabs.first(where: { $0.id == tabIdRemoved }) else { return }
