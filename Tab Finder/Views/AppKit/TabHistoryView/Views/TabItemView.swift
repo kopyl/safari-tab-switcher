@@ -266,7 +266,13 @@ final class TabItemView: NSView {
             context.duration = 0.1
             
             self.swipeActionViewLeadingConstraint.animator().constant = distance
-            self.contentViewTrailingConstraint.animator().constant = distance - SwipeActionConfig.spacing
+            
+            if distance < 0 {
+                self.contentViewTrailingConstraint.animator().constant = distance - SwipeActionConfig.spacing
+            }
+            else {
+                self.contentViewTrailingConstraint.animator().constant = distance
+            }
             
             self.textLabelForSwipeViewXConstraint.animator().constant = textDistance
         }
