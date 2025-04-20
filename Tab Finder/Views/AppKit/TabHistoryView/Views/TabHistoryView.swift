@@ -148,59 +148,49 @@ class TabHistoryView: NSViewController {
         guard let object = notification.object as? String else { return }
         guard let tabIdRemoved = Int(object) else { return }
         guard let tabRemoved = allTabs.first(where: { $0.id == tabIdRemoved }) else { return }
+        guard let tabIndex = allTabs.firstIndex(where: { $0.id == tabIdRemoved }) else { return}
+        guard let tabViewToRemove = visibleTabViews[tabIndex] else { return }
         
-        if let tabIndex = allTabs.firstIndex(where: { $0.id == tabIdRemoved }),
-           let tabViewToRemove = visibleTabViews[tabIndex] {
-            
-            if appState.indexOfTabToSwitchTo >= allTabs.count - 1 {
-                appState.indexOfTabToSwitchTo = max(0, allTabs.count - 2)
-            }
-            
-            appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabIdRemoved }
-            appState.savedTabs = appState.savedTabs.filter { $0.id != tabIdRemoved }
-            
-            NSAnimationContext.runAnimationGroup({ context in
-                context.duration = 0.2
-                
-                tabViewToRemove.swipeActionViewCenterYAnchorConstraint.animator().constant = -tabHeight
-                
-                for (idx, otherTabView) in visibleTabViews {
-                    if idx > tabIndex {
-                        let currentFrame = otherTabView.frame
-                        otherTabView.animator().frame = NSRect(
-                            x: currentFrame.origin.x,
-                            y: currentFrame.origin.y - (tabHeight + tabSpacing),
-                            width: currentFrame.width,
-                            height: currentFrame.height
-                        )
-                    }
-                }
-                
-            }, completionHandler: {
-                tabViewToRemove.removeFromSuperview()
-                self.visibleTabViews.removeValue(forKey: tabIndex)
-                
-                let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-                self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
-                
-                appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                prepareTabsForRender()
-                self.renderTabs()
-                
-                self.updateSearchFieldPlaceholderText()
-                if appState.savedTabs.count == 0 {
-                    hideTabsPanel()
-                }
-            })
-        } else {
-            // Fallback if we couldn't find the tab view
-            Task {
-                appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
-                prepareTabsForRender()
-                renderTabs()
-                await closeTab(tab: tabRemoved)
-            }
+        if appState.indexOfTabToSwitchTo >= allTabs.count - 1 {
+            appState.indexOfTabToSwitchTo = max(0, allTabs.count - 2)
         }
+        
+        appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabIdRemoved }
+        appState.savedTabs = appState.savedTabs.filter { $0.id != tabIdRemoved }
+        
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.2
+            
+            tabViewToRemove.swipeActionViewCenterYAnchorConstraint.animator().constant = -tabHeight
+            
+            for (idx, otherTabView) in visibleTabViews {
+                if idx > tabIndex {
+                    let currentFrame = otherTabView.frame
+                    otherTabView.animator().frame = NSRect(
+                        x: currentFrame.origin.x,
+                        y: currentFrame.origin.y - (tabHeight + tabSpacing),
+                        width: currentFrame.width,
+                        height: currentFrame.height
+                    )
+                }
+            }
+            
+        }, completionHandler: {
+            tabViewToRemove.removeFromSuperview()
+            self.visibleTabViews.removeValue(forKey: tabIndex)
+            
+            let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+            self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
+            
+            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
+            prepareTabsForRender()
+            self.renderTabs()
+            
+            self.updateSearchFieldPlaceholderText()
+            if appState.savedTabs.count == 0 {
+                hideTabsPanel()
+            }
+        })
     }
     
     @objc func handleInputSourceChange(notification: Notification) {
