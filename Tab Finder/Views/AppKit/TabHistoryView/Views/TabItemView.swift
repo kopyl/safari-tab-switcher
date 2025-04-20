@@ -70,7 +70,7 @@ final class TabItemView: NSView {
         
         self.clipsToBounds = true
         self.wantsLayer = true
-        self.layer?.cornerRadius = 4
+        self.layer?.cornerRadius = 6
         
         self.closeButonView.isHidden = true
         
@@ -261,6 +261,8 @@ final class TabItemView: NSView {
         if distance < -tabContentViewWidth {
             distance = -tabContentViewWidth
         }
+        	
+        print(distance)
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
