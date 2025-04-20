@@ -261,8 +261,6 @@ final class TabItemView: NSView {
         if distance < -tabContentViewWidth {
             distance = -tabContentViewWidth
         }
-        	
-        print(distance)
         
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.1
