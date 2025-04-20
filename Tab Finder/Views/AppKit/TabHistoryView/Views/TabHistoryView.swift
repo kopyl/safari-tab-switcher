@@ -391,9 +391,10 @@ class TabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
         
-        updateHighlighting()
         
         DispatchQueue.main.async {
+            self.updateHighlighting()
+            
             let visibleRect = self.scrollView.contentView.bounds
             
             if tabRect.minY < visibleRect.minY {
