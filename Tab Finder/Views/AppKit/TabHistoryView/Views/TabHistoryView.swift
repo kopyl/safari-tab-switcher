@@ -209,9 +209,8 @@ class TabHistoryView: NSViewController {
             appState.indexOfTabToSwitchTo = 0
         }
         
-        if !text.isEmpty {
-            scrollToTop()
-        }
+        scrollToTop()
+        
         DispatchQueue.main.async {
             self.renderTabs()
         }
