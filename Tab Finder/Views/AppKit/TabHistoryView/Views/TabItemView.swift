@@ -86,7 +86,6 @@ final class TabItemView: NSView {
         self.addSubview(contentView)
         contentView.addSubview(stackView)
         contentView.addSubview(faviconView)
-        contentView.addSubview(closeButonView)
         
         if tab.host == "" {
             firstColumnLabel.stringValue = "No title"
@@ -148,11 +147,16 @@ final class TabItemView: NSView {
             faviconView.widthAnchor.constraint(equalToConstant: faviconView.width),
             faviconView.heightAnchor.constraint(equalToConstant: faviconView.height),
             faviconView.centerYAnchor.constraint(equalTo: stackView.centerYAnchor),
-            
-            closeButonView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            closeButonView.widthAnchor.constraint(equalToConstant: tabHeight),
-            closeButonView.heightAnchor.constraint(equalToConstant: tabHeight),
         ])
+        
+        if tab.id != -1 {
+            contentView.addSubview(closeButonView)
+            NSLayoutConstraint.activate([
+                closeButonView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+                closeButonView.widthAnchor.constraint(equalToConstant: tabHeight),
+                closeButonView.heightAnchor.constraint(equalToConstant: tabHeight),
+            ])
+        }
         
         // Add specific width constraint for second column if in title_host mode
         if appState.columnOrder == .title_host {
@@ -186,6 +190,11 @@ final class TabItemView: NSView {
     }
     
     override func scrollWheel(with event: NSEvent) {
+        
+        if tab.id == -1 {
+            super.scrollWheel(with: event)
+            return
+        }
         
         if !appState.tabsWithOpenSwipeViews.isEmpty {
             for tab in appState.tabsWithOpenSwipeViews {
