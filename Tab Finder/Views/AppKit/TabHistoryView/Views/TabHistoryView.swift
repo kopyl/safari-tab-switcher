@@ -14,8 +14,8 @@ class TabHistoryView: NSViewController {
     private var textView: NSTextField!
     private var pinButtonView: NSButton!
     private var tintView: NSView!
-    private var openTabsHeaderView = TabsHeaderView(title: "Open", height: 50)
-    private var closedTabsHeaderView = TabsHeaderView(title: "Closed", height: 50)
+    private var openTabsHeaderView = TabsHeaderView(title: "Open", height: 66)
+    private var closedTabsHeaderView = TabsHeaderView(title: "Closed", height: 95, topInset: 14)
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?

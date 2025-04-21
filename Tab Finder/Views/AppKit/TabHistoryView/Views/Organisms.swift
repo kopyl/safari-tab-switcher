@@ -208,6 +208,7 @@ class TabsHeaderView: NSView {
     public var height: CGFloat
     private var initHeight: CGFloat
     
+    private let topInset: CGFloat
     private let leftInset: CGFloat = 25
     private let countView: NSTextField
     
@@ -228,10 +229,11 @@ class TabsHeaderView: NSView {
         }
     }
     
-    init(frame frameRect: NSRect, title: String, height: CGFloat = 50) {
+    init(frame frameRect: NSRect, title: String, height: CGFloat = 50, topInset: CGFloat = 0) {
         self.title = title
         self.height = height
         self.initHeight = height
+        self.topInset = topInset
         
         countView = NSTextField(labelWithString: String(tabsCount))
         
@@ -249,10 +251,10 @@ class TabsHeaderView: NSView {
         self.addSubview(countView)
         
         NSLayoutConstraint.activate([
-            titleView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset),
             titleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leftInset),
             
-            countView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            countView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset),
             countView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -leftInset)
         ])
         
@@ -260,8 +262,8 @@ class TabsHeaderView: NSView {
         layer?.backgroundColor = .black
     }
     
-    convenience init(title: String, height: CGFloat = 50) {
-        self.init(frame: .zero, title: title, height: height)
+    convenience init(title: String, height: CGFloat = 50, topInset: CGFloat = 0) {
+        self.init(frame: .zero, title: title, height: height, topInset: topInset)
         
         frame = NSRect(
             x: 0,
