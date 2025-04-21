@@ -206,7 +206,12 @@ class TabHistoryView: NSViewController {
         prepareTabsForRender()
         
         if appState.sortTabsBy == .lastSeen {
-            appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
+            if text.isEmpty {
+                setIndexOfTabToSwitchToForEmptyTexField()
+            }
+            else {
+                appState.indexOfTabToSwitchTo = 0
+            }
         }
         else {
             appState.indexOfTabToSwitchTo = 0

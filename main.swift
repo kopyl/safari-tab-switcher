@@ -93,6 +93,20 @@ func isUserHoldingShortcutModifiers(event: NSEvent? = nil) -> Bool {
     return modifiersToCheck.contains(shortcut.modifiers)
 }
 
+func setIndexOfTabToSwitchToForEmptyTexField() {
+    if appState.sortTabsBy == .lastSeen {
+        if appState.openTabsRenderedCount == 1 {
+            appState.indexOfTabToSwitchTo = 0
+        }
+        else {
+            appState.indexOfTabToSwitchTo = 1
+        }
+    }
+    else {
+        appState.indexOfTabToSwitchTo = 0
+    }
+}
+
 func handleHotKeyPress() {
     guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
         return
@@ -101,7 +115,7 @@ func handleHotKeyPress() {
     appState.savedOpenTabs = tabs.tabs
     appState.searchQuery = ""
     prepareTabsForRender()
-    appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
+    setIndexOfTabToSwitchToForEmptyTexField()
     appState.currentInputSourceName = getCurrentInputSourceName()
     appState.isTabsPanelOpen = true
     showTabsPanel()
