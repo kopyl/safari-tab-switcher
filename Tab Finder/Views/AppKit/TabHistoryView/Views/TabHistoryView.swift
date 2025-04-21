@@ -14,6 +14,7 @@ class TabHistoryView: NSViewController {
     private var textView: NSTextField!
     private var pinButtonView: NSButton!
     private var tintView: NSView!
+    private var openTabsHeaderView = TabsHeaderView(title: "Open")
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -186,6 +187,7 @@ class TabHistoryView: NSViewController {
             self.renderTabs()
             
             self.updateSearchFieldPlaceholderText()
+            self.updateCounterInOpenTabsHeaderView()
             if appState.savedTabs.count == 0 {
                 hideTabsPanel()
             }
@@ -237,6 +239,7 @@ class TabHistoryView: NSViewController {
         self.textView.stringValue = ""
         pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         updateSearchFieldPlaceholderText()
+        updateCounterInOpenTabsHeaderView()
         applyBackgroundTint()
     }
     
@@ -258,6 +261,10 @@ class TabHistoryView: NSViewController {
         textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
     }
     
+    private func updateCounterInOpenTabsHeaderView() {
+        openTabsHeaderView.tabsCount = appState.savedTabs.count
+    }
+    
     private func applyBackgroundTint() {
         if appState.userSelectedAccentColor == Store.userSelectedAccentColorDefaultValue {
             tintView.isHidden = true
@@ -275,9 +282,12 @@ class TabHistoryView: NSViewController {
     private func renderTabs() {
         clearAllTabViews()
         allTabs = appState.renderedTabs
+
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-        tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
+        tabsContainerView.frame.size.height = totalHeight + tabBottomPadding + openTabsHeaderView.height
         
+        tabsContainerView.addSubview(openTabsHeaderView)
+
         updateVisibleTabViews()
     }
     
@@ -287,7 +297,6 @@ class TabHistoryView: NSViewController {
         
         // Get the visible rect of the scroll view
         let visibleRect = scrollView.contentView.bounds
-        
         // Expand the visible rect to include some off-screen items for smooth scrolling
         let expandedRect = NSRect(
             x: visibleRect.minX,
@@ -346,7 +355,7 @@ class TabHistoryView: NSViewController {
         let tabView = TabItemView(tab: tab)
         
         // Calculate Y position based on index
-        let yPos = CGFloat(index) * (tabHeight + tabSpacing)
+        let yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
         
         tabView.frame = NSRect(
             x: tabInsets.left,
@@ -381,7 +390,7 @@ class TabHistoryView: NSViewController {
         guard index >= 0 && index < allTabs.count else { return }
         
         // Calculate the rect for the selected tab
-        let yPos = CGFloat(index) * (tabHeight + tabSpacing)
+        let yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
         let tabRect = NSRect(x: 0, y: yPos, width: tabsContainerView.frame.width, height: tabHeight)
         
         // Make sure the tab view for selected tab exists
@@ -391,13 +400,16 @@ class TabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
         
-        
         DispatchQueue.main.async {
             self.updateHighlighting()
             
             let visibleRect = self.scrollView.contentView.bounds
             
-            if tabRect.minY < visibleRect.minY {
+            if index == 0 {
+                self.scrollView.contentView.bounds.origin.y = 0
+            }
+            
+            else if tabRect.minY < visibleRect.minY {
                 self.scrollView.contentView.bounds.origin.y = tabRect.minY
             } else if tabRect.maxY > visibleRect.maxY {
                 self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height + tabBottomPadding

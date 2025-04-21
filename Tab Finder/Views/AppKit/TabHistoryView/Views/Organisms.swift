@@ -189,3 +189,70 @@ class AdButtonView: NSView {
         self.layer?.backgroundColor = backgroundColor.cgColorAppearanceFix
     }
 }
+
+func makeHeaderLabelView(tabInsets: NSEdgeInsets, tabsHeaderHeight: CGFloat) -> NSTextField {
+    let headerLabel = NSTextField(labelWithString: "Open")
+    headerLabel.font = .boldSystemFont(ofSize: 13)
+    headerLabel.textColor = .secondaryLabelColor
+    headerLabel.frame = NSRect(
+        x: tabInsets.left,
+        y: 0,
+        width: tabContentViewWidth,
+        height: tabsHeaderHeight
+    )
+    return headerLabel
+}
+
+class TabsHeaderView: NSView {
+    private let title: String
+    private let leftInset: CGFloat = 25
+    private let countView: NSTextField
+    
+    public let height: CGFloat = 50
+    public var tabsCount: Int = 0 {
+        didSet {
+            countView.stringValue = String(tabsCount)
+        }
+    }
+    
+    init(frame frameRect: NSRect, title: String) {
+        self.title = title
+        countView = NSTextField(labelWithString: String(tabsCount))
+        
+        super.init(frame: frameRect)
+        
+        let titleView = NSTextField(labelWithString: title)
+        titleView.font = .systemFont(ofSize: 13, weight: .semibold)
+        titleView.textColor = .secondaryLabelColor
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(titleView)
+        
+        countView.font = .systemFont(ofSize: 13, weight: .regular)
+        countView.textColor = .secondaryLabelColor
+        countView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(countView)
+        
+        NSLayoutConstraint.activate([
+            titleView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leftInset),
+            
+            countView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            countView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -leftInset)
+        ])
+    }
+    
+    convenience init(title: String) {
+        self.init(frame: .zero, title: title)
+        
+        frame = NSRect(
+            x: 0,
+            y: 0,
+            width: tabContentViewWidth,
+            height: height
+        )
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
