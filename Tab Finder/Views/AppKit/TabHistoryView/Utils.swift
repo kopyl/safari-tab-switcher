@@ -203,19 +203,13 @@ func performSearch(on tabs: [Tab]) -> [Tab] {
 
 func convertVisitedPagesToTabs() -> [Tab] {
     let visitedPages = Store.VisitedPagesHistory.loadAll()
-    
-    var convertedTabs: [Tab] = []
-    
-    var lastRenderIndex = appState.savedOpenTabs.count
+    return visitedPages.map(Tab.init)
+}
 
-    for page in visitedPages {
-        var convertedTab = Tab(visitedPage: page)
-        convertedTab.renderIndex = lastRenderIndex
-        lastRenderIndex += 1
-        convertedTabs.append(convertedTab)
+func updateRenderIndices() {
+    for idx in appState.renderedTabs.indices {
+        appState.renderedTabs[idx].renderIndex = idx
     }
-    
-    return convertedTabs
 }
 
 func prepareTabsForRender() {
@@ -227,6 +221,8 @@ func prepareTabsForRender() {
         appState.closedTabsRenderedCount = closedTabsToRender.count
         
         appState.renderedTabs = openTabsToRender + closedTabsToRender
+        
+        updateRenderIndices()
         return
     }
     
@@ -243,4 +239,6 @@ func prepareTabsForRender() {
     appState.closedTabsRenderedCount = closedTabsToRender.count
     
     appState.renderedTabs = openTabsToRender + closedTabsToRender
+    
+    updateRenderIndices()
 }
