@@ -205,7 +205,8 @@ func makeHeaderLabelView(tabInsets: NSEdgeInsets, tabsHeaderHeight: CGFloat) -> 
 
 class TabsHeaderView: NSView {
     private let title: String
-    public let height: CGFloat
+    public var height: CGFloat
+    private var initHeight: CGFloat
     
     private let leftInset: CGFloat = 25
     private let countView: NSTextField
@@ -213,12 +214,25 @@ class TabsHeaderView: NSView {
     public var tabsCount: Int = 0 {
         didSet {
             countView.stringValue = String(tabsCount)
+            
+            if tabsCount == 0 {
+                frame.size.height = 0
+                height = 0
+                isHidden = true
+            }
+            else {
+                height = initHeight
+                frame.size.height = initHeight
+                isHidden = false
+            }
         }
     }
     
     init(frame frameRect: NSRect, title: String, height: CGFloat = 50) {
         self.title = title
         self.height = height
+        self.initHeight = height
+        
         countView = NSTextField(labelWithString: String(tabsCount))
         
         super.init(frame: frameRect)
@@ -241,6 +255,9 @@ class TabsHeaderView: NSView {
             countView.centerYAnchor.constraint(equalTo: centerYAnchor),
             countView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -leftInset)
         ])
+        
+        wantsLayer = true
+        layer?.backgroundColor = .black
     }
     
     convenience init(title: String, height: CGFloat = 50) {

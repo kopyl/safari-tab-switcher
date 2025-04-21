@@ -204,7 +204,6 @@ class TabHistoryView: NSViewController {
         let text = textView.stringValue
         appState.searchQuery = text
         prepareTabsForRender()
-        self.updateCounterInTabsHeaderView()
         
         if appState.sortTabsBy == .lastSeen {
             appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
@@ -216,6 +215,7 @@ class TabHistoryView: NSViewController {
         scrollToTop()
         
         DispatchQueue.main.async {
+            self.updateCounterInTabsHeaderView()
             self.renderTabs()
         }
     }
