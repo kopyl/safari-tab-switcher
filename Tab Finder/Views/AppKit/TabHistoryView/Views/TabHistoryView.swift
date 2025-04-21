@@ -14,7 +14,7 @@ class TabHistoryView: NSViewController {
     private var textView: NSTextField!
     private var pinButtonView: NSButton!
     private var tintView: NSView!
-    private var openTabsHeaderView = TabsHeaderView(title: "Open", height: 66)
+    private var openTabsHeaderView = TabsHeaderView(title: "Open", height: nil)
     private var closedTabsHeaderView = TabsHeaderView(title: "Closed", height: 95, topInset: 14)
     
     private var localKeyboardEventMonitor: Any?
@@ -188,7 +188,7 @@ class TabHistoryView: NSViewController {
             self.renderTabs()
             
             self.updateSearchFieldPlaceholderText()
-            self.updateCounterInTabsHeaderView()
+            self.updateTabsHeaderViews()
             if appState.savedOpenTabs.count == 0 {
                 hideTabsPanel()
             }
@@ -220,7 +220,7 @@ class TabHistoryView: NSViewController {
         scrollToTop()
         
         DispatchQueue.main.async {
-            self.updateCounterInTabsHeaderView()
+            self.updateTabsHeaderViews()
             self.renderTabs()
         }
     }
@@ -242,7 +242,7 @@ class TabHistoryView: NSViewController {
     }
     
     override func viewWillAppear() {
-        updateCounterInTabsHeaderView()
+        updateTabsHeaderViews()
         self.renderTabs()
         self.textView.stringValue = ""
         pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
@@ -268,9 +268,20 @@ class TabHistoryView: NSViewController {
         textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedOpenTabs.count)
     }
     
-    private func updateCounterInTabsHeaderView() {
+    private func updateTabsHeaderViews() {
         openTabsHeaderView.tabsCount = appState.openTabsRenderedCount
         closedTabsHeaderView.tabsCount = appState.closedTabsRenderedCount
+        
+        if appState.openTabsRenderedCount == 0 && appState.closedTabsRenderedCount > 0 {
+            closedTabsHeaderView.shiftInnerConterY(by: 0)
+            closedTabsHeaderView.frame.size.height = closedTabsHeaderView.standardHeaderHeight
+            closedTabsHeaderView.height = closedTabsHeaderView.standardHeaderHeight
+        }
+        else {
+            closedTabsHeaderView.shiftInnerConterY(by: closedTabsHeaderView.topInset)
+            closedTabsHeaderView.frame.size.height = closedTabsHeaderView.initHeight
+            closedTabsHeaderView.height = closedTabsHeaderView.initHeight
+        }
     }
     
     private func applyBackgroundTint() {

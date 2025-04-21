@@ -206,11 +206,15 @@ func makeHeaderLabelView(tabInsets: NSEdgeInsets, tabsHeaderHeight: CGFloat) -> 
 class TabsHeaderView: NSView {
     private let title: String
     public var height: CGFloat
-    private var initHeight: CGFloat
+    public var initHeight: CGFloat
+    public let topInset: CGFloat
+    public let standardHeaderHeight: CGFloat = 66
     
-    private let topInset: CGFloat
     private let leftInset: CGFloat = 25
     private let countView: NSTextField
+    
+    private var titleViewCenterYAnchor = NSLayoutConstraint()
+    private var countViewCenterYAnchor = NSLayoutConstraint()
     
     public var tabsCount: Int = 0 {
         didSet {
@@ -229,11 +233,17 @@ class TabsHeaderView: NSView {
         }
     }
     
-    init(frame frameRect: NSRect, title: String, height: CGFloat = 50, topInset: CGFloat = 0) {
+    public func shiftInnerConterY(by shift: CGFloat) {
+        titleViewCenterYAnchor.constant = shift
+        countViewCenterYAnchor.constant = shift
+    }
+    
+    init(frame frameRect: NSRect, title: String, height: CGFloat?, topInset: CGFloat = 0) {
         self.title = title
-        self.height = height
-        self.initHeight = height
+        self.height = height ?? standardHeaderHeight
+        self.initHeight = height ?? standardHeaderHeight
         self.topInset = topInset
+        
         
         countView = NSTextField(labelWithString: String(tabsCount))
         
@@ -250,23 +260,26 @@ class TabsHeaderView: NSView {
         countView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(countView)
         
+        titleViewCenterYAnchor = titleView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset)
+        countViewCenterYAnchor = countView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset)
+        
         NSLayoutConstraint.activate([
-            titleView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset),
-            titleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leftInset),
+            titleViewCenterYAnchor,
+            countViewCenterYAnchor,
             
-            countView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: topInset),
+            titleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leftInset),
             countView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -leftInset)
         ])
     }
     
-    convenience init(title: String, height: CGFloat = 50, topInset: CGFloat = 0) {
+    convenience init(title: String, height: CGFloat?, topInset: CGFloat = 0) {
         self.init(frame: .zero, title: title, height: height, topInset: topInset)
         
         frame = NSRect(
             x: 0,
             y: 0,
             width: tabsPanelWidth,
-            height: height
+            height: height ?? standardHeaderHeight
         )
     }
     
