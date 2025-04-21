@@ -156,7 +156,7 @@ class TabHistoryView: NSViewController {
         }
         
         appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabIdRemoved }
-        appState.savedTabs = appState.savedTabs.filter { $0.id != tabIdRemoved }
+        appState.savedOpenTabs = appState.savedOpenTabs.filter { $0.id != tabIdRemoved }
         
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = 0.2
@@ -182,13 +182,13 @@ class TabHistoryView: NSViewController {
             let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
             self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
             
-            appState.savedTabs = Store.windows.windows.last?.tabs ?? Tabs()
+            appState.savedOpenTabs = Store.windows.windows.last?.tabs.tabs ?? Tabs().tabs
             prepareTabsForRender()
             self.renderTabs()
             
             self.updateSearchFieldPlaceholderText()
             self.updateCounterInOpenTabsHeaderView()
-            if appState.savedTabs.count == 0 {
+            if appState.savedOpenTabs.count == 0 {
                 hideTabsPanel()
             }
         })
@@ -258,11 +258,11 @@ class TabHistoryView: NSViewController {
     }
     
     private func updateSearchFieldPlaceholderText() {
-        textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedTabs.count)
+        textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedOpenTabs.count)
     }
     
     private func updateCounterInOpenTabsHeaderView() {
-        openTabsHeaderView.tabsCount = appState.savedTabs.count
+        openTabsHeaderView.tabsCount = appState.savedOpenTabs.count
     }
     
     private func applyBackgroundTint() {
@@ -330,6 +330,7 @@ class TabHistoryView: NSViewController {
                 let tabView = createTabView(for: allTabs[index], at: index)
                 
                 tabView.onTabHover = { [weak self] renderIndex in
+                    print(renderIndex)
                     appState.indexOfTabToSwitchTo = renderIndex
                     self?.updateHighlighting()
                 }

@@ -61,10 +61,10 @@ func hideTabsPanelAndSwitchTabs() {
     Task{ await switchTabs() }
 }
 
-func getTabsDependingOnSorting() -> [Tab] {
+func getOpenTabsDependingOnSorting() -> [Tab] {
     switch(appState.sortTabsBy) {
     case .asTheyAppearInBrowser:
-        return appState.savedTabs
+        return appState.savedOpenTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -73,8 +73,8 @@ func getTabsDependingOnSorting() -> [Tab] {
             }
             .sorted { $0.id < $1.id }
     case .asTheyAppearInBrowserReversed:
-        let tabsCount = appState.savedTabs.count
-        return appState.savedTabs
+        let tabsCount = appState.savedOpenTabs.count
+        return appState.savedOpenTabs
             .enumerated()
             .map { index, _tab in
                 var tab = _tab
@@ -84,26 +84,15 @@ func getTabsDependingOnSorting() -> [Tab] {
             .sorted { $0.id < $1.id }
             .reversed()
     case .lastSeen:
-        return appState.savedTabs.reversed()
+        return appState.savedOpenTabs.reversed()
     }
 }
 
-func prepareTabsForRender() {
-    if appState.searchQuery.isEmpty {
-        appState.renderedTabs = getTabsDependingOnSorting()
-        return
-    }
-    
+func performSearch(on tabs: [Tab]) -> [Tab] {
     let searchQuery = appState.searchQuery.lowercased()
     let searchWords = searchQuery.split(separator: " ").map { String($0) }
     
-    var visibleTabsToPerformSearchOn = appState.savedTabs
-    
-    #if LITE
-        visibleTabsToPerformSearchOn = Tabs(Array(getTabsDependingOnSorting().prefix(5)))
-    #endif
-    
-    let matchingTabs = visibleTabsToPerformSearchOn.filter { tab in
+    let matchingTabs = tabs.filter { tab in
         var title = tab.title
         if tab.host == "" && tab.title == "" {
             title = "no title"
@@ -203,11 +192,57 @@ func prepareTabsForRender() {
         .sorted { $0.score > $1.score }
         .map { $0.tab }
     
-    appState.renderedTabs = filteredAndSorted
+    return filteredAndSorted
         .enumerated()
         .map { index, tab in
             var updatedTab = tab
             updatedTab.renderIndex = index
             return updatedTab
         }
+}
+
+func convertVisitedPagesToTabs() -> [Tab] {
+    let visitedPages = Store.VisitedPagesHistory.loadAll()
+    
+    var convertedTabs: [Tab] = []
+    
+    var lastRenderIndex = appState.savedOpenTabs.count
+
+    for page in visitedPages {
+        var convertedTab = Tab(visitedPage: page)
+        convertedTab.renderIndex = lastRenderIndex
+        lastRenderIndex += 1
+        convertedTabs.append(convertedTab)
+    }
+    
+    return convertedTabs
+}
+
+func prepareTabsForRender() {
+    if appState.searchQuery.isEmpty {
+        let openTabsToRender = getOpenTabsDependingOnSorting()
+        appState.openTabsRenderedCount = openTabsToRender.count
+        
+        let closedTabsToRender = convertVisitedPagesToTabs()
+        appState.closedTabsRenderedCount = closedTabsToRender.count
+        
+        appState.renderedTabs = openTabsToRender + closedTabsToRender
+        return
+    }
+    
+    var visibleTabsToPerformSearchOn = appState.savedOpenTabs
+    
+    #if LITE
+        visibleTabsToPerformSearchOn = getTabsDependingOnSorting().prefix(5)
+    #endif
+
+    let openTabsToRender = performSearch(on: visibleTabsToPerformSearchOn)
+    appState.openTabsRenderedCount = openTabsToRender.count
+
+    let closedTabsToRender = performSearch(on: convertVisitedPagesToTabs())
+    appState.closedTabsRenderedCount = closedTabsToRender.count
+    
+    print(convertVisitedPagesToTabs())
+    
+    appState.renderedTabs = openTabsToRender + closedTabsToRender
 }

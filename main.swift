@@ -98,7 +98,7 @@ func handleHotKeyPress() {
         return
     }
     guard let tabs = Store.windows.windows.last?.tabs else { return }
-    appState.savedTabs = tabs
+    appState.savedOpenTabs = tabs.tabs
     appState.searchQuery = ""
     prepareTabsForRender()
     appState.indexOfTabToSwitchTo = appState.sortTabsBy == .lastSeen ? 1 : 0
@@ -117,7 +117,9 @@ class AppState: ObservableObject {
     @Published var isShortcutRecorderNeedsToBeFocused = false
     
     var searchQuery = ""
-    var savedTabs = Tabs()
+    
+    var savedOpenTabs = Tabs().tabs
+    
     var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
     var isTabsPanelOpen = false
     var sortTabsBy = Store.sortTabsBy
@@ -127,6 +129,9 @@ class AppState: ObservableObject {
     var userSelectedAccentColor = Store.userSelectedAccentColor
     var tabsWithOpenSwipeViews: [TabItemView] = []
     var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
+
+    var openTabsRenderedCount = 0
+    var closedTabsRenderedCount = 0
 
     var _renderedTabs: [Tab] = []
     var renderedTabs: [Tab] {

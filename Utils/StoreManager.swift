@@ -46,6 +46,13 @@ struct Tab: Codable, Identifiable, Hashable {
         await setTitleAndHostFromTab(tab: tab)
     }
     
+    init(visitedPage: VisitedPagesHistoryModel) {
+        self.id = -1
+        self.renderIndex = 0
+        self.title = visitedPage.title
+        self.url = visitedPage.url
+    }
+    
     mutating func setTitleAndHostFromTab(tab: SFSafariTab) async {
         if let activePage = await tab.activePage() {
             if let properties = await activePage.properties() {
