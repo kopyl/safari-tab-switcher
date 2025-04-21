@@ -78,28 +78,6 @@ enum ColumnOrder: String, CaseIterable {
     
 }
 
-func getCoreDataContainer() -> NSPersistentContainer {
-    let container = NSPersistentContainer(name: "VisitedPagesHistoryModel")
-
-        // 📍 Redirect store to App Group container
-        guard let sharedStoreURL = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
-            .appendingPathComponent("VisitedPagesHistoryModel.sqlite") else {
-                fatalError("❌ Unable to locate App Group container")
-        }
-
-        let storeDescription = NSPersistentStoreDescription(url: sharedStoreURL)
-        container.persistentStoreDescriptions = [storeDescription]
-
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("❌ Failed to load store: \(error)")
-            }
-        }
-
-        return container
-}
-
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
@@ -182,6 +160,28 @@ struct Store {
         
         static let persistentContainer = getCoreDataContainer()
         
+        static func getCoreDataContainer() -> NSPersistentContainer {
+            let container = NSPersistentContainer(name: visitedPagesHistoryModelName)
+
+                // 📍 Redirect store to App Group container
+                guard let sharedStoreURL = FileManager.default
+                    .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
+                    .appendingPathComponent("\(visitedPagesHistoryModelName).sqlite") else {
+                        fatalError("❌ Unable to locate App Group container")
+                }
+
+                let storeDescription = NSPersistentStoreDescription(url: sharedStoreURL)
+                container.persistentStoreDescriptions = [storeDescription]
+
+                container.loadPersistentStores { _, error in
+                    if let error = error {
+                        fatalError("❌ Failed to load store: \(error)")
+                    }
+                }
+
+                return container
+        }
+        
         static func loadAll() -> [VisitedPagesHistoryModel] {
             let context = persistentContainer.viewContext
             let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
@@ -237,7 +237,7 @@ struct Store {
             }
 
             let fileManager = FileManager.default
-            let baseFilename = "VisitedPagesHistoryModel.sqlite"
+            let baseFilename = "\(visitedPagesHistoryModelName).sqlite"
             let urlsToDelete = [
                 containerURL.appendingPathComponent(baseFilename),
                 containerURL.appendingPathComponent(baseFilename + "-shm"),

@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+let visitedPagesHistoryModelName = "VisitedPagesHistoryModel"
+
 class Notifications {
     static let tabClosed = NSNotification.Name("com.tabfinder.tabRemovalNotification")
 }

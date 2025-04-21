@@ -4,7 +4,7 @@ import CoreData
 extension VisitedPagesHistoryModel {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<VisitedPagesHistoryModel> {
-        return NSFetchRequest<VisitedPagesHistoryModel>(entityName: "VisitedPagesHistoryModel")
+        return NSFetchRequest<VisitedPagesHistoryModel>(entityName: visitedPagesHistoryModelName)
     }
 
     @NSManaged public var createdAt: Date
