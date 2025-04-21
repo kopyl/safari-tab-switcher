@@ -15,6 +15,7 @@ class TabHistoryView: NSViewController {
     private var pinButtonView: NSButton!
     private var tintView: NSView!
     private var openTabsHeaderView = TabsHeaderView(title: "Open")
+    private var closedTabsHeaderView = TabsHeaderView(title: "Closed")
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -284,7 +285,7 @@ class TabHistoryView: NSViewController {
         allTabs = appState.renderedTabs
 
         let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
-        tabsContainerView.frame.size.height = totalHeight + tabBottomPadding + openTabsHeaderView.height
+        tabsContainerView.frame.size.height = totalHeight + tabBottomPadding + openTabsHeaderView.height + closedTabsHeaderView.height
         
         tabsContainerView.addSubview(openTabsHeaderView)
 
@@ -342,6 +343,16 @@ class TabHistoryView: NSViewController {
                     }
                 }
                 
+                if index == appState.openTabsRenderedCount-1 {
+                    tabsContainerView.addSubview(closedTabsHeaderView)
+                    closedTabsHeaderView.frame = NSRect(
+                        x: 0,
+                        y: tabView.frame.maxY + tabSpacing,
+                        width: tabsContainerView.frame.width,
+                        height: closedTabsHeaderView.height
+                    )
+                }
+                
                 tabsContainerView.addSubview(tabView)
                 visibleTabViews[index] = tabView
             }
@@ -356,7 +367,13 @@ class TabHistoryView: NSViewController {
         let tabView = TabItemView(tab: tab)
         
         // Calculate Y position based on index
-        let yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
+        var yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
+
+        /// shift the tab view down by the height of the header
+        if index > appState.openTabsRenderedCount-1 {
+            print(closedTabsHeaderView.height)
+            yPos += closedTabsHeaderView.height
+        }
         
         tabView.frame = NSRect(
             x: tabInsets.left,
