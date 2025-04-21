@@ -219,7 +219,11 @@ func prepareTabsForRender() {
         let openTabsToRender = getOpenTabsDependingOnSorting()
         appState.openTabsRenderedCount = openTabsToRender.count
         
-        let closedTabsToRender = convertVisitedPagesToTabs()
+        var closedTabsToRender = convertVisitedPagesToTabs()
+        closedTabsToRender = closedTabsToRender
+            .filter { tab in
+                !openTabsToRender.contains { $0.url == tab.url }
+            }
         appState.closedTabsRenderedCount = closedTabsToRender.count
         
         appState.renderedTabs = openTabsToRender + closedTabsToRender
@@ -237,7 +241,11 @@ func prepareTabsForRender() {
     let openTabsToRender = performSearch(on: visibleTabsToPerformSearchOn)
     appState.openTabsRenderedCount = openTabsToRender.count
 
-    let closedTabsToRender = performSearch(on: convertVisitedPagesToTabs())
+    var closedTabsToRender = performSearch(on: convertVisitedPagesToTabs())
+    closedTabsToRender = closedTabsToRender
+        .filter { tab in
+            !openTabsToRender.contains { $0.url == tab.url }
+        }
     appState.closedTabsRenderedCount = closedTabsToRender.count
     
     appState.renderedTabs = openTabsToRender + closedTabsToRender
