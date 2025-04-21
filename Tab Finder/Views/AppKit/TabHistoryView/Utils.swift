@@ -242,7 +242,5 @@ func prepareTabsForRender() {
     let closedTabsToRender = performSearch(on: convertVisitedPagesToTabs())
     appState.closedTabsRenderedCount = closedTabsToRender.count
     
-    print(convertVisitedPagesToTabs())
-    
     appState.renderedTabs = openTabsToRender + closedTabsToRender
 }

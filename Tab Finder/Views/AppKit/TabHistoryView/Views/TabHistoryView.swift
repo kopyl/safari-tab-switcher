@@ -331,7 +331,6 @@ class TabHistoryView: NSViewController {
                 let tabView = createTabView(for: allTabs[index], at: index)
                 
                 tabView.onTabHover = { [weak self] renderIndex in
-                    print(renderIndex)
                     appState.indexOfTabToSwitchTo = renderIndex
                     self?.updateHighlighting()
                 }
@@ -371,7 +370,6 @@ class TabHistoryView: NSViewController {
 
         /// shift the tab view down by the height of the header
         if index > appState.openTabsRenderedCount-1 {
-            print(closedTabsHeaderView.height)
             yPos += closedTabsHeaderView.height
         }
         
