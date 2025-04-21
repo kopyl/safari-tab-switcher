@@ -250,7 +250,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
             await changeTransparencyOfExtensionIconInToolbar(in: window)
             await updateSavedTabs(in: window)
             
-            await addPageToHistory()
+//            await addPageToHistory()
         }
 
         validationHandler(true, "")
