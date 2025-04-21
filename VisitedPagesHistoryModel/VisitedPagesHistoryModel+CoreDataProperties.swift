@@ -11,6 +11,9 @@ extension VisitedPagesHistoryModel {
     @NSManaged public var title: String
     @NSManaged public var updatedAt: Date
     @NSManaged public var url: URL
+    @NSManaged public var timesUpdated: Int64
+    @NSManaged public var timesCreatedNewTabWithThisPage: Int64
+    @NSManaged public var timesSwitchedToWhileHavingHostTabOpen: Int64
 
 }
 

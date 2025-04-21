@@ -204,6 +204,9 @@ struct Store {
             tab.title = title
             tab.createdAt = Date()
             tab.updatedAt = Date()
+            tab.timesUpdated = 0
+            tab.timesCreatedNewTabWithThisPage = 0
+            tab.timesSwitchedToWhileHavingHostTabOpen = 0
 
             do {
                 try context.save()
@@ -281,6 +284,7 @@ struct Store {
                 if let tab = try context.fetch(request).first {
                     tab.title = newTitle
                     tab.updatedAt = Date()
+                    tab.timesUpdated += 1
 
                     try context.save()
                 } else {
