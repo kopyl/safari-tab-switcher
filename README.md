@@ -7,6 +7,7 @@ aka command+tab but for Safari
 ### Features:
 - Switching tab history navigation with Option+Tab (or set your own shortcut);
 - Tab search;
+- Did not find the tab you were looking for? Since 22nd of April 2025 you can search for the tab from the list of all cosed tabs;
 - Customizable shortcut;
 - Dark mode, light mode;
 - Does not ask for permission to read "webpage content". Permission to access "browsing history" is only used to display tab titles;
