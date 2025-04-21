@@ -406,32 +406,35 @@ class TabHistoryView: NSViewController {
     private func scrollToSelectedTabWithoutAnimation() {
         let index = appState.indexOfTabToSwitchTo
         guard index >= 0 && index < allTabs.count else { return }
+
+        var yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
         
-        // Calculate the rect for the selected tab
-        let yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
-        let tabRect = NSRect(x: 0, y: yPos, width: tabsContainerView.frame.width, height: tabHeight)
-        
-        // Make sure the tab view for selected tab exists
+        // ⬅️ add closed header height if this tab is in "Closed" section
+        if index > appState.openTabsRenderedCount - 1 {
+            yPos += closedTabsHeaderView.height
+        }
+
         if visibleTabViews[index] == nil {
             let tabView = createTabView(for: allTabs[index], at: index)
             tabsContainerView.addSubview(tabView)
             visibleTabViews[index] = tabView
         }
-        
+
         DispatchQueue.main.async {
             self.updateHighlighting()
-            
             let visibleRect = self.scrollView.contentView.bounds
             
             if index == 0 {
-                self.scrollView.contentView.bounds.origin.y = 0
+                self.scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
             }
-            
-            else if tabRect.minY < visibleRect.minY {
-                self.scrollView.contentView.bounds.origin.y = tabRect.minY
-            } else if tabRect.maxY > visibleRect.maxY {
-                self.scrollView.contentView.bounds.origin.y = tabRect.maxY - visibleRect.height + tabBottomPadding
+
+            else if yPos < visibleRect.minY {
+                self.scrollView.contentView.scroll(to: NSPoint(x: 0, y: yPos))
+            } else if yPos + tabHeight > visibleRect.maxY {
+                self.scrollView.contentView.scroll(to: NSPoint(x: 0, y: yPos + tabHeight - visibleRect.height + tabBottomPadding))
             }
+
+            self.scrollView.reflectScrolledClipView(self.scrollView.contentView)
         }
     }
     
