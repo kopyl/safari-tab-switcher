@@ -247,7 +247,7 @@ class TabsHeaderView: NSView {
         frame = NSRect(
             x: 0,
             y: 0,
-            width: tabContentViewWidth,
+            width: tabsPanelWidth,
             height: height
         )
     }
