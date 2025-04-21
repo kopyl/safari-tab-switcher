@@ -4,7 +4,7 @@ let tabHeight: CGFloat = 57
 private let tabSpacing: CGFloat = 0
 private let tabBottomPadding: CGFloat = 4
 private let tabInsets = NSEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
-private let headerHeight: CGFloat = 72
+private let headerHeight: CGFloat = 73
 
 let tabContentViewWidth = tabsPanelWidth - tabInsets.left - tabInsets.right
 
@@ -76,18 +76,18 @@ class TabHistoryView: NSViewController {
             headerView.heightAnchor.constraint(equalToConstant: headerHeight),
             
             searchIconView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-            searchIconView.widthAnchor.constraint(equalToConstant: 74),
+            searchIconView.widthAnchor.constraint(equalToConstant: 68),
             searchIconView.heightAnchor.constraint(equalToConstant: headerHeight),
-            searchIconView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            searchIconView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 2),
             
             pinButtonView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-            pinButtonView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-            pinButtonView.widthAnchor.constraint(equalToConstant: 74),
+            pinButtonView.widthAnchor.constraint(equalToConstant: 66),
             pinButtonView.heightAnchor.constraint(equalToConstant: headerHeight),
+            pinButtonView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 2),
             
-            textView.leadingAnchor.constraint(equalTo: searchIconView.trailingAnchor, constant: -14),
+            textView.leadingAnchor.constraint(equalTo: searchIconView.trailingAnchor, constant: -9),
             textView.trailingAnchor.constraint(equalTo: pinButtonView.leadingAnchor),
-            textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            textView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 2),
             
             scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

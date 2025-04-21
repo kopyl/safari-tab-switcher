@@ -38,7 +38,7 @@ func makeTextFieldView() -> NSTextField {
     textField.isBordered = false
     textField.backgroundColor = nil
     textField.focusRingType = .none
-    textField.font = NSFont.systemFont(ofSize: 26)
+    textField.font = NSFont.systemFont(ofSize: 20)
     textField.isEditable = true
     textField.isSelectable = true
     textField.delegate = nil
@@ -55,7 +55,7 @@ func makeHeaderView() -> NSView {
 func makeSearchIconView() -> NSImageView {
     let searchIcon = NSImageView()
     let image = NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: "search icon")	
-    let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+    let config = NSImage.SymbolConfiguration(pointSize: 19, weight: .regular)
     searchIcon.image = image?.withSymbolConfiguration(config)
     searchIcon.translatesAutoresizingMaskIntoConstraints = false
     return searchIcon
@@ -73,7 +73,7 @@ func makeLinkIcon() -> NSImageView {
 func makePinImage(isFilled: Bool = false) -> NSImage? {
     let symbolName = isFilled ? "pin.fill" : "pin"
     let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: "pin icon")
-    let config = NSImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+    let config = NSImage.SymbolConfiguration(pointSize: 19, weight: .regular)
     return image?.withSymbolConfiguration(config)
 }
 
