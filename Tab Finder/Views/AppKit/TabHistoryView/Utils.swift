@@ -8,12 +8,14 @@ func getToolTipText() -> String {
 
 func switchTabs() async {
     let tabToSwitchToInSafari = appState.renderedTabs[appState.indexOfTabToSwitchTo]
+    let tabURL = tabToSwitchToInSafari.url ?? URL(string: "httos://google.con")!
+    
     do {
         addSpecificTabToHistory(tab: tabToSwitchToInSafari)
         try await SFSafariApplication.dispatchMessage(
             withName: "switchtabto",
             toExtensionWithIdentifier: extensionBundleIdentifier,
-            userInfo: ["id": String(tabToSwitchToInSafari.id)]
+            userInfo: ["id": String(tabToSwitchToInSafari.id), "url": tabURL.absoluteString]
         )
     } catch let error {
         log("Dispatching message to the extension resulted in an error: \(error)")

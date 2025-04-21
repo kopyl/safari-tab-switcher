@@ -200,8 +200,17 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         case .switchtabto:
             guard let tabIdString = userInfo?["id"] as? String,
                   let tabId = Int(tabIdString) else { return }
+            
             Task{
                 guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
+                
+                if tabId == -1 {
+                    guard let tabURLString = userInfo?["url"] as? String,
+                          let tabURL = URL(string: tabURLString) else { return }
+                    await activeWindow.openTab(with: tabURL, makeActiveIfPossible: true)
+                    return
+                }
+                
                 let tabs = await activeWindow.allTabs()
                 await switchToTab(id: tabId, tabs: tabs)
             }
