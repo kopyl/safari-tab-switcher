@@ -237,7 +237,7 @@ struct Store {
             }
 
             let fileManager = FileManager.default
-            let baseFilename = "HistoryTabModel.sqlite"
+            let baseFilename = "VisitedPagesHistoryModel.sqlite"
             let urlsToDelete = [
                 containerURL.appendingPathComponent(baseFilename),
                 containerURL.appendingPathComponent(baseFilename + "-shm"),
