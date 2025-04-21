@@ -239,9 +239,6 @@ class TabsHeaderView: NSView {
             countView.centerYAnchor.constraint(equalTo: centerYAnchor),
             countView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -leftInset)
         ])
-        
-//        self.wantsLayer = true
-//        self.layer?.backgroundColor = .white
     }
     
     convenience init(title: String) {
