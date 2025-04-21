@@ -188,7 +188,7 @@ class TabHistoryView: NSViewController {
             self.renderTabs()
             
             self.updateSearchFieldPlaceholderText()
-            self.updateCounterInOpenTabsHeaderView()
+            self.updateCounterInTabsHeaderView()
             if appState.savedOpenTabs.count == 0 {
                 hideTabsPanel()
             }
@@ -204,6 +204,7 @@ class TabHistoryView: NSViewController {
         let text = textView.stringValue
         appState.searchQuery = text
         prepareTabsForRender()
+        self.updateCounterInTabsHeaderView()
         
         if appState.sortTabsBy == .lastSeen {
             appState.indexOfTabToSwitchTo = text.isEmpty ? 1 : 0
@@ -240,7 +241,7 @@ class TabHistoryView: NSViewController {
         self.textView.stringValue = ""
         pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         updateSearchFieldPlaceholderText()
-        updateCounterInOpenTabsHeaderView()
+        updateCounterInTabsHeaderView()
         applyBackgroundTint()
     }
     
@@ -262,8 +263,9 @@ class TabHistoryView: NSViewController {
         textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedOpenTabs.count)
     }
     
-    private func updateCounterInOpenTabsHeaderView() {
-        openTabsHeaderView.tabsCount = appState.savedOpenTabs.count
+    private func updateCounterInTabsHeaderView() {
+        openTabsHeaderView.tabsCount = appState.openTabsRenderedCount
+        closedTabsHeaderView.tabsCount = appState.closedTabsRenderedCount
     }
     
     private func applyBackgroundTint() {
