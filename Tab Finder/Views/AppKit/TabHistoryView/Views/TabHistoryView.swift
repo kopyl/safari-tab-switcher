@@ -237,11 +237,11 @@ class TabHistoryView: NSViewController {
     }
     
     override func viewWillAppear() {
+        updateCounterInTabsHeaderView()
         self.renderTabs()
         self.textView.stringValue = ""
         pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         updateSearchFieldPlaceholderText()
-        updateCounterInTabsHeaderView()
         applyBackgroundTint()
     }
     
