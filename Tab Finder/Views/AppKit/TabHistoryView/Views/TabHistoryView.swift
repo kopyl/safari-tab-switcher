@@ -295,59 +295,55 @@ class TabHistoryView: NSViewController {
     }
     
     private func updateVisibleTabViews() {
-        
         guard !allTabs.isEmpty else { return }
-        
-        // Get the visible rect of the scroll view
+
         let visibleRect = scrollView.contentView.bounds
-        // Expand the visible rect to include some off-screen items for smooth scrolling
         let expandedRect = NSRect(
             x: visibleRect.minX,
             y: max(0, visibleRect.minY - tabHeight * 2),
             width: visibleRect.width,
             height: visibleRect.height + tabHeight * 4
         )
-        
-        // Calculate visible index range
+
         let firstVisibleIndex = max(0, Int(expandedRect.minY / (tabHeight + tabSpacing)))
         let lastVisibleIndex = min(
             allTabs.count - 1,
             Int(expandedRect.maxY / (tabHeight + tabSpacing))
         )
-        
-        // Remove views that are no longer visible
+
         let visibleIndexSet = Set(firstVisibleIndex...lastVisibleIndex)
-        
-        // Remove tab views that are no longer visible
+
         for (index, view) in visibleTabViews {
             if !visibleIndexSet.contains(index) {
                 view.removeFromSuperview()
                 visibleTabViews.removeValue(forKey: index)
             }
         }
-        
-        // Add missing visible tab views
+
+        var closedHeaderInserted = false
+
         for index in firstVisibleIndex...lastVisibleIndex {
-            if visibleTabViews[index] == nil {
-                
-                let tabView = createTabView(for: allTabs[index], at: index)
-                
-                if index == appState.openTabsRenderedCount-1 {
-                    tabsContainerView.addSubview(closedTabsHeaderView)
-                    closedTabsHeaderView.frame = NSRect(
-                        x: 0,
-                        y: tabView.frame.maxY + tabSpacing,
-                        width: tabsContainerView.frame.width,
-                        height: closedTabsHeaderView.height
-                    )
-                }
-                
-                tabsContainerView.addSubview(tabView)
-                visibleTabViews[index] = tabView
+            guard visibleTabViews[index] == nil else { continue }
+
+            let tab = allTabs[index]
+            let tabView = createTabView(for: tab, at: index)
+
+            // Add the closed header view BEFORE adding the first closed tab
+            if index == appState.openTabsRenderedCount && !closedHeaderInserted {
+                closedTabsHeaderView.frame = NSRect(
+                    x: 0,
+                    y: tabView.frame.minY - tabSpacing - closedTabsHeaderView.height,
+                    width: tabsContainerView.frame.width,
+                    height: closedTabsHeaderView.height
+                )
+                tabsContainerView.addSubview(closedTabsHeaderView)
+                closedHeaderInserted = true
             }
+
+            tabsContainerView.addSubview(tabView)
+            visibleTabViews[index] = tabView
         }
-        
-        /// without this, the first tab does not get highlighted when it's the only tab left in search results
+
         updateHighlighting()
     }
     
