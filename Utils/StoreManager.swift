@@ -78,6 +78,28 @@ enum ColumnOrder: String, CaseIterable {
     
 }
 
+func getCoreDataContainer() -> NSPersistentContainer {
+    let container = NSPersistentContainer(name: "HistoryTabModel")
+
+        // 📍 Redirect store to App Group container
+        guard let sharedStoreURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
+            .appendingPathComponent("SharedCoreData.sqlite") else {
+                fatalError("❌ Unable to locate App Group container")
+        }
+
+        let storeDescription = NSPersistentStoreDescription(url: sharedStoreURL)
+        container.persistentStoreDescriptions = [storeDescription]
+
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("❌ Failed to load store: \(error)")
+            }
+        }
+
+        return container
+}
+
 struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
@@ -100,6 +122,8 @@ struct Store {
 
     public static let shallSafariIconBeTransparentStoreKey = "shallSafariIconBeTransparent"
     public static let shallSafariIconBeTransparentDefaultValue = false
+    
+    static let persistentContainer = getCoreDataContainer()
 
     static var windows: Windows {
             get {
@@ -153,6 +177,37 @@ struct Store {
         }
         set {
             userDefaults.set(newValue, forKey: shallSafariIconBeTransparentStoreKey)
+        }
+    }
+    
+    static func loadHistoryTabs() -> [Tab] {
+        let request: NSFetchRequest<HistoryTab> = HistoryTab.fetchRequest()
+        let context = Store.persistentContainer.viewContext
+
+        do {
+            let results = try context.fetch(request)
+            return results.compactMap {
+                guard let data = $0.data else { return nil }
+                return try? JSONDecoder().decode(Tab.self, from: data)
+            }
+        } catch {
+            print("❌ Failed to fetch: \(error)")
+            return []
+        }
+    }
+    
+    static func saveHistoryTab(tab: Tab) {
+        let context = Store.persistentContainer.viewContext
+        let historyTab = HistoryTab(context: context)
+        
+        let encodedTab = try? JSONEncoder().encode(tab)
+        historyTab.data = encodedTab
+        
+        do {
+            try context.save()
+            print("Saved!")
+        } catch {
+            print("Failed to save: \(error)")
         }
     }
 }
