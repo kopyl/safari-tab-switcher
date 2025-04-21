@@ -417,6 +417,7 @@ class TabHistoryView: NSViewController {
         }
 
         DispatchQueue.main.async {
+            self.updateVisibleTabViews()
             self.updateHighlighting()
             let visibleRect = self.scrollView.contentView.bounds
             
