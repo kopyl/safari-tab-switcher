@@ -330,18 +330,6 @@ class TabHistoryView: NSViewController {
                 
                 let tabView = createTabView(for: allTabs[index], at: index)
                 
-                tabView.onTabHover = { [weak self] renderIndex in
-                    appState.indexOfTabToSwitchTo = renderIndex
-                    self?.updateHighlighting()
-                }
-                
-                tabView.onTabClose = { [weak self] tabId in
-                    guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
-                    Task {
-                        await closeTab(tab: tab)
-                    }
-                }
-                
                 if index == appState.openTabsRenderedCount-1 {
                     tabsContainerView.addSubview(closedTabsHeaderView)
                     closedTabsHeaderView.frame = NSRect(
@@ -379,6 +367,18 @@ class TabHistoryView: NSViewController {
             width: tabsContainerView.frame.width - tabInsets.left - tabInsets.right,
             height: tabHeight
         )
+        
+        tabView.onTabHover = { [weak self] renderIndex in
+            appState.indexOfTabToSwitchTo = renderIndex
+            self?.updateHighlighting()
+        }
+        
+        tabView.onTabClose = { [weak self] tabId in
+            guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
+            Task {
+                await closeTab(tab: tab)
+            }
+        }
         
         updateHighlighting()
         
