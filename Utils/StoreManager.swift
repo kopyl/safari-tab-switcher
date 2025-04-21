@@ -79,12 +79,12 @@ enum ColumnOrder: String, CaseIterable {
 }
 
 func getCoreDataContainer() -> NSPersistentContainer {
-    let container = NSPersistentContainer(name: "HistoryTabModel")
+    let container = NSPersistentContainer(name: "VisitedPagesHistoryModel")
 
         // 📍 Redirect store to App Group container
         guard let sharedStoreURL = FileManager.default
             .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
-            .appendingPathComponent("SharedCoreData.sqlite") else {
+            .appendingPathComponent("VisitedPagesHistoryModel.sqlite") else {
                 fatalError("❌ Unable to locate App Group container")
         }
 
@@ -178,38 +178,116 @@ struct Store {
         }
     }
     
-    class HistoryTabs {
+    class VisitedPagesHistory {
         
         static let persistentContainer = getCoreDataContainer()
         
-        static func loadAll() -> [Tab] {
-            let request: NSFetchRequest<HistoryTab> = HistoryTab.fetchRequest()
-            let context = Store.HistoryTabs.persistentContainer.viewContext
+        static func loadAll() -> [VisitedPagesHistoryModel] {
+            let context = persistentContainer.viewContext
+            let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
+            
+            request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
 
             do {
-                let results = try context.fetch(request)
-                return results.compactMap {
-                    guard let data = $0.data else { return nil }
-                    return try? JSONDecoder().decode(Tab.self, from: data)
-                }
+                return try context.fetch(request)
             } catch {
-                print("❌ Failed to fetch: \(error)")
+                log("❌ Fetch error: \(error)")
                 return []
             }
         }
         
-        static func saveOne(tab: Tab) {
-            let context = Store.HistoryTabs.persistentContainer.viewContext
-            let historyTab = HistoryTab(context: context)
-            
-            let encodedTab = try? JSONEncoder().encode(tab)
-            historyTab.data = encodedTab
-            
+        static func saveOne(url: URL, title: String) {
+            let context = persistentContainer.viewContext
+            let tab = VisitedPagesHistoryModel(context: context)
+
+            tab.url = url
+            tab.title = title
+            tab.createdAt = Date()
+            tab.updatedAt = Date()
+
             do {
                 try context.save()
-                print("Saved!")
             } catch {
-                print("Failed to save: \(error)")
+                log("❌ Failed to save tab: \(error)")
+            }
+        }
+        
+        static func removeAll() {
+            let context = persistentContainer.viewContext
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = VisitedPagesHistoryModel.fetchRequest()
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                try context.execute(deleteRequest)
+                try context.save()
+                log("✅ All tabs deleted")
+            } catch {
+                log("❌ Batch delete failed: \(error)")
+            }
+        }
+        
+        static func deleteCoreDataStore() {
+            guard let containerURL = FileManager.default
+                .containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
+                    log("❌ App Group container not found")
+                    return
+            }
+
+            let fileManager = FileManager.default
+            let baseFilename = "HistoryTabModel.sqlite"
+            let urlsToDelete = [
+                containerURL.appendingPathComponent(baseFilename),
+                containerURL.appendingPathComponent(baseFilename + "-shm"),
+                containerURL.appendingPathComponent(baseFilename + "-wal")
+            ]
+
+            for url in urlsToDelete {
+                if fileManager.fileExists(atPath: url.path) {
+                    do {
+                        try fileManager.removeItem(at: url)
+                        log("🗑️ Deleted: \(url.lastPathComponent)")
+                    } catch {
+                        log("❌ Could not delete \(url.lastPathComponent): \(error)")
+                    }
+                } else {
+                    print("ℹ️ Not found: \(url.lastPathComponent)")
+                }
+            }
+        }
+        
+        static func tabDoesExist(with url: URL) -> Bool {
+            let context = persistentContainer.viewContext
+            let request: NSFetchRequest<NSFetchRequestResult> = VisitedPagesHistoryModel.fetchRequest()
+            request.predicate = NSPredicate(format: "url == %@", url as CVarArg)
+            request.fetchLimit = 1
+            request.resultType = .countResultType
+
+            do {
+                let count = try context.count(for: request)
+                return count > 0
+            } catch {
+                log("❌ Failed to check existence: \(error)")
+                return false
+            }
+        }
+        
+        static func updateOne(url: URL, newTitle: String) {
+            let context = persistentContainer.viewContext
+            let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
+            request.predicate = NSPredicate(format: "url == %@", url as CVarArg)
+            request.fetchLimit = 1
+
+            do {
+                if let tab = try context.fetch(request).first {
+                    tab.title = newTitle
+                    tab.updatedAt = Date()
+
+                    try context.save()
+                } else {
+                    log("⚠️ No tab found with url \(url)")
+                }
+            } catch {
+                log("❌ Failed to update tab: \(error)")
             }
         }
     }

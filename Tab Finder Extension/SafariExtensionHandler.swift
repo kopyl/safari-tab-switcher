@@ -176,6 +176,22 @@ func informMainAppAboutTabRemoval(tabIdRemoved: Int) {
     )
 }
 
+func addPageToHistory() async {
+    guard let activeWindow = await SFSafariApplication.activeWindow() else { return }
+    let activeTab = await activeWindow.activeTab()
+    guard let tabPage = await activeTab?.activePage() else { return }
+    let properies = await tabPage.properties()
+    guard let url = properies?.url else { return }
+    guard let title = properies?.title else { return }
+    
+    if Store.VisitedPagesHistory.tabDoesExist(with: url) {
+        Store.VisitedPagesHistory.updateOne(url: url, newTitle: title)
+        return
+    }
+    
+    Store.VisitedPagesHistory.saveOne(url: url, title: title)
+}
+
 class SafariExtensionHandler: SFSafariExtensionHandler {
 
     override func messageReceivedFromContainingApp(withName: String, userInfo: [String : Any]?) {
@@ -233,6 +249,8 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         Task {
             await changeTransparencyOfExtensionIconInToolbar(in: window)
             await updateSavedTabs(in: window)
+            
+            await addPageToHistory()
         }
 
         validationHandler(true, "")
