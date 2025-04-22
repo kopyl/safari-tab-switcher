@@ -215,7 +215,7 @@ func prepareTabsForRender() {
     
     if appState.searchQuery.isEmpty {
         openTabsToRender = getOpenTabsDependingOnSorting()
-        closedTabsToRender = Store.VisitedPagesHistory.loadAll()
+        closedTabsToRender = appState.savedClosedTabs
     }
     else {
         var visibleOpenTabsToPerformSearchOn = appState.savedOpenTabs
@@ -224,7 +224,7 @@ func prepareTabsForRender() {
         #endif
 
         openTabsToRender = performSearch(on: visibleOpenTabsToPerformSearchOn)
-        closedTabsToRender = performSearch(on: Store.VisitedPagesHistory.loadAll())
+        closedTabsToRender = performSearch(on: appState.savedClosedTabs)
     }
     
 

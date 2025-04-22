@@ -113,6 +113,7 @@ func handleHotKeyPress() {
     }
     guard let tabs = Store.windows.windows.last?.tabs else { return }
     appState.savedOpenTabs = tabs.tabs
+    appState.savedClosedTabs = Store.VisitedPagesHistory.loadAll()
     appState.searchQuery = ""
     prepareTabsForRender()
     setIndexOfTabToSwitchToForEmptyTexField()
@@ -133,6 +134,7 @@ class AppState: ObservableObject {
     var searchQuery = ""
     
     var savedOpenTabs = Tabs().tabs
+    var savedClosedTabs = Tabs().tabs
     
     var isTabsSwitcherNeededToStayOpen = Store.isTabsSwitcherNeededToStayOpen
     var isTabsPanelOpen = false

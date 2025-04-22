@@ -184,6 +184,7 @@ class TabHistoryView: NSViewController {
             self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
             
             appState.savedOpenTabs = Store.windows.windows.last?.tabs.tabs ?? Tabs().tabs
+            appState.savedClosedTabs = Store.VisitedPagesHistory.loadAll()
             prepareTabsForRender()
             self.renderTabs()
             
