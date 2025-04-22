@@ -210,37 +210,30 @@ func updateRenderIndices() {
 }
 
 func prepareTabsForRender() {
+    var openTabsToRender: [Tab]
+    var closedTabsToRender: [Tab]
+    
     if appState.searchQuery.isEmpty {
-        let openTabsToRender = getOpenTabsDependingOnSorting()
-        appState.openTabsRenderedCount = openTabsToRender.count
-        
-        var closedTabsToRender = Store.VisitedPagesHistory.loadAll()
-        closedTabsToRender = closedTabsToRender
-            .filter { tab in
-                !openTabsToRender.contains { $0.url == tab.url }
-            }
-        appState.closedTabsRenderedCount = closedTabsToRender.count
-        
-        appState.renderedTabs = openTabsToRender + closedTabsToRender
-        
-        updateRenderIndices()
-        return
+        openTabsToRender = getOpenTabsDependingOnSorting()
+        closedTabsToRender = Store.VisitedPagesHistory.loadAll()
+    }
+    else {
+        var visibleOpenTabsToPerformSearchOn = appState.savedOpenTabs
+        #if LITE
+        visibleOpenTabsToPerformSearchOn = getTabsDependingOnSorting().prefix(5)
+        #endif
+
+        openTabsToRender = performSearch(on: visibleOpenTabsToPerformSearchOn)
+        closedTabsToRender = performSearch(on: Store.VisitedPagesHistory.loadAll())
     }
     
-    var visibleOpenTabsToPerformSearchOn = appState.savedOpenTabs
-    
-    #if LITE
-    visibleOpenTabsToPerformSearchOn = getTabsDependingOnSorting().prefix(5)
-    #endif
 
-    let openTabsToRender = performSearch(on: visibleOpenTabsToPerformSearchOn)
-    appState.openTabsRenderedCount = openTabsToRender.count
-
-    var closedTabsToRender = performSearch(on: Store.VisitedPagesHistory.loadAll())
     closedTabsToRender = closedTabsToRender
         .filter { tab in
             !openTabsToRender.contains { $0.url == tab.url }
         }
+    
+    appState.openTabsRenderedCount = openTabsToRender.count
     appState.closedTabsRenderedCount = closedTabsToRender.count
     
     appState.renderedTabs = openTabsToRender + closedTabsToRender
