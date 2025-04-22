@@ -227,13 +227,13 @@ func prepareTabsForRender() {
         return
     }
     
-    var visibleTabsToPerformSearchOn = appState.savedOpenTabs
+    var visibleOpenTabsToPerformSearchOn = appState.savedOpenTabs
     
     #if LITE
-        visibleTabsToPerformSearchOn = getTabsDependingOnSorting().prefix(5)
+    visibleOpenTabsToPerformSearchOn = getTabsDependingOnSorting().prefix(5)
     #endif
 
-    let openTabsToRender = performSearch(on: visibleTabsToPerformSearchOn)
+    let openTabsToRender = performSearch(on: visibleOpenTabsToPerformSearchOn)
     appState.openTabsRenderedCount = openTabsToRender.count
 
     var closedTabsToRender = performSearch(on: Store.VisitedPagesHistory.loadAll())
