@@ -189,14 +189,14 @@ struct Store {
                 return container
         }
         
-        static func loadAll() -> [VisitedPagesHistoryModel] {
+        static func loadAll() -> [Tab] {
             let context = persistentContainer.viewContext
             let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
             
             request.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false)]
 
             do {
-                return try context.fetch(request)
+                return try context.fetch(request).map(Tab.init)
             } catch {
                 log("❌ Fetch error: \(error)")
                 return []

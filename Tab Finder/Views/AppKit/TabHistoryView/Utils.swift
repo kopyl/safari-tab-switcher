@@ -203,11 +203,6 @@ func performSearch(on tabs: [Tab]) -> [Tab] {
         }
 }
 
-func convertVisitedPagesToTabs() -> [Tab] {
-    let visitedPages = Store.VisitedPagesHistory.loadAll()
-    return visitedPages.map(Tab.init)
-}
-
 func updateRenderIndices() {
     for idx in appState.renderedTabs.indices {
         appState.renderedTabs[idx].renderIndex = idx
@@ -219,7 +214,7 @@ func prepareTabsForRender() {
         let openTabsToRender = getOpenTabsDependingOnSorting()
         appState.openTabsRenderedCount = openTabsToRender.count
         
-        var closedTabsToRender = convertVisitedPagesToTabs()
+        var closedTabsToRender = Store.VisitedPagesHistory.loadAll()
         closedTabsToRender = closedTabsToRender
             .filter { tab in
                 !openTabsToRender.contains { $0.url == tab.url }
@@ -241,7 +236,7 @@ func prepareTabsForRender() {
     let openTabsToRender = performSearch(on: visibleTabsToPerformSearchOn)
     appState.openTabsRenderedCount = openTabsToRender.count
 
-    var closedTabsToRender = performSearch(on: convertVisitedPagesToTabs())
+    var closedTabsToRender = performSearch(on: Store.VisitedPagesHistory.loadAll())
     closedTabsToRender = closedTabsToRender
         .filter { tab in
             !openTabsToRender.contains { $0.url == tab.url }
