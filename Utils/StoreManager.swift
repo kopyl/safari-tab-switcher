@@ -298,7 +298,7 @@ struct Store {
                     log("⚠️ No tab found with url \(url)")
                 }
             } catch {
-                log("❌ Failed to update tab: \(error)")
+                log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
             }
         }
     }
