@@ -67,22 +67,9 @@ func getOpenTabsDependingOnSorting() -> [Tab] {
     switch(appState.sortTabsBy) {
     case .asTheyAppearInBrowser:
         return appState.savedOpenTabs
-            .enumerated()
-            .map { index, _tab in
-                var tab = _tab
-                tab.renderIndex = tab.id
-                return tab
-            }
             .sorted { $0.id < $1.id }
     case .asTheyAppearInBrowserReversed:
-        let tabsCount = appState.savedOpenTabs.count
         return appState.savedOpenTabs
-            .enumerated()
-            .map { index, _tab in
-                var tab = _tab
-                tab.renderIndex = tabsCount - 1 - tab.id
-                return tab
-            }
             .sorted { $0.id < $1.id }
             .reversed()
     case .lastSeen:
