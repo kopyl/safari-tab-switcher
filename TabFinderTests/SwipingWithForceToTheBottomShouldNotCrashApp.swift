@@ -16,7 +16,7 @@ final class SwipingALotShouldNotCauseMemoryLeakTest: XCTestCase {
         pressOptionTab()
         scrollToBottom()
     }
-
+    
     func pressOptionTab() {
         let optionFlag: CGEventFlags = .maskAlternate
         let tabKey: CGKeyCode = 48
