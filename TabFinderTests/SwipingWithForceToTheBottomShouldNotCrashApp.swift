@@ -51,13 +51,13 @@ final class SwipingALotShouldNotCauseMemoryLeakTest: XCTestCase {
     }
     
     private func scrollToBottom() {
-            let scrollView = app.scrollViews.firstMatch
-            if scrollView.exists {
-                while true {
-                    swipeScroll(yDelta: -100, times: 100)
-                    usleep(100)
-                    scrollView.swipeUp()
-                }
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.exists {
+            while true {
+                swipeScroll(yDelta: -100, times: 100)
+                usleep(100)
+                scrollView.swipeUp()
             }
         }
+    }
 }
