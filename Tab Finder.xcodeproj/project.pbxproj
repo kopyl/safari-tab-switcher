@@ -42,6 +42,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4864CC3E2DB9562700BCBA61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 48B48FBD2D2A59620054B680 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 48B48FC42D2A59620054B680;
+			remoteInfo = "Tab Finder";
+		};
 		48B48FE32D2A59630054B680 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 48B48FBD2D2A59620054B680 /* Project object */;
@@ -78,6 +85,7 @@
 		4864CBA62DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VisitedPagesHistoryModel.xcdatamodel; sourceTree = "<group>"; };
 		4864CBAF2DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VisitedPagesHistoryModel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4864CBB02DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VisitedPagesHistoryModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4864CC382DB9562700BCBA61 /* TabFinderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TabFinderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		48731FB52D9F854D001AE594 /* TabHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabHistoryView.swift; sourceTree = "<group>"; };
 		48751CE82D8FC53B00319882 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		48A0338C2D2CD81E00BB6F8C /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
@@ -100,10 +108,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4864CC392DB9562700BCBA61 /* TabFinderTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TabFinderTests; sourceTree = "<group>"; };
 		486509072D86ABD100A1D26A /* SwiftUI Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "SwiftUI Components"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4864CC352DB9562700BCBA61 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		48B48FC22D2A59620054B680 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -187,6 +203,7 @@
 				48F9D6C42D74E30300DEE99E /* Utils */,
 				48B48FC72D2A59620054B680 /* Tab Finder */,
 				48B48FE52D2A59630054B680 /* Tab Finder Extension */,
+				4864CC392DB9562700BCBA61 /* TabFinderTests */,
 				48B48FC62D2A59620054B680 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -196,6 +213,7 @@
 			children = (
 				48B48FC52D2A59620054B680 /* Tab Finder.app */,
 				48B48FE12D2A59630054B680 /* Tab Finder Extension.appex */,
+				4864CC382DB9562700BCBA61 /* TabFinderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -259,6 +277,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4864CC372DB9562700BCBA61 /* TabFinderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4864CC432DB9562700BCBA61 /* Build configuration list for PBXNativeTarget "TabFinderTests" */;
+			buildPhases = (
+				4864CC342DB9562700BCBA61 /* Sources */,
+				4864CC352DB9562700BCBA61 /* Frameworks */,
+				4864CC362DB9562700BCBA61 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4864CC3F2DB9562700BCBA61 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4864CC392DB9562700BCBA61 /* TabFinderTests */,
+			);
+			name = TabFinderTests;
+			packageProductDependencies = (
+			);
+			productName = TabFinderTests;
+			productReference = 4864CC382DB9562700BCBA61 /* TabFinderTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		48B48FC42D2A59620054B680 /* Tab Finder */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "Tab Finder" */;
@@ -308,9 +349,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					4864CC372DB9562700BCBA61 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 48B48FC42D2A59620054B680;
+					};
 					48B48FC42D2A59620054B680 = {
 						CreatedOnToolsVersion = 15.2;
 						LastSwiftMigration = 1520;
@@ -338,11 +383,19 @@
 			targets = (
 				48B48FC42D2A59620054B680 /* Tab Finder */,
 				48B48FE02D2A59630054B680 /* Tab Finder Extension */,
+				4864CC372DB9562700BCBA61 /* TabFinderTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4864CC362DB9562700BCBA61 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		48B48FC32D2A59620054B680 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -362,6 +415,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4864CC342DB9562700BCBA61 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		48B48FC12D2A59620054B680 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -407,6 +467,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4864CC3F2DB9562700BCBA61 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 48B48FC42D2A59620054B680 /* Tab Finder */;
+			targetProxy = 4864CC3E2DB9562700BCBA61 /* PBXContainerItemProxy */;
+		};
 		48B48FE42D2A59630054B680 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 48B48FE02D2A59630054B680 /* Tab Finder Extension */;
@@ -415,6 +480,57 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4864CC402DB9562700BCBA61 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9QNMAN8CT6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kopyl.TabFinderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Tab Finder";
+			};
+			name = Debug;
+		};
+		4864CC412DB9562700BCBA61 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9QNMAN8CT6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kopyl.TabFinderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Tab Finder";
+			};
+			name = Release;
+		};
+		4864CC422DB9562700BCBA61 /* Lite */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9QNMAN8CT6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kopyl.TabFinderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Tab Finder";
+			};
+			name = Lite;
+		};
 		48B3D1622DACC2A7007ADBAC /* Lite */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -842,6 +958,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4864CC432DB9562700BCBA61 /* Build configuration list for PBXNativeTarget "TabFinderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4864CC402DB9562700BCBA61 /* Debug */,
+				4864CC412DB9562700BCBA61 /* Release */,
+				4864CC422DB9562700BCBA61 /* Lite */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		48B48FC02D2A59620054B680 /* Build configuration list for PBXProject "Tab Finder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
