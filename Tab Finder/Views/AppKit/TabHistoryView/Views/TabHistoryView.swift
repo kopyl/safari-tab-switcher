@@ -324,12 +324,17 @@ class TabHistoryView: NSViewController {
 
         let yOffset = max(0, expandedRect.minY - openTabsHeaderView.height)
 
-        let firstVisibleIndex = max(0, Int(yOffset / (tabHeight + tabSpacing)))
-        let lastVisibleIndex = min(
+        var firstVisibleIndex = max(0, Int(yOffset / (tabHeight + tabSpacing)))
+        var lastVisibleIndex = min(
             allTabs.count - 1,
             Int((expandedRect.maxY - openTabsHeaderView.height) / (tabHeight + tabSpacing))
         )
-
+        
+        if firstVisibleIndex > lastVisibleIndex {
+            /// to prevent app from crashing when a user is swiping the list of tabs with great force
+            firstVisibleIndex = lastVisibleIndex
+        }
+        
         let visibleIndexSet = Set(firstVisibleIndex...lastVisibleIndex)
 
         for (index, view) in visibleTabViews {
