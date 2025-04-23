@@ -223,6 +223,7 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                 let tabs = await activeWindow.allTabs()
                 closeTab(id: tabId, tabs: tabs)
                 await updateSavedTabs(in: activeWindow)
+                SFSafariApplication.setToolbarItemsNeedUpdate()
                 informMainAppAboutTabRemoval(tabIdRemoved: tabId)
             }
         case .changetoolbaricontransparency:
