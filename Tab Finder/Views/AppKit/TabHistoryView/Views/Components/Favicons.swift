@@ -3,7 +3,7 @@ import Cocoa
 private final class Favicons {
     private(set) var icons: [String: NSImage] = [:]
     private var cache: Set<String> = []
-    private var observers: [String: [NSView]] = [:]
+    private var observers: [String: NSHashTable<NSView>] = [:]
     
     static let shared = Favicons()
     
@@ -11,9 +11,9 @@ private final class Favicons {
         // Register observer if provided
         if let view = view {
             if observers[host] == nil {
-                observers[host] = []
+                observers[host] = NSHashTable<NSView>.weakObjects()
             }
-            observers[host]?.append(view)
+            observers[host]?.add(view)
         }
         
         // Return if already in cache
@@ -56,7 +56,7 @@ private final class Favicons {
                 
                 // Notify all observers
                 if let views = self.observers[host] {
-                    for view in views {
+                    for view in views.allObjects {
                         view.needsDisplay = true
                     }
                 }
