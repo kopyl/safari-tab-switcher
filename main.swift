@@ -149,19 +149,7 @@ class AppState: ObservableObject {
     var openTabsRenderedCount = 0
     var closedTabsRenderedCount = 0
 
-    var _renderedTabs: [Tab] = []
-    var renderedTabs: [Tab] {
-        get {
-            #if LITE
-                return Array(_renderedTabs.prefix(5))
-            #else
-                return _renderedTabs
-            #endif
-        }
-        set {
-            _renderedTabs = newValue
-        }
-    }
+    var renderedTabs: [Tab] = []
     
     private var _indexOfTabToSwitchTo = -1
     var indexOfTabToSwitchTo: Int {
@@ -170,11 +158,7 @@ class AppState: ObservableObject {
             if renderedTabs.isEmpty {
                 _indexOfTabToSwitchTo = 0
             } else {
-                #if LITE
-                    _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.prefix(5).count)
-                #else
-                    _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)
-                #endif
+                _indexOfTabToSwitchTo = pythonTrueModulo(newValue, renderedTabs.count)
             }
         }
     }
