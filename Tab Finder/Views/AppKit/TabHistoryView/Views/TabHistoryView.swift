@@ -512,6 +512,14 @@ class TabHistoryView: NSViewController {
             NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: self)
         case .v:
             NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: self)
+            
+        case .w:
+            let tabToClose = appState.renderedTabs[appState.indexOfTabToSwitchTo]
+            
+            guard let tab = self.allTabs.first(where: { $0.id == tabToClose.id }) else { return }
+            Task {
+                await closeTab(tab: tab)
+            }
         }
     }
     

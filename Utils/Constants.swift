@@ -32,6 +32,8 @@ enum AppShortcutKeys: UInt16 {
     case x = 7
     case c = 8
     case v = 9
+    
+    case w = 13
 }
 
 enum TypingKeys: UInt16 {
