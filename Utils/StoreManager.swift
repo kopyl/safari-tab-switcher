@@ -300,6 +300,13 @@ struct Store {
                 }
             } catch {
                 log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
+                
+                #if DEBUG
+                guard let sound = NSSound(named: NSSound.Name("Basso.aiff")) else { return }
+                sound.stop()
+                sound.play()
+                #endif
+                
             }
         }
     }
