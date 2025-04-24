@@ -304,6 +304,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48B48FFA2D2A59630054B680 /* Build configuration list for PBXNativeTarget "Tab Finder" */;
 			buildPhases = (
+				48318EF42DBAC82400135BC1 /* ShellScript */,
 				48B48FC12D2A59620054B680 /* Sources */,
 				48B48FC22D2A59620054B680 /* Frameworks */,
 				48B48FC32D2A59620054B680 /* Resources */,
@@ -413,6 +414,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		48318EF42DBAC82400135BC1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nres=$(pgrep -f 'Tab Finder')\nif [ -n \"$res\" ]; then kill -9 $res; fi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4864CC342DB9562700BCBA61 /* Sources */ = {
