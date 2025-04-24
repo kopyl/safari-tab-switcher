@@ -42,7 +42,7 @@ class TabHistoryView: NSViewController {
         textView = makeTextFieldView()
         pinButtonView = makePinButtonView(
             isFilled: appState.isTabsSwitcherNeededToStayOpen,
-            action: #selector(togglePinIconFill)
+            action: #selector(togglePin)
         )
         
         tabsContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -226,7 +226,7 @@ class TabHistoryView: NSViewController {
         }
     }
     
-    @objc func togglePinIconFill() {
+    @objc func togglePin() {
         appState.isTabsSwitcherNeededToStayOpen.toggle()
         pinButtonView.image = makePinImage(isFilled: appState.isTabsSwitcherNeededToStayOpen)
         Store.isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
@@ -521,7 +521,7 @@ class TabHistoryView: NSViewController {
                 await closeTab(tab: tab)
             }
         case .p:
-            togglePinIconFill()
+            togglePin()
         }
     }
     
