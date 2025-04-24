@@ -325,7 +325,7 @@ class TabHistoryView: NSViewController {
         let yOffset = max(0, expandedRect.minY - openTabsHeaderView.height)
 
         var firstVisibleIndex = max(0, Int(yOffset / (tabHeight + tabSpacing)))
-        var lastVisibleIndex = min(
+        let lastVisibleIndex = min(
             allTabs.count - 1,
             Int((expandedRect.maxY - openTabsHeaderView.height) / (tabHeight + tabSpacing))
         )
