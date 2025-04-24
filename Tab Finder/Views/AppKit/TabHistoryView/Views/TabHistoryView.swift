@@ -99,7 +99,7 @@ class TabHistoryView: NSViewController {
         #if LITE
             scrollView.bottomAnchor.constraint(
                 equalTo: view.bottomAnchor,
-                constant: -adButtonHeight-tabBottomPadding-tabBottomPadding
+                constant: -adButtonHeight-tabBottomPadding
             ).isActive = true
         #else
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
