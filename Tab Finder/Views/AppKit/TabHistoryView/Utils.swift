@@ -202,16 +202,15 @@ func prepareTabsForRender() {
     
     #if LITE
     openTabsToRender = Array(getOpenTabsDependingOnSorting().prefix(5))
+    closedTabsToRender = Array(appState.savedClosedTabs.prefix(5))
     #else
     openTabsToRender = getOpenTabsDependingOnSorting()
+    closedTabsToRender = appState.savedClosedTabs
     #endif
     
-    if appState.searchQuery.isEmpty {
-        closedTabsToRender = appState.savedClosedTabs
-    }
-    else {
+    if !appState.searchQuery.isEmpty {
         openTabsToRender = performSearch(on: openTabsToRender)
-        closedTabsToRender = performSearch(on: appState.savedClosedTabs)
+        closedTabsToRender = performSearch(on: closedTabsToRender)
     }
 
     closedTabsToRender = closedTabsToRender
