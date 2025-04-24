@@ -4,6 +4,12 @@ import InputMethodKit
 
 let tabsPanelFadeOutAnimationDuration: Double = 0.25
 
+Store.userDefaults.register(
+    defaults: [
+        Store.isTabsSwitcherNeededToStayOpenStoreKey: Store.isTabsSwitcherNeededToStayOpenDefaultvalue
+    ]
+)
+
 let appState = AppState()
 let delegate = AppDelegate(appState: appState)
 var pendingDispatchWorkItem: DispatchWorkItem?

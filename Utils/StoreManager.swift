@@ -89,6 +89,7 @@ struct Store {
     public static let userDefaults = UserDefaults(suiteName: appGroup) ?? UserDefaults.standard
     private static let windowsStoreKey = "windows"
     public static let isTabsSwitcherNeededToStayOpenStoreKey = "isTabsSwitcherNeededToStayOpen"
+    public static let isTabsSwitcherNeededToStayOpenDefaultvalue = true
 
     public static let sortTabsByStoreKey = "sortTabsBy"
     public static let sortTabsByDefaultValue: SortTabsBy = .lastSeen
