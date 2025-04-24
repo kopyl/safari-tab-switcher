@@ -520,6 +520,8 @@ class TabHistoryView: NSViewController {
             Task {
                 await closeTab(tab: tab)
             }
+        case .p:
+            togglePinIconFill()
         }
     }
     
