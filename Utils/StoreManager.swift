@@ -289,15 +289,16 @@ struct Store {
             request.fetchLimit = 1
 
             do {
-                if let tab = try context.fetch(request).first {
-                    tab.title = newTitle
-                    tab.updatedAt = Date()
-                    tab.timesUpdated += 1
-                    
-                    try context.save()
-                } else {
-                    log("⚠️ No tab found with url \(url)")
+                guard let tab = try context.fetch(request).first else {
+                    log("No tab found with url \(url)")
+                    return
                 }
+            
+                tab.title = newTitle
+                tab.updatedAt = Date()
+                tab.timesUpdated += 1
+                
+                try context.save()
             } catch {
                 log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
                 
