@@ -293,7 +293,7 @@ struct Store {
                     tab.title = newTitle
                     tab.updatedAt = Date()
                     tab.timesUpdated += 1
-
+                    
                     try context.save()
                 } else {
                     log("⚠️ No tab found with url \(url)")
