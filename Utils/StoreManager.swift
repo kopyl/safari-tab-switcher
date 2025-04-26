@@ -185,9 +185,17 @@ struct Store {
                     if let error = error {
                         fatalError("❌ Failed to load store: \(error)")
                     }
+                    
+                    container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
                 }
 
                 return container
+        }
+        
+        static func getBackgroundContext() -> NSManagedObjectContext {
+            let context = persistentContainer.newBackgroundContext()
+            context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return context
         }
         
         static func loadAll() -> [Tab] {
@@ -205,21 +213,24 @@ struct Store {
         }
         
         static func saveOne(url: URL, title: String) {
-            let context = persistentContainer.viewContext
-            let tab = VisitedPagesHistoryModel(context: context)
+            let context = getBackgroundContext()
+            
+            context.perform {
+                let tab = VisitedPagesHistoryModel(context: context)
 
-            tab.url = url
-            tab.title = title
-            tab.createdAt = Date()
-            tab.updatedAt = Date()
-            tab.timesUpdated = 0
-            tab.timesCreatedNewTabWithThisPage = 0
-            tab.timesSwitchedToWhileHavingHostTabOpen = 0
+                tab.url = url
+                tab.title = title
+                tab.createdAt = Date()
+                tab.updatedAt = Date()
+                tab.timesUpdated = 0
+                tab.timesCreatedNewTabWithThisPage = 0
+                tab.timesSwitchedToWhileHavingHostTabOpen = 0
 
-            do {
-                try context.save()
-            } catch {
-                log("❌ Failed to save tab: \(error)")
+                do {
+                    try context.save()
+                } catch {
+                    log("❌ Failed to save tab: \(error)")
+                }
             }
         }
         
@@ -283,31 +294,34 @@ struct Store {
         }
         
         static func updateOne(url: URL, newTitle: String) {
-            let context = persistentContainer.viewContext
+            let context = getBackgroundContext()
             let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
             request.predicate = NSPredicate(format: "url == %@", url as CVarArg)
             request.fetchLimit = 1
 
-            do {
-                guard let tab = try context.fetch(request).first else {
-                    log("No tab found with url \(url)")
-                    return
+            context.perform {
+                do {
+                    guard let tab = try context.fetch(request).first else {
+                        log("No tab found with url \(url)")
+                        return
+                    }
+                
+                    tab.title = newTitle
+                    tab.updatedAt = Date()
+                    tab.timesUpdated += 1
+                    
+                    try context.save()
+                } catch {
+                    log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
+                    
+                    #if DEBUG
+                    DispatchQueue.main.async {
+                        guard let sound = NSSound(named: NSSound.Name("Basso.aiff")) else { return }
+                        sound.stop()
+                        sound.play()
+                    }
+                    #endif
                 }
-            
-                tab.title = newTitle
-                tab.updatedAt = Date()
-                tab.timesUpdated += 1
-                
-                try context.save()
-            } catch {
-                log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
-                
-                #if DEBUG
-                guard let sound = NSSound(named: NSSound.Name("Basso.aiff")) else { return }
-                sound.stop()
-                sound.play()
-                #endif
-                
             }
         }
     }
