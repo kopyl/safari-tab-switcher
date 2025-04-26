@@ -410,7 +410,13 @@ class TabHistoryView: NSViewController {
     private func updateHighlighting() {
         for (idx, tabView) in visibleTabViews {
             if idx == appState.indexOfTabToSwitchTo {
-                tabView.contentView.layer?.backgroundColor = NSColor.currentTabBg.cgColorAppearanceFix
+                if allTabs[idx].id == -1 {
+                    tabView.contentView.layer?.backgroundColor = NSColor.currentClosedTabBg.cgColorAppearanceFix
+                }
+                else {
+                    tabView.contentView.layer?.backgroundColor = NSColor.currentOpenTabBg.cgColorAppearanceFix
+                }
+                
                 tabView.contentView.layer?.cornerRadius = 6
                 
                 tabView.firstColumnLabel.textColor = .currentTabFg
