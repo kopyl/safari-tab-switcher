@@ -243,6 +243,12 @@ func createTabsPanel() {
     tabsPanel?.hasShadow = false
 }
 
+func destroyTabsPanel() {
+    tabsPanel?.contentViewController = nil
+    tabsPanel?.close()
+    tabsPanel = nil
+}
+
 func showTabsPanel() {
     /// .fullScreenPrimary collectionBehavior and .floating level are both required tabs window to be displayed in a Safari's full screen mode.
     /// collectionBehavior needs to be set on every time this function calls for the tabs window to be displayed in a Safari's full screen mode.
@@ -285,6 +291,9 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
         let workItem = DispatchWorkItem {
             tabsPanel?.orderOut(nil)
             tabsPanel?.animator().contentView?.alphaValue = 1
+            
+            destroyTabsPanel()
+            createTabsPanel()
             
             /// https://github.com/kopyl/safari-tab-switcher/issues/5
             if NSApp.isActive {

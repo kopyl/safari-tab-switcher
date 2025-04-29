@@ -582,5 +582,12 @@ class TabHistoryView: NSViewController {
             NotificationCenter.default.removeObserver(scrollObserver)
         }
         NotificationCenter.default.removeObserver(self)
+        
+        if let monitor = localKeyboardEventMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
+        if let monitor = globalMouseDownEventMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
     }
 }

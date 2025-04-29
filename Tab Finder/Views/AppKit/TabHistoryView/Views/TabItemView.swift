@@ -138,10 +138,10 @@ final class TabItemView: NSView {
             contentView.heightAnchor.constraint(equalTo: self.heightAnchor),
             contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            stackView.widthAnchor.constraint(equalToConstant: tabContentViewWidth),
             
             faviconView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 21),
             faviconView.widthAnchor.constraint(equalToConstant: faviconView.width),
