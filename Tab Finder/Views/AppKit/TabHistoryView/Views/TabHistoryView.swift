@@ -22,7 +22,6 @@ class TabHistoryView: NSViewController {
     
     private var scrollObserver: NSObjectProtocol?
     
-    private var allTabs: [Tab] = []
     private var visibleTabViews: [Int: TabItemView] = [:]
     
     override func loadView() {
@@ -149,11 +148,11 @@ class TabHistoryView: NSViewController {
     @objc func reactOnTabCloseNotificationFromSafari(_ notification: Notification) {
         guard let object = notification.object as? String else { return }
         guard let tabIdRemoved = Int(object) else { return }
-        guard let tabIndex = allTabs.firstIndex(where: { $0.id == tabIdRemoved }) else { return}
+        guard let tabIndex = appState.renderedTabs.firstIndex(where: { $0.id == tabIdRemoved }) else { return}
         guard let tabViewToRemove = visibleTabViews[tabIndex] else { return }
         
-        if appState.indexOfTabToSwitchTo >= allTabs.count - 1 {
-            appState.indexOfTabToSwitchTo = max(0, allTabs.count - 2)
+        if appState.indexOfTabToSwitchTo >= appState.renderedTabs.count - 1 {
+            appState.indexOfTabToSwitchTo = max(0, appState.renderedTabs.count - 2)
         }
         
         appState.renderedTabs = appState.renderedTabs.filter { $0.id != tabIdRemoved }
@@ -180,7 +179,7 @@ class TabHistoryView: NSViewController {
             tabViewToRemove.removeFromSuperview()
             self.visibleTabViews.removeValue(forKey: tabIndex)
             
-            let totalHeight = CGFloat(self.allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+            let totalHeight = CGFloat(appState.renderedTabs.count) * (tabHeight + tabSpacing) - tabSpacing
             self.tabsContainerView.frame.size.height = totalHeight + tabBottomPadding
             
             appState.savedOpenTabs = Store.windows.windows.last?.tabs.tabs ?? Tabs().tabs
@@ -301,9 +300,8 @@ class TabHistoryView: NSViewController {
     
     private func renderTabs() {
         clearAllTabViews()
-        allTabs = appState.renderedTabs
 
-        let totalHeight = CGFloat(allTabs.count) * (tabHeight + tabSpacing) - tabSpacing
+        let totalHeight = CGFloat(appState.renderedTabs.count) * (tabHeight + tabSpacing) - tabSpacing
         tabsContainerView.frame.size.height = totalHeight + tabBottomPadding + openTabsHeaderView.height + closedTabsHeaderView.height
         
         tabsContainerView.addSubview(openTabsHeaderView)
@@ -312,7 +310,7 @@ class TabHistoryView: NSViewController {
     }
     
     private func updateVisibleTabViews() {
-        guard !allTabs.isEmpty else { return }
+        guard !appState.renderedTabs.isEmpty else { return }
 
         let visibleRect = scrollView.contentView.bounds
         let expandedRect = NSRect(
@@ -326,7 +324,7 @@ class TabHistoryView: NSViewController {
 
         var firstVisibleIndex = max(0, Int(yOffset / (tabHeight + tabSpacing)))
         let lastVisibleIndex = min(
-            allTabs.count - 1,
+            appState.renderedTabs.count - 1,
             Int((expandedRect.maxY - openTabsHeaderView.height) / (tabHeight + tabSpacing))
         )
         
@@ -349,7 +347,7 @@ class TabHistoryView: NSViewController {
         for index in firstVisibleIndex...lastVisibleIndex {
             guard visibleTabViews[index] == nil else { continue }
 
-            let tab = allTabs[index]
+            let tab = appState.renderedTabs[index]
             let tabView = createTabView(for: tab, at: index)
 
             // Add the closed header view BEFORE adding the first closed tab
@@ -395,8 +393,8 @@ class TabHistoryView: NSViewController {
             self?.updateHighlighting()
         }
         
-        tabView.onTabClose = { [weak self] tabId in
-            guard let tab = self?.allTabs.first(where: { $0.id == tabId }) else { return }
+        tabView.onTabClose = { tabId in
+            guard let tab = appState.renderedTabs.first(where: { $0.id == tabId }) else { return }
             Task {
                 await closeTab(tab: tab)
             }
@@ -410,7 +408,7 @@ class TabHistoryView: NSViewController {
     private func updateHighlighting() {
         for (idx, tabView) in visibleTabViews {
             if idx == appState.indexOfTabToSwitchTo {
-                if allTabs[idx].id == -1 {
+                if appState.renderedTabs[idx].id == -1 {
                     tabView.contentView.layer?.backgroundColor = NSColor.currentClosedTabBg.cgColorAppearanceFix
                 }
                 else {
@@ -431,7 +429,7 @@ class TabHistoryView: NSViewController {
     
     private func scrollToSelectedTabWithoutAnimation() {
         let index = appState.indexOfTabToSwitchTo
-        guard index >= 0 && index < allTabs.count else { return }
+        guard index >= 0 && index < appState.renderedTabs.count else { return }
 
         var yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
         
@@ -441,7 +439,7 @@ class TabHistoryView: NSViewController {
         }
 
         if visibleTabViews[index] == nil {
-            let tabView = createTabView(for: allTabs[index], at: index)
+            let tabView = createTabView(for: appState.renderedTabs[index], at: index)
             tabsContainerView.addSubview(tabView)
             visibleTabViews[index] = tabView
         }
@@ -477,11 +475,11 @@ class TabHistoryView: NSViewController {
         
         switch key {
         case .arrowUp, .backTick:
-            guard !allTabs.isEmpty else { return }
+            guard !appState.renderedTabs.isEmpty else { return }
             appState.indexOfTabToSwitchTo -= 1
             scrollToSelectedTabWithoutAnimation()
         case .tab:
-            guard !allTabs.isEmpty else { return }
+            guard !appState.renderedTabs.isEmpty else { return }
             if event.modifierFlags.contains(.shift) {
                 appState.indexOfTabToSwitchTo -= 1
             } else {
@@ -489,11 +487,11 @@ class TabHistoryView: NSViewController {
             }
             scrollToSelectedTabWithoutAnimation()
         case .arrowDown:
-            guard !allTabs.isEmpty else { return }
+            guard !appState.renderedTabs.isEmpty else { return }
             appState.indexOfTabToSwitchTo += 1
             scrollToSelectedTabWithoutAnimation()
         case .return:
-            guard !allTabs.isEmpty else { return }
+            guard !appState.renderedTabs.isEmpty else { return }
             hideTabsPanelAndSwitchTabs()
         case .escape:
             hideTabsPanel(withoutAnimation: true)
@@ -522,7 +520,7 @@ class TabHistoryView: NSViewController {
         case .w:
             let tabToClose = appState.renderedTabs[appState.indexOfTabToSwitchTo]
             
-            guard let tab = self.allTabs.first(where: { $0.id == tabToClose.id }) else { return }
+            guard let tab = appState.renderedTabs.first(where: { $0.id == tabToClose.id }) else { return }
             Task {
                 await closeTab(tab: tab)
             }
