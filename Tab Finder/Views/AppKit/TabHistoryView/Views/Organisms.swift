@@ -107,10 +107,10 @@ func makeCloseButton() -> NSButton {
     return closeButton
 }
 
-func makeSwipeActionView(target: Any, action: Selector) -> NSView {
-    let buttonContainerView = NSView()
-    buttonContainerView.wantsLayer = true
-    buttonContainerView.layer?.backgroundColor = NSColor.customRed.cgColorAppearanceFix
+func makeSwipeActionView(target: Any, action: Selector) -> NSViewWithDynamicAppearance {
+    let buttonContainerView = NSViewWithDynamicAppearance() { view in
+        view.layer?.backgroundColor = NSColor.customRed.cgColorAppearanceFix
+    }
     buttonContainerView.layer?.cornerRadius = SwipeActionConfig.cornerRadius
     buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
     
@@ -285,5 +285,26 @@ class TabsHeaderView: NSView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+final class NSViewWithDynamicAppearance: NSView {
+
+    private let updateHandler: (NSView) -> Void
+
+    init(frame: NSRect = .zero, onAppearanceChange: @escaping (NSView) -> Void) {
+        self.updateHandler = onAppearanceChange
+        super.init(frame: frame)
+        wantsLayer = true
+        updateHandler(self)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateHandler(self)
     }
 }

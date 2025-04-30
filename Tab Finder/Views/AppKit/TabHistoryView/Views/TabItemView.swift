@@ -179,6 +179,11 @@ final class TabItemView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    override func viewDidChangeEffectiveAppearance() {
+        updateHighlighting()
+    }
+    
     override func mouseDown(with event: NSEvent) {
         appState.indexOfTabToSwitchTo = tab.renderIndex
         hideTabsPanelAndSwitchTabs()
@@ -291,6 +296,26 @@ final class TabItemView: NSView {
     override func mouseExited(with event: NSEvent) {
         closeButonView.isHidden = true
         isUserTryingToSwipeToCloseTab = false
+    }
+    
+    public func updateHighlighting() {
+        if tab.renderIndex == appState.indexOfTabToSwitchTo {
+            if tab.id == -1 {
+                contentView.layer?.backgroundColor = NSColor.currentClosedTabBg.cgColorAppearanceFix
+            }
+            else {
+                contentView.layer?.backgroundColor = NSColor.currentOpenTabBg.cgColorAppearanceFix
+            }
+            
+            contentView.layer?.cornerRadius = 6
+            firstColumnLabel.textColor = .currentTabFg
+            seconColumnLabel.textColor = .currentTabFg
+        }
+        else {
+            contentView.layer?.backgroundColor = NSColor.clear.cgColorAppearanceFix
+            firstColumnLabel.textColor = .tabFg
+            seconColumnLabel.textColor = .tabFg
+        }
     }
     
     private func setTotalSwipeDistance(event: NSEvent) {

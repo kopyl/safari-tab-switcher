@@ -11,7 +11,6 @@ final class CloseButtonView: NSView {
         self.tab = tab
         
         self.hoverBackgroundView = makeColorView()
-        self.hoverBackgroundView.layer?.backgroundColor = NSColor.lightGrey.cgColorAppearanceFix
         
         self.hoverBackgroundView.layer?.cornerRadius = 4
         
@@ -36,6 +35,10 @@ final class CloseButtonView: NSView {
             hoverBackgroundView.widthAnchor.constraint(equalToConstant: 20),
             hoverBackgroundView.heightAnchor.constraint(equalToConstant: 20),
         ])
+    }
+    
+    override func viewDidChangeEffectiveAppearance() {
+        self.hoverBackgroundView.layer?.backgroundColor = NSColor.lightGrey.cgColorAppearanceFix
     }
     
     override func mouseMoved(with event: NSEvent) {
