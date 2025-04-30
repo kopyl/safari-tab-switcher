@@ -452,9 +452,6 @@ class TabHistoryView: NSViewController {
     }
     
     func handleNavigationKeyPresses(event: NSEvent) {
-        let isTabsSwitcherNeededToStayOpen = appState.isTabsSwitcherNeededToStayOpen
-        
-        guard isUserHoldingShortcutModifiers(event: event) || isTabsSwitcherNeededToStayOpen else { return }
         guard let key = NavigationKeys(rawValue: event.keyCode) else { return }
         
         switch key {
