@@ -264,11 +264,11 @@ class TabHistoryView: NSViewController {
         }
     }
     
-    private func updateSearchFieldPlaceholderText() {
+    public func updateSearchFieldPlaceholderText() {
         textView.placeholderString = getSearchFieldPlaceholderText(by: appState.currentInputSourceName, tabsCount: appState.savedOpenTabs.count)
     }
     
-    private func updateTabsHeaderViews() {
+    public func updateTabsHeaderViews() {
         openTabsHeaderView.tabsCount = appState.openTabsRenderedCount
         closedTabsHeaderView.tabsCount = appState.closedTabsRenderedCount
         
@@ -298,7 +298,7 @@ class TabHistoryView: NSViewController {
         visibleTabViews.removeAll()
     }
     
-    private func renderTabs() {
+    public func renderTabs() {
         clearAllTabViews()
 
         let totalHeight = CGFloat(appState.renderedTabs.count) * (tabHeight + tabSpacing) - tabSpacing

@@ -118,6 +118,9 @@ func handleHotKeyPress() {
         return
     }
     guard let tabs = Store.windows.windows.last?.tabs else { return }
+    
+    showTabsPanel()
+    
     appState.savedOpenTabs = tabs.tabs
     appState.savedClosedTabs = Store.VisitedPagesHistory.loadAll()
     appState.searchQuery = ""
@@ -125,7 +128,10 @@ func handleHotKeyPress() {
     setIndexOfTabToSwitchToForEmptyTexField()
     appState.currentInputSourceName = getCurrentInputSourceName()
     appState.isTabsPanelOpen = true
-    showTabsPanel()
+    
+    (tabsPanel?.contentViewController as? TabHistoryView)?.updateTabsHeaderViews()
+    (tabsPanel?.contentViewController as? TabHistoryView)?.renderTabs()
+    (tabsPanel?.contentViewController as? TabHistoryView)?.updateSearchFieldPlaceholderText()
 }
 
 var greetingWindow: NSWindow?
