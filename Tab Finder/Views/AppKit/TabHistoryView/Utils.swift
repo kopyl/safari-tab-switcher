@@ -63,6 +63,29 @@ func hideTabsPanelAndSwitchTabs() {
     Task{ await switchTabs() }
 }
 
+func sortByLastSeenGrouppedByDomain() -> [Tab] {
+    let tabsLastSeen = Array(appState.savedOpenTabs.reversed())
+    let tabsGroupedByDomain = Dictionary(grouping: tabsLastSeen) { tab in
+        let host = tab.host
+        return host
+    }
+    
+    var tabsToReturn: [Tab] = []
+    var processedHosts = Set<String>()
+
+    for tab in tabsLastSeen {
+        if processedHosts.contains(tab.host) {
+            continue
+        }
+
+        let tabsWithSameHost = tabsGroupedByDomain[tab.host] ?? []
+        tabsToReturn.append(contentsOf: tabsWithSameHost)
+        processedHosts.insert(tab.host)
+    }
+    
+    return tabsToReturn
+}
+
 func getOpenTabsDependingOnSorting() -> [Tab] {
     switch(appState.sortTabsBy) {
     case .asTheyAppearInBrowser:
@@ -74,6 +97,8 @@ func getOpenTabsDependingOnSorting() -> [Tab] {
             .reversed()
     case .lastSeen:
         return appState.savedOpenTabs.reversed()
+    case .lastSeenGroupedByHost:
+        return sortByLastSeenGrouppedByDomain()
     }
 }
 

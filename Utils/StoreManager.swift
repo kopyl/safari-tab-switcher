@@ -77,6 +77,7 @@ enum SortTabsBy: String, CaseIterable {
     case lastSeen = "Last seen"
     case asTheyAppearInBrowser = "As they appear in browser"
     case asTheyAppearInBrowserReversed = "As they appear in browser (reversed)"
+    case lastSeenGroupedByHost = "Last seen grouped by host"
 }
 
 enum ColumnOrder: String, CaseIterable {
