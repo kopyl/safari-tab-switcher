@@ -411,6 +411,34 @@ class TabHistoryView: NSViewController {
         }
     }
     
+    private func scrollToHistoryTopWithoutAnimation() {
+        let index = appState.openTabsRenderedCount
+        guard index >= 0 && index < appState.renderedTabs.count else { return }
+        var yPos = CGFloat(index) * (tabHeight + tabSpacing) + openTabsHeaderView.height
+        yPos += closedTabsHeaderView.height
+        
+        if visibleTabViews[index] == nil {
+            let tabView = createTabView(for: appState.renderedTabs[index], at: index)
+            tabsContainerView.addSubview(tabView)
+            visibleTabViews[index] = tabView
+        }
+        
+        DispatchQueue.main.async {
+            appState.indexOfTabToSwitchTo = appState.openTabsRenderedCount
+            self.updateVisibleTabViews()
+            self.updateHighlighting()
+            
+            if index == 0 {
+                self.scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
+            }
+            else {
+                self.scrollView.contentView.scroll(to: NSPoint(x: 0, y: yPos - self.openTabsHeaderView.height))
+            }
+
+            self.scrollView.reflectScrolledClipView(self.scrollView.contentView)
+        }
+    }
+    
     private func scrollToSelectedTabWithoutAnimation() {
         let index = appState.indexOfTabToSwitchTo
         guard index >= 0 && index < appState.renderedTabs.count else { return }
@@ -507,6 +535,8 @@ class TabHistoryView: NSViewController {
             }
         case .p:
             togglePin()
+        case .h:
+            scrollToHistoryTopWithoutAnimation()
         }
     }
     
