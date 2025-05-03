@@ -537,6 +537,9 @@ class TabHistoryView: NSViewController {
             togglePin()
         case .h:
             scrollToHistoryTopWithoutAnimation()
+        case .o:
+            appState.indexOfTabToSwitchTo = 0
+            scrollToTop()
         }
     }
     
