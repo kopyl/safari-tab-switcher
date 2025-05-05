@@ -540,6 +540,7 @@ class TabHistoryView: NSViewController {
         case .o:
             appState.indexOfTabToSwitchTo = 0
             scrollToTop()
+            updateHighlighting()
         }
     }
     
