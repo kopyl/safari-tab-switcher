@@ -4,7 +4,14 @@ import SwiftUI
 class WindowConfig {
     static let width: CGFloat = 659
     static let height: CGFloat = 400
+    
+    #if LITE
+    /// To fit the name of the app "Tab Finder Lite"
+    static let sidebarFixedWidth: CGFloat = 250
+    #else
     static let sidebarFixedWidth: CGFloat = 215
+    #endif
+    
     static let sideBarTopPadding: CGFloat = 63
 }
 
