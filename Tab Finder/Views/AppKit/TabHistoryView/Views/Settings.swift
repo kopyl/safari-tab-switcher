@@ -80,7 +80,7 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
         tableView.addTableColumn(column)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 28
+        tableView.rowHeight = 32
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.focusRingType = .none
         
@@ -105,7 +105,7 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
         ])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: settingsWindowTitle.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: settingsWindowTitle.bottomAnchor, constant: 25),
         ])
         
     }
@@ -119,7 +119,7 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
         let imageView = items[row].icon
         
         let stackView = NSStackView(views: [imageView, textLabel])
-        stackView.spacing = 5
+        stackView.spacing = 6
         stackView.heightAnchor.constraint(equalToConstant: tableView.rowHeight).isActive = true
         
         return stackView
