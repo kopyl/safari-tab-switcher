@@ -180,6 +180,13 @@ func performSearch(on tabs: [Tab]) -> [Tab] {
                 continue
             }
             
+            if part == searchQuery.dropLast() {
+                score += 10 * scoreMultiplier
+            }
+            else if part == searchQuery{
+                score += 10 * scoreMultiplier
+            }
+            
             if part.starts(with: searchQuery) {
                 score += 5 * scoreMultiplier
             }
