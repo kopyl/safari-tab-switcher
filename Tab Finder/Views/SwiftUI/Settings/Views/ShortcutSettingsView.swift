@@ -75,7 +75,9 @@ struct ShortcutSettingsView: View {
                     "Shortcut for opening tabs list"
                 )
                 Spacer()
-                KeyboardShortcuts.Recorder(for: .openTabsList)
+                KeyboardShortcuts.Recorder(for: .openTabsList) { newShortcut in
+                    shortcutModifiers = newShortcut?.modifiers.symbolRepresentation
+                }
                     .focused($isFocused)
                     .onChange(of: isFocused) {
                         appState.isShortcutRecorderNeedsToBeFocused = $0
