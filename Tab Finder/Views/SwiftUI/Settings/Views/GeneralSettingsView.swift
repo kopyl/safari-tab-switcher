@@ -12,7 +12,6 @@ struct GeneralSettingsView: View {
     var body: some View {
         HStack {
             ToggleView(isOn: !$moveAppOutOfBackgroundWhenSafariCloses, text: "Keep app in background when Safari closes")
-            Spacer()
         }
         .padding(.top, 10)
         .padding(.horizontal, 30)
