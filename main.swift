@@ -139,6 +139,8 @@ var tabsPanel: NSPanel?
 var settingsWindow: NSWindow?
 var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
+var settingsWindowController: SettingsWindowController?
+var settingsWindowTitle = SettingsTitleView()
 
 class AppState: ObservableObject {
     @Published var isShortcutRecorderNeedsToBeFocused = false
@@ -304,16 +306,30 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
 
 func showSettingsWindow(withTitle: String = "Settings") {
     if let settingsWindow {
-        settingsWindow.title = withTitle
+        settingsWindowTitle.stringValue = withTitle
         settingsWindow.makeKeyAndOrderFront(nil)
+        addPaddingToWindowButtons(leading: 10, top: 10)
         return
+        
     }
     
-    settingsWindow = Window(view: SettingsView(appState: appState))
-    
-    settingsWindow?.title = withTitle
-    settingsWindow?.setContentSize(NSSize(width: 444, height: 424))
+    settingsWindow = NSWindow(
+        contentRect: NSRect(x: 0, y: 0, width: WindowConfig.width, height: WindowConfig.height),
+        styleMask: [.titled, .closable, .fullSizeContentView],
+        backing: .buffered, defer: false
+    )
     settingsWindow?.center()
+    settingsWindow?.contentViewController = SplitViewController()
+    settingsWindow?.titlebarAppearsTransparent = true
+    
+    settingsWindowTitle.stringValue = withTitle
+    
+    /// hack to increase draggable titlebar area
+    settingsWindow?.addTitlebarAccessoryViewController(NSTitlebarAccessoryViewController())
+    
+    settingsWindowController = SettingsWindowController(window: settingsWindow)
+    addPaddingToWindowButtons(leading: 10, top: 10)
+    
     settingsWindow?.makeKeyAndOrderFront(nil)
 }
 

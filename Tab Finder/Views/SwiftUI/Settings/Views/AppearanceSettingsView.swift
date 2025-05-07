@@ -1,5 +1,4 @@
 import SwiftUI
-import KeyboardShortcuts
 import SafariServices.SFSafariExtensionManager
 
 func changeTransparencyOfExtensionIconInSafariToolbar(shouldBeTransparent: Bool) {
@@ -11,52 +10,6 @@ func changeTransparencyOfExtensionIconInSafariToolbar(shouldBeTransparent: Bool)
                 userInfo: ["shouldBeTransparent": shouldBeTransparent ? "1" : "0"]
             )
         } catch {}
-    }
-}
-
-let description = """
-When enabled, the tabs panel won't disappear when you release the Option key.
-To switch to a tab, just press Return or select the tab with your mouse.
-"""
-
-prefix func ! (value: Binding<Bool>) -> Binding<Bool> {
-    Binding<Bool>(
-        get: { !value.wrappedValue },
-        set: { value.wrappedValue = !$0 }
-    )
-}
-
-extension NSEvent.ModifierFlags {
-    var symbolRepresentation: String {
-        var symbols = ""
-
-        if contains(.command) {
-            symbols += "⌘"
-        }
-        if contains(.option) {
-            symbols += "⌥"
-        }
-        if contains(.control) {
-            symbols += "⌃"
-        }
-        if contains(.shift) {
-            symbols += "⇧"
-        }
-        if contains(.capsLock) {
-            symbols += "⇪"
-        }
-
-        return symbols
-    }
-}
-
-extension NSEvent {
-    var appShortcutIsPressed: Bool {
-        modifierFlags.contains(.command) && AppShortcutKeys(rawValue: keyCode) != nil
-    }
-    
-    var shiftIsHolding: Bool {
-        modifierFlags.contains(.shift)
     }
 }
 
@@ -146,12 +99,7 @@ struct ColorPickerView: View {
     }
 }
 
-struct SettingsView: View {
-    @AppStorage(
-        Store.isTabsSwitcherNeededToStayOpenStoreKey,
-        store: Store.userDefaults
-    ) private var isTabsSwitcherNeededToStayOpen: Bool = true
-    
+struct AppearanceSettingsView: View {
     @AppStorage(
         Store.sortTabsByStoreKey,
         store: Store.userDefaults
@@ -168,11 +116,6 @@ struct SettingsView: View {
     ) private var userSelectedAccentColor: String = Store.userSelectedAccentColorDefaultValue
     
     @AppStorage(
-        Store.moveAppOutOfBackgroundWhenSafariClosesStoreKey,
-        store: Store.userDefaults
-    ) private var moveAppOutOfBackgroundWhenSafariCloses: Bool = Store.moveAppOutOfBackgroundWhenSafariClosesDefaultValue
-    
-    @AppStorage(
         Store.addStatusBarItemWhenAppMovesInBackgroundStoreKey,
         store: Store.userDefaults
     ) private var addStatusBarItemWhenAppMovesInBackground: Bool = Store.addStatusBarItemWhenAppMovesInBackgroundDefaultValue
@@ -184,38 +127,14 @@ struct SettingsView: View {
     
     @State private var displayedColorName: String = ""
     
-    @State
-    var shortcutModifiers =
-    KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
-    
     @ObservedObject var appState: AppState
-    @FocusState private var isFocused: Bool
 
     var colorName: String {
         colorNames[colors.firstIndex(of: hexToColor(userSelectedAccentColor)) ?? 0]
     }
     
-    func styledText(_ text: String) -> some View {
-        Text(text)
-            .opacity(0.8)
-            .font(.system(size: 15))
-    }
-    
     var body: some View {
-        VStack(alignment: .leading, spacing: 86) {
-            Toggle(isOn: !$isTabsSwitcherNeededToStayOpen) {
-                HStack {
-                    styledText("Close tabs list when \(shortcutModifiers ?? "Option") is released")
-                    Spacer()
-                }
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                isTabsSwitcherNeededToStayOpen.toggle()
-            }
-            .tint(.white)
-            .toggleStyle(.switch)
-            .padding(.horizontal, 30)
+        VStack(alignment: .leading, spacing: 46) {
             
             HStack {
                 styledText("Sort tabs by")
@@ -243,45 +162,9 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 30)
             
-            VStack(alignment: .leading, spacing: 20) {
-                Toggle(isOn: $addStatusBarItemWhenAppMovesInBackground) {
-                    styledText("Show menu bar icon when app hides in background")
-                        .padding(.leading, 5)
-                }
-                
-                Toggle(isOn: !$moveAppOutOfBackgroundWhenSafariCloses) {
-                    styledText("Keep app in background when Safari closes")
-                        .padding(.leading, 5)
-                }
-                
-                Toggle(isOn: $shallSafariIconBeTransparent) {
-                    styledText("Make Safari toolbar icon transparent")
-                        .padding(.leading, 5)
-                }
-            }
-            .padding(.horizontal, 30)
-            
-            HStack {
-                styledText(
-                    isFocused ?
-                    "Press shortcut to open tabs list"
-                    :
-                    "Shortcut for opening tabs list"
-                )
-                Spacer()
-                KeyboardShortcuts.Recorder(for: .openTabsList)
-                    .focused($isFocused)
-                    .onChange(of: isFocused) {
-                        appState.isShortcutRecorderNeedsToBeFocused = $0
-                    }
-                    .onChange(of: appState.isShortcutRecorderNeedsToBeFocused) { newValue in
-                        Task {
-                            isFocused = newValue
-                        }
-                    }
-                    .task {
-                        isFocused = appState.isShortcutRecorderNeedsToBeFocused
-                    }
+            VStack(alignment: .leading, spacing: 20) {  
+                ToggleView(isOn: $addStatusBarItemWhenAppMovesInBackground, text: "Show menu bar icon when app hides in background")
+                ToggleView(isOn: $shallSafariIconBeTransparent, text: "Make Safari toolbar icon transparent")
             }
             .padding(.horizontal, 30)
             
@@ -314,9 +197,6 @@ struct SettingsView: View {
         .onChange(of: columnOrder) { val in
             appState.columnOrder = val
         }
-        .onChange(of: isTabsSwitcherNeededToStayOpen) { val in
-            appState.isTabsSwitcherNeededToStayOpen = val
-        }
         .onChange(of: userSelectedAccentColor) { val in
             appState.userSelectedAccentColor = val
         }
@@ -330,8 +210,8 @@ struct SettingsView: View {
         .onChange(of: shallSafariIconBeTransparent) { val in
             changeTransparencyOfExtensionIconInSafariToolbar(shouldBeTransparent: val)
         }
-        .padding(.top, 74)
-        .padding(.bottom, 71)
-        
+        .padding(.top, 10)
+        .padding(.bottom, 42)
+        .frame(minWidth: 444, maxWidth: 444)
     }
 }
