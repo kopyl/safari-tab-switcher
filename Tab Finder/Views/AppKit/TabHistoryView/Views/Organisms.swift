@@ -190,19 +190,6 @@ class AdButtonView: NSView {
     }
 }
 
-func makeHeaderLabelView(tabInsets: NSEdgeInsets, tabsHeaderHeight: CGFloat) -> NSTextField {
-    let headerLabel = NSTextField(labelWithString: "Open")
-    headerLabel.font = .boldSystemFont(ofSize: 13)
-    headerLabel.textColor = .secondaryLabelColor
-    headerLabel.frame = NSRect(
-        x: tabInsets.left,
-        y: 0,
-        width: tabContentViewWidth,
-        height: tabsHeaderHeight
-    )
-    return headerLabel
-}
-
 class TabsHeaderView: NSView {
     private let title: String
     public var height: CGFloat
