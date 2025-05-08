@@ -32,6 +32,38 @@ func makeStackView(spacing: CGFloat = 0) -> NSStackView {
     return sv
 }
 
+class AutoCompleteTextFieldController: NSObject, NSTextFieldDelegate, NSControlTextEditingDelegate {
+    let suggestions = ["Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape"]
+    private let textField: NSTextField
+    
+    func controlTextDidChange(_ notification: Notification) {
+        guard let textField = notification.object as? NSTextField,
+              let currentText = textField.stringValue.isEmpty ? nil : textField.stringValue else {
+            return
+        }
+        
+        let filteredCompletions = suggestions.filter { $0.lowercased().hasPrefix(currentText.lowercased()) }
+            
+        guard !filteredCompletions.isEmpty else { return }
+        guard let fieldEditor = textField.currentEditor() as? NSTextView else { return }
+//        fieldEditor.insertCompletion(filteredCompletions[0], forPartialWordRange: fieldEditor.rangeForUserCompletion, movement: 0, isFinal: false)
+        
+    }
+
+    func control(_ control: NSControl, textView: NSTextView,
+                 completions words: [String], forPartialWordRange charRange: NSRange,
+                 indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
+        let partial = (textView.string as NSString).substring(with: charRange).lowercased()
+        return suggestions.filter { $0.lowercased().hasPrefix(partial) }
+    }
+    
+    init(textField: NSTextField) {
+        self.textField = textField
+        super.init()
+        self.textField.delegate = self
+    }
+}
+
 func makeTextFieldView() -> NSTextField {
     let textField = NSTextField()
     textField.isBezeled = false

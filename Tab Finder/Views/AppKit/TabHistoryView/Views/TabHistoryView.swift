@@ -16,6 +16,7 @@ class TabHistoryView: NSViewController {
     private var tintView: NSView!
     private var openTabsHeaderView = TabsHeaderView(title: "Open", height: nil)
     private var closedTabsHeaderView = TabsHeaderView(title: "History", height: 95, topInset: 14)
+    private var autoCompleteController: AutoCompleteTextFieldController?
     
     private var localKeyboardEventMonitor: Any?
     private var globalMouseDownEventMonitor: Any?
@@ -143,6 +144,8 @@ class TabHistoryView: NSViewController {
             name: Notifications.tabClosed,
             object: nil
         )
+        
+        autoCompleteController = AutoCompleteTextFieldController(textField: textView)
     }
     
     @objc func reactOnTabCloseNotificationFromSafari(_ notification: Notification) {
