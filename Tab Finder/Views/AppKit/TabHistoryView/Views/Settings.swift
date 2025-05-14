@@ -15,6 +15,15 @@ class WindowConfig {
     static let sideBarTopPadding: CGFloat = 63
 }
 
+class NoPaddingCellView: NSTableCellView {
+    override func layout() {
+        super.layout()
+        if let subview = subviews.first {
+            subview.frame.origin.x = -2
+        }
+    }
+}
+
 enum SidebarItem: String, CaseIterable {
     case shortcut = "Shortcut"
     case appearance = "Appearance"
@@ -22,8 +31,20 @@ enum SidebarItem: String, CaseIterable {
     
     var icon: NSImageView {
         let imageName = "\(self.rawValue)-icon"
-        let image = NSImage(named: NSImage.Name(imageName)) ?? NSImage()
-        return NSImageView(image: image)
+        
+        guard let image = NSImage(named: NSImage.Name(imageName)) else {
+            fatalError("Missing image: \(imageName)")
+        }
+        
+        let imageView = NSImageView(image: image)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24)
+        ])
+        
+        return imageView
     }
     
     var viewController: NSViewController {
@@ -122,14 +143,24 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        
         let textLabel = NSTextField(labelWithString: items[row].rawValue)
         let imageView = items[row].icon
         
         let stackView = NSStackView(views: [imageView, textLabel])
-        stackView.spacing = 6
+        stackView.spacing = 4
         stackView.heightAnchor.constraint(equalToConstant: tableView.rowHeight).isActive = true
         
-        return stackView
+        let cell = NoPaddingCellView()
+        cell.addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: cell.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: cell.bottomAnchor),
+        ])
+        
+        return cell
     }
     
     func tableViewSelectionDidChange(_ notification: Notification) {
