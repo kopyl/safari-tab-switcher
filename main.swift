@@ -147,7 +147,11 @@ var tabsPanel: NSPanel?
 var settingsWindow: NSWindow?
 var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
+
+/// for some reason it's required to keep a referece to SettingsWindowController
+/// for shifting window buttons to works (close, minimize & expand)
 var settingsWindowController: SettingsWindowController?
+
 var settingsWindowTitle = SettingsTitleView()
 let settingsSidebarTableView = NSTableView()
 
