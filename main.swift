@@ -24,6 +24,14 @@ func putIntoBackground() {
     statusBarItem?.isVisible = true
 }
 
+NotificationCenter.default.addObserver(
+    forName: NSWindow.didBecomeMainNotification,
+    object: settingsWindow,
+    queue: .main
+) { notification in
+    settingsWindow?.makeFirstResponder(settingsSidebarTableView)
+}
+
 NSWorkspace.shared.notificationCenter.addObserver(
     forName: NSWorkspace.didActivateApplicationNotification,
     object: nil,
@@ -141,6 +149,7 @@ var aboutPanel: NSPanel?
 var statusBarItem: NSStatusItem?
 var settingsWindowController: SettingsWindowController?
 var settingsWindowTitle = SettingsTitleView()
+let settingsSidebarTableView = NSTableView()
 
 class AppState: ObservableObject {
     @Published var isShortcutRecorderNeedsToBeFocused = false

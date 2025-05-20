@@ -98,26 +98,25 @@ class SettingsTitleView: NSTextField {
 class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     weak var delegate: SidebarSelectionDelegate?
     
-    private let tableView = NSTableView()
     private let items = SidebarItem.allCases
 
     override func loadView() {
         self.view = NSView()
 
         let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Column"))
-        tableView.addTableColumn(column)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = 32
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.focusRingType = .none
+        settingsSidebarTableView.addTableColumn(column)
+        settingsSidebarTableView.delegate = self
+        settingsSidebarTableView.dataSource = self
+        settingsSidebarTableView.rowHeight = 32
+        settingsSidebarTableView.translatesAutoresizingMaskIntoConstraints = false
+        settingsSidebarTableView.focusRingType = .none
         
         DispatchQueue.main.async {
-            self.tableView.selectRowIndexes([0], byExtendingSelection: false)
+            settingsSidebarTableView.selectRowIndexes([0], byExtendingSelection: false)
         }
         
         view.addSubview(settingsWindowTitle)
-        view.addSubview(tableView)
+        view.addSubview(settingsSidebarTableView)
         
         let draggableView = DraggableView()
         draggableView.translatesAutoresizingMaskIntoConstraints = false
@@ -133,7 +132,7 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
         ])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: settingsWindowTitle.bottomAnchor, constant: 25),
+            settingsSidebarTableView.topAnchor.constraint(equalTo: settingsWindowTitle.bottomAnchor, constant: 25),
         ])
         
     }
@@ -164,7 +163,7 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     func tableViewSelectionDidChange(_ notification: Notification) {
-        let selectedIndex = tableView.selectedRow
+        let selectedIndex = settingsSidebarTableView.selectedRow
         guard selectedIndex >= 0 else { return }
         delegate?.didSelectSidebarItem(items[selectedIndex])
     }
