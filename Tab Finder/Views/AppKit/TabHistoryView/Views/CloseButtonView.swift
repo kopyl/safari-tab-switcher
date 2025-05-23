@@ -22,7 +22,7 @@ final class CloseButtonView: NSView {
         setupTrackingArea()
         
         self.addSubview(button)
-        self.addSubview(hoverBackgroundView    )
+        self.addSubview(hoverBackgroundView)
         self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: self.centerXAnchor),
