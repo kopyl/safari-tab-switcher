@@ -528,6 +528,7 @@ class TabHistoryView: NSViewController {
             
         case .w:
             let tabToClose = appState.renderedTabs[appState.indexOfTabToSwitchTo]
+            if tabToClose.id == -1 { return }
             
             guard let tab = appState.renderedTabs.first(where: { $0.id == tabToClose.id }) else { return }
             Task {
