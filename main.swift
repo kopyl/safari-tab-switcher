@@ -279,7 +279,7 @@ func showTabsPanel() {
     if !Store.isTabsSwitcherNeededToStayOpen && appState.sortTabsBy == .lastSeen {
         tabsPanel?.contentView?.alphaValue = 0
         pendingDispatchWorkItem?.cancel()
-        let workItem = DispatchWorkItem {
+        let workItem = DispatchWorkItem { [weak tabsPanel] in
             tabsPanel?.contentView?.alphaValue = 1
             KeyboardShortcuts.isEnabled = false
         }
@@ -303,7 +303,7 @@ func hideTabsPanel(withoutAnimation: Bool = false) {
         
         pendingDispatchWorkItem?.cancel()
         
-        let workItem = DispatchWorkItem {
+        let workItem = DispatchWorkItem { [weak tabsPanel] in
             tabsPanel?.orderOut(nil)
             tabsPanel?.animator().contentView?.alphaValue = 1
             

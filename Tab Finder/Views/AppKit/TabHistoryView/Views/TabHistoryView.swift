@@ -219,9 +219,9 @@ class TabHistoryView: NSViewController {
         
         scrollToTop()
         
-        DispatchQueue.main.async {
-            self.updateTabsHeaderViews()
-            self.renderTabs()
+        DispatchQueue.main.async { [weak self] in
+            self?.updateTabsHeaderViews()
+            self?.renderTabs()
         }
     }
     
@@ -423,7 +423,9 @@ class TabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
             appState.indexOfTabToSwitchTo = appState.openTabsRenderedCount
             self.updateVisibleTabViews()
             self.updateHighlighting()
@@ -456,7 +458,9 @@ class TabHistoryView: NSViewController {
             visibleTabViews[index] = tabView
         }
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
             self.updateVisibleTabViews()
             self.updateHighlighting()
             let visibleRect = self.scrollView.contentView.bounds

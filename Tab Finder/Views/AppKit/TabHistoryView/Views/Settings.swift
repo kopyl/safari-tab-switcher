@@ -89,8 +89,8 @@ class SettingsTitleView: NSTextField {
         font = .systemFont(ofSize: 20)
         translatesAutoresizingMaskIntoConstraints = false
         
-        Task {
-            textColor = .settingsText
+        Task { [weak self] in
+            self?.textColor = .settingsText
         }
     }
 }
@@ -111,8 +111,8 @@ class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableVie
         settingsSidebarTableView.translatesAutoresizingMaskIntoConstraints = false
         settingsSidebarTableView.focusRingType = .none
         
-        DispatchQueue.main.async {
-            settingsSidebarTableView.selectRowIndexes([0], byExtendingSelection: false)
+        DispatchQueue.main.async { [weak settingsSidebarTableView] in
+            settingsSidebarTableView?.selectRowIndexes([0], byExtendingSelection: false)
         }
         
         view.addSubview(settingsWindowTitle)
