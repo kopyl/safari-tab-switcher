@@ -109,6 +109,9 @@ struct Store {
 
     public static let shallSafariIconBeTransparentStoreKey = "shallSafariIconBeTransparent"
     public static let shallSafariIconBeTransparentDefaultValue = false
+    
+    public static let isKeyboardShortcutGlobalStoreKey = "isKeyboardShortcutGlobal"
+    public static let isKeyboardShortcutGlobalDefaultValue = false
 
     static var windows: Windows {
             get {
@@ -162,6 +165,15 @@ struct Store {
         }
         set {
             userDefaults.set(newValue, forKey: shallSafariIconBeTransparentStoreKey)
+        }
+    }
+    
+    static var isKeyboardShortcutGlobal: Bool {
+        get {
+            userDefaults.bool(forKey: isKeyboardShortcutGlobalStoreKey)
+        }
+        set {
+            userDefaults.set(newValue, forKey: isKeyboardShortcutGlobalStoreKey)
         }
     }
     

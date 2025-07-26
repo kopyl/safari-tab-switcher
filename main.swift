@@ -40,7 +40,10 @@ NSWorkspace.shared.notificationCenter.addObserver(
     guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
         return
     }
-    if app.bundleIdentifier == "com.apple.Safari" {
+    if appState.isKeyboardShortcutGlobal {
+        KeyboardShortcuts.isEnabled = true
+    }
+    else if app.bundleIdentifier == "com.apple.Safari" {
         KeyboardShortcuts.isEnabled = true
     }
     else {
@@ -83,6 +86,7 @@ class TabsPanelVisibilityObserver: NSObject {
         super.init()
         observation = panel.observe(\.isVisible, options: [.new]) { _, change in
             if let isVisible = change.newValue {
+                if appState.isKeyboardShortcutGlobal { return }
                 KeyboardShortcuts.isEnabled = !isVisible
             }
         }
@@ -94,7 +98,7 @@ class TabsPanelVisibilityObserver: NSObject {
 }
 
 extension KeyboardShortcuts.Name {
-    static let openTabsList = Self("openTabsList", default: .init(.tab, modifiers: [.option]))
+    static let openTabsList = Self("openTabsList", default: .init(.q, modifiers: [.option]))
 }
 
 KeyboardShortcuts.onKeyDown(for: .openTabsList) {
@@ -122,9 +126,10 @@ func setIndexOfTabToSwitchToForEmptyTexField() {
 }
 
 func handleHotKeyPress() {
-    guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" else {
+    guard NSWorkspace.shared.frontmostApplication?.localizedName == "Safari" || appState.isKeyboardShortcutGlobal else {
         return
     }
+    
     guard let tabs = Store.windows.windows.last?.tabs else { return }
     
     showTabsPanel()
@@ -172,6 +177,7 @@ class AppState: ObservableObject {
     var userSelectedAccentColor = Store.userSelectedAccentColor
     var tabsWithOpenSwipeViews: [TabItemView] = []
     var addStatusBarItemWhenAppMovesInBackground = Store.addStatusBarItemWhenAppMovesInBackground
+    var isKeyboardShortcutGlobal = Store.isKeyboardShortcutGlobal
 
     var openTabsRenderedCount = 0
     var closedTabsRenderedCount = 0

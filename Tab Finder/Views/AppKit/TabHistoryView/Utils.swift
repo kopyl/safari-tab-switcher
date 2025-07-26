@@ -60,7 +60,18 @@ func removeSpecificTabFromHistory(tab: Tab) {
 func hideTabsPanelAndSwitchTabs() {
     hideTabsPanel()
     guard !appState.renderedTabs.isEmpty else { return }
-    Task{ await switchTabs() }
+    Task{
+        if appState.isKeyboardShortcutGlobal {
+            openSafari()
+        }
+        await switchTabs()
+    }
+}
+
+func openSafari() {
+    if let safariURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Safari") {
+      NSWorkspace.shared.open(safariURL)
+    }
 }
 
 func sortByLastSeenGrouppedByDomain() -> [Tab] {

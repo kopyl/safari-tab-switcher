@@ -53,6 +53,11 @@ struct ShortcutSettingsView: View {
         store: Store.userDefaults
     ) private var addStatusBarItemWhenAppMovesInBackground: Bool = Store.addStatusBarItemWhenAppMovesInBackgroundDefaultValue
     
+    @AppStorage(
+        Store.isKeyboardShortcutGlobalStoreKey,
+        store: Store.userDefaults
+    ) private var isKeyboardShortcutGlobal: Bool = Store.isKeyboardShortcutGlobalDefaultValue
+    
     @State
     var shortcutModifiers =
     KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation
@@ -63,6 +68,9 @@ struct ShortcutSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 46) {
             ToggleView(isOn: !$isTabsSwitcherNeededToStayOpen, text: "Close tabs list when \(shortcutModifiers ?? "Option") is released")
+            .padding(.horizontal, 30)
+            
+            ToggleView(isOn: $isKeyboardShortcutGlobal, text: "Open Tab Finder from any app")
             .padding(.horizontal, 30)
             
             Spacer()
@@ -102,6 +110,10 @@ struct ShortcutSettingsView: View {
             }
             appState.addStatusBarItemWhenAppMovesInBackground = val
             statusBarItem?.isVisible = val
+        }
+        .onChange(of: isKeyboardShortcutGlobal) { val in
+            appState.isKeyboardShortcutGlobal = val
+            KeyboardShortcuts.isEnabled = val
         }
         .padding(.top, 10)
         .padding(.bottom, 60)
