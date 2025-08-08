@@ -208,11 +208,17 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
                     guard let tabURLString = userInfo?["url"] as? String,
                           let tabURL = URL(string: tabURLString) else { return }
                     await activeWindow.openTab(with: tabURL, makeActiveIfPossible: true)
+                    Store.VisitedPagesHistory.updateOne(url: tabURL, incrementTabProperty: .timesCreatedNewTabWithThisPage)
                     return
                 }
                 
                 let tabs = await activeWindow.allTabs()
                 await switchToTab(id: tabId, tabs: tabs)
+                
+                guard let tabPage = await tabs[tabId].activePage() else { return }
+                let properies = await tabPage.properties()
+                guard let url = properies?.url else { return }
+                Store.VisitedPagesHistory.updateOne(url: url, incrementTabProperty: .timesSwitchedToWhileHavingHostTabOpen)
             }
         case .closetab:
             guard let tabIdString = userInfo?["id"] as? String,

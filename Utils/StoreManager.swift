@@ -1,6 +1,11 @@
 import Foundation
 import SafariServices
 
+enum IncremetalTabProperty {
+    case timesCreatedNewTabWithThisPage
+    case timesSwitchedToWhileHavingHostTabOpen
+}
+
 struct _Window: Codable {
     var tabs: Tabs
     var combinedID: String
@@ -306,7 +311,11 @@ struct Store {
             }
         }
         
-        static func updateOne(url: URL, newTitle: String) {
+        static func updateOne(
+            url: URL,
+            newTitle: String? = nil,
+            incrementTabProperty: IncremetalTabProperty? = nil
+        ) {
             let context = getBackgroundContext()
             let request: NSFetchRequest<VisitedPagesHistoryModel> = VisitedPagesHistoryModel.fetchRequest()
             request.predicate = NSPredicate(format: "url == %@", url as CVarArg)
@@ -319,9 +328,21 @@ struct Store {
                         return
                     }
                 
-                    tab.title = newTitle
+                    if let newTitle = newTitle {
+                        tab.title = newTitle
+                    }
+                    switch incrementTabProperty {
+                    case .timesSwitchedToWhileHavingHostTabOpen:
+                        tab.timesSwitchedToWhileHavingHostTabOpen += 1
+                    case .timesCreatedNewTabWithThisPage:
+                        tab.timesCreatedNewTabWithThisPage += 1
+                    case nil:
+                        break
+                    }
                     tab.updatedAt = Date()
                     tab.timesUpdated += 1
+                    
+                    log(tab)
                     
                     try context.save()
                 } catch {
