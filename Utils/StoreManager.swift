@@ -389,8 +389,6 @@ struct Store {
                     tab.updatedAt = Date()
                     tab.timesUpdated += 1
                     
-                    log(tab)
-                    
                     try context.save()
                 } catch {
                     log("❌ Failed to update tab. Error: \(error). Predicate: \(String(describing: request.predicate ?? nil))")
