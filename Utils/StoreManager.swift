@@ -266,6 +266,53 @@ struct Store {
             }
         }
         
+        static func removeTabsWithLowUpdateCount(threshold: Int = 100) {
+            let context = persistentContainer.viewContext
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = VisitedPagesHistoryModel.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "timesUpdated < %d", threshold)
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                try context.save()
+                
+                if let count = result?.result as? Int {
+                    log("✅ Deleted \(count) tabs with timesUpdated < \(threshold)")
+                } else {
+                    log("✅ Deleted tabs with timesUpdated < \(threshold)")
+                }
+            } catch {
+                log("❌ Failed to delete tabs with low update count: \(error)")
+            }
+        }
+        
+        static func removeOldTabs(olderThanDays: Int = 30) {
+            let context = persistentContainer.viewContext
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = VisitedPagesHistoryModel.fetchRequest()
+            
+            let calendar = Calendar.current
+            guard let cutoffDate = calendar.date(byAdding: .day, value: -olderThanDays, to: Date()) else {
+                log("❌ Failed to calculate cutoff date")
+                return
+            }
+            
+            fetchRequest.predicate = NSPredicate(format: "updatedAt < %@", cutoffDate as NSDate)
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                try context.save()
+                
+                if let count = result?.result as? Int {
+                    log("✅ Deleted \(count) tabs older than \(olderThanDays) days")
+                } else {
+                    log("✅ Deleted tabs older than \(olderThanDays) days")
+                }
+            } catch {
+                log("❌ Failed to delete old tabs: \(error)")
+            }
+        }
+        
         static func deleteCoreDataStore() {
             guard let containerURL = FileManager.default
                 .containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
