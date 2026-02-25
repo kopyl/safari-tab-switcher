@@ -2,10 +2,6 @@ import SwiftUI
 import KeyboardShortcuts
 import SafariServices.SFSafariExtensionManager
 
-func getToolTipText() -> String {
-    return "Click to avoid closing this panel when you release \(KeyboardShortcuts.Name.openTabsList.shortcut?.modifiers.symbolRepresentation ?? "your modifier key/s")"
-}
-
 func switchTabs() async {
     let tabToSwitchToInSafari = appState.renderedTabs[appState.indexOfTabToSwitchTo]
     let tabURL = tabToSwitchToInSafari.url ?? URL(string: "httos://google.con")!
