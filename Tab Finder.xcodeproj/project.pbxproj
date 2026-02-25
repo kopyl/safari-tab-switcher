@@ -19,7 +19,6 @@
 		4849CB602D488A96000BCA77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4849CB5D2D4889F4000BCA77 /* Constants.swift */; };
 		484AECD12DA4337100C9117E /* Organisms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484AECD02DA4336F00C9117E /* Organisms.swift */; };
 		484AED862DA573AB00C9117E /* Favicons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484AED852DA573A500C9117E /* Favicons.swift */; };
-		4862F4F72DD4FA4200E6CE9E /* General-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4862F4F62DD4FA3C00E6CE9E /* General-icon.png */; };
 		4864CBA72DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4864CBA52DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodeld */; };
 		4864CBA82DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4864CBA52DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodeld */; };
 		4864CBB12DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4864CBAF2DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataClass.swift */; };
@@ -93,7 +92,6 @@
 		484AECD02DA4336F00C9117E /* Organisms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisms.swift; sourceTree = "<group>"; };
 		484AED852DA573A500C9117E /* Favicons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicons.swift; sourceTree = "<group>"; };
 		48534A232D333B3D003FF94A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4862F4F62DD4FA3C00E6CE9E /* General-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "General-icon.png"; sourceTree = "<group>"; };
 		4864CBA62DB66ECF00BCBA61 /* VisitedPagesHistoryModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VisitedPagesHistoryModel.xcdatamodel; sourceTree = "<group>"; };
 		4864CBAF2DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VisitedPagesHistoryModel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4864CBB02DB66F4500BCBA61 /* VisitedPagesHistoryModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VisitedPagesHistoryModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -221,18 +219,9 @@
 			path = AppKit;
 			sourceTree = "<group>";
 		};
-		4862F4F52DD4FA2C00E6CE9E /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				4862F4F62DD4FA3C00E6CE9E /* General-icon.png */,
-			);
-			path = Images;
-			sourceTree = "<group>";
-		};
 		48B48FBC2D2A59620054B680 = {
 			isa = PBXGroup;
 			children = (
-				4862F4F52DD4FA2C00E6CE9E /* Images */,
 				48BA9FA32DB5E4D9000816D6 /* VisitedPagesHistoryModel */,
 				48FEE0F82D71FB3A007704A0 /* main.swift */,
 				48F9D6C42D74E30300DEE99E /* Utils */,
@@ -446,7 +435,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				48B48FDA2D2A59630054B680 /* Assets.xcassets in Resources */,
-				4862F4F72DD4FA4200E6CE9E /* General-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
